@@ -1,3 +1,3 @@
 #pragma once
 
-void printMap(int **map);
+void printMap(Color **map);

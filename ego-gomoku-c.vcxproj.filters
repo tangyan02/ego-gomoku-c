@@ -60,6 +60,12 @@
     <ClInclude Include="console.h">
       <Filter>头文件\helper</Filter>
     </ClInclude>
+    <ClInclude Include="gameMap.h">
+      <Filter>头文件\core</Filter>
+    </ClInclude>
+    <ClInclude Include="points.h">
+      <Filter>头文件\entity</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -82,6 +88,12 @@
     </ClCompile>
     <ClCompile Include="config.cpp">
       <Filter>源文件\core</Filter>
+    </ClCompile>
+    <ClCompile Include="gameMap.cpp">
+      <Filter>源文件\core</Filter>
+    </ClCompile>
+    <ClCompile Include="points.cpp">
+      <Filter>源文件\entity</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

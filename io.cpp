@@ -8,12 +8,12 @@ using namespace std;
 
 extern int boardSize;
 
-int ** readMap()
+Color ** readMap()
 {
-	int ** map = new int*[boardSize];
+	Color ** map = new Color*[boardSize];
 	for (int i = 0; i < boardSize; i++)
 	{
-		map[i] = new int[boardSize];
+		map[i] = new Color[boardSize];
 	}
 
 	char *filePath = "input.txt";

@@ -17,3 +17,4 @@
 #include "game.h"
 #include "config.h"
 #include "point.h"
+#include "points.h"
