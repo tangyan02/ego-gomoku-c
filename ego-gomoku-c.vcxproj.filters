@@ -25,6 +25,12 @@
     <Filter Include="源文件\entity">
       <UniqueIdentifier>{264adc00-ca32-4642-8ea3-d71e3e571589}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\helper">
+      <UniqueIdentifier>{660e2079-c3a4-487f-b134-a90ce5562893}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\helper">
+      <UniqueIdentifier>{5df854db-e047-4319-8427-14735593913a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -48,6 +54,12 @@
     <ClInclude Include="point.h">
       <Filter>头文件\entity</Filter>
     </ClInclude>
+    <ClInclude Include="io.h">
+      <Filter>头文件\helper</Filter>
+    </ClInclude>
+    <ClInclude Include="console.h">
+      <Filter>头文件\helper</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -61,6 +73,15 @@
     </ClCompile>
     <ClCompile Include="point.cpp">
       <Filter>源文件\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="io.cpp">
+      <Filter>源文件\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="console.cpp">
+      <Filter>源文件\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="config.cpp">
+      <Filter>源文件\core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
