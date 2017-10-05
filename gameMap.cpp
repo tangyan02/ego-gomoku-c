@@ -18,6 +18,11 @@ void setColor(int x, int y, Color color)
 	map[x][y] = color;
 }
 
+Color getColor(point p)
+{
+	return map[p.x][p.y];
+}
+
 points getNeighbor()
 {
 	points result;
@@ -32,7 +37,7 @@ points getNeighbor()
 			if (map[i][j] != NULL) {
 				for (int x = i - 2; x <= i + 2; x++)
 					for (int y = j - 2; y <= j + 2; y++)
-						if (reach(x, y))
+						if (reachable(x, y))
 							if (map[x][y] == NULL) {
 								signal[x][y] = true;
 							}
@@ -48,7 +53,7 @@ points getNeighbor()
 	return result;
 }
 
-bool reach(int x, int y)
+bool reachable(int x, int y)
 {
 	if (x < 0 || y < 0 || x >= boardSize || y >= boardSize)
 		return false;

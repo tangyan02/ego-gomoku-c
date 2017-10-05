@@ -1,3 +1,9 @@
 #pragma once
+#include"config.h"
+#include"point.h"
 
-void search();
+point search(Color aiColor, Color** map);
+
+void setPoint(point p, Color color, Color forwardColor, Color aiColor);
+
+int dfs(int level, Color color, int parentMax, int parentMin, Color aiColor);

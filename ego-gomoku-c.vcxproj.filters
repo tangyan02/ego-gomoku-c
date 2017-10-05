@@ -66,6 +66,12 @@
     <ClInclude Include="points.h">
       <Filter>头文件\entity</Filter>
     </ClInclude>
+    <ClInclude Include="score.h">
+      <Filter>头文件\core</Filter>
+    </ClInclude>
+    <ClInclude Include="winChecker.h">
+      <Filter>头文件\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -94,6 +100,12 @@
     </ClCompile>
     <ClCompile Include="points.cpp">
       <Filter>源文件\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="score.cpp">
+      <Filter>源文件\core</Filter>
+    </ClCompile>
+    <ClCompile Include="winChecker.cpp">
+      <Filter>源文件\core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
