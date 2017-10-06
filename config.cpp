@@ -3,7 +3,7 @@
 
 int boardSize = 15;
 
-int searchLevel = 4;
+int searchLevel = 6;
 
 Color getOtherColor(Color color)
 {

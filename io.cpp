@@ -10,13 +10,18 @@ extern int boardSize;
 
 Color ** readMap()
 {
+	return readMap("input.txt");
+}
+
+Color ** readMap(char * path)
+{
 	Color ** map = new Color*[boardSize];
 	for (int i = 0; i < boardSize; i++)
 	{
 		map[i] = new Color[boardSize];
 	}
 
-	char *filePath = "input.txt";
+	char *filePath = path;
 	ifstream file;
 	file.open(filePath, ios::in);
 

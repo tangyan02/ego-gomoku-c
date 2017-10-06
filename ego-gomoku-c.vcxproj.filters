@@ -37,6 +37,9 @@
     <Text Include="input.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="analyze.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -78,6 +81,12 @@
     <ClInclude Include="pointHash.h">
       <Filter>头文件\entity</Filter>
     </ClInclude>
+    <ClInclude Include="analyzer.h">
+      <Filter>头文件\core</Filter>
+    </ClInclude>
+    <ClInclude Include="levelProcessor.h">
+      <Filter>头文件\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -118,6 +127,12 @@
     </ClCompile>
     <ClCompile Include="pointHash.cpp">
       <Filter>源文件\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="analyzer.cpp">
+      <Filter>源文件\core</Filter>
+    </ClCompile>
+    <ClCompile Include="levelProcessor.cpp">
+      <Filter>源文件\core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

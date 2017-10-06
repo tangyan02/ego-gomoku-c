@@ -2,3 +2,5 @@
 
 Color** readMap();
 
+Color** readMap(char* path);
+

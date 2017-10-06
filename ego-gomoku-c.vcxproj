@@ -143,16 +143,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Text Include="analyze.txt" />
     <Text Include="input.txt" />
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="analyzeData.h" />
+    <ClInclude Include="analyzer.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="console.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gameMap.h" />
     <ClInclude Include="io.h" />
+    <ClInclude Include="levelProcessor.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="pointHash.h" />
     <ClInclude Include="points.h" />
@@ -163,10 +166,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="analyzeData.cpp" />
+    <ClCompile Include="analyzer.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="console.cpp" />
     <ClCompile Include="gameMap.cpp" />
     <ClCompile Include="io.cpp" />
+    <ClCompile Include="levelProcessor.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="point.cpp" />

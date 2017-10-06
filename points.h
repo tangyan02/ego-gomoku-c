@@ -8,5 +8,6 @@ public:
 	points();
 	~points();
 	void add(point p);
+	void addMany(points ps);
 };
 

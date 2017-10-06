@@ -3,6 +3,8 @@
 #include "score.h"
 #include "gameMap.h"
 #include "winChecker.h"
+#include "levelProcessor.h"
+#include "analyzer.h"
 #include <sys/timeb.h>
 
 
@@ -25,19 +27,21 @@ point search(Color aiColor, Color** map)
 	initGameMap(map);
 	initScore(aiColor);
 
-	points ps = getNeighbor();
+	points neighbors = getNeighbor();
+	analyzeData data = getAnalyzeData(aiColor, neighbors);
+	points ps = getExpandPoints(data, neighbors);
 
-	int max = MIN_VALUE;
+	int extreme = MIN_VALUE;
 	point result = point();
 	Color color = aiColor;
 	for (int i = 0; i < ps.count; i++) {
 		point p = ps.list[i];
 		setPoint(p, color, NULL, aiColor);
-		int value = dfs(searchLevel, color, MIN_VALUE, MAX_VALUE, aiColor);
+		int value = dfs(searchLevel - 1, color, MIN_VALUE, extreme, aiColor);
 		printf("(%d, %d) value: %d count: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - t);
-		if (value >= max) {
+		if (value >= extreme) {
 			result = p;
-			max = value;
+			extreme = value;
 		}
 		setPoint(p, NULL, color, aiColor);
 	}
@@ -59,7 +63,9 @@ int dfs(int level, Color color, int parentMax, int parentMin, Color aiColor) {
 		return MIN_VALUE;
 	}
 	//计算扩展节点
-	points ps = getNeighbor();
+	points neighbors = getNeighbor();
+	analyzeData data = getAnalyzeData(color, neighbors);
+	points ps = getExpandPoints(data, neighbors);
 	//遍历扩展节点
 	int extreme = color == aiColor ? MIN_VALUE : MAX_VALUE;
 	for (int i = 0; i < ps.count; i++) {

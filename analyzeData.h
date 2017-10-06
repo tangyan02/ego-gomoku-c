@@ -7,6 +7,7 @@ public:
 	points fourDefence;
 	points threeAttack;
 	points threeDenfence;
+	points twoAttack;
 
 	analyzeData();
 	~analyzeData();
