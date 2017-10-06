@@ -38,7 +38,7 @@ point search(Color aiColor, Color** map)
 	for (int i = 0; i < ps.count; i++) {
 		point p = ps.list[i];
 		setPoint(p, color, NULL, aiColor);
-		int value = dfs(searchLevel - 1, getOtherColor(color), MIN_VALUE, extreme, aiColor);
+		int value = dfs(searchLevel - 1, getOtherColor(color), extreme, MAX_VALUE, aiColor);
 		printf("(%d, %d) value: %d count: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - t);
 		if (value >= extreme) {
 			result = p;
@@ -75,7 +75,7 @@ int dfs(int level, Color color, int parentMax, int parentMin, Color aiColor) {
 		point p = ps.list[i];
 		setPoint(p, color, NULL, aiColor);
 		if (color == aiColor) {
-			int value = dfs(level - 1, getOtherColor(color), MIN_VALUE, extreme, aiColor);
+			int value = dfs(level - 1, getOtherColor(color), extreme, MAX_VALUE, aiColor);
 			if (value > parentMin) {
 				setPoint(p, NULL, color, aiColor);
 				return value;
@@ -90,7 +90,7 @@ int dfs(int level, Color color, int parentMax, int parentMin, Color aiColor) {
 			}
 		}
 		if (color != aiColor) {
-			int value = dfs(level - 1, getOtherColor(color), extreme, MAX_VALUE, aiColor);
+			int value = dfs(level - 1, getOtherColor(color), MIN_VALUE, extreme, aiColor);
 			if (value < parentMax) {
 				setPoint(p, NULL, color, aiColor);
 				return value;

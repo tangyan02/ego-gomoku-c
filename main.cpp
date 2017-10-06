@@ -6,6 +6,7 @@
 #include "score.h"
 #include "analyzeData.h"
 #include "analyzer.h"
+#include "levelProcessor.h"
 
 void testPlay() {
 	Color ** map = readMap();
@@ -24,6 +25,16 @@ void removeStar(Color** map) {
 			}
 		}
 	}
+}
+
+void testExpand() {
+	Color ** map = readMap("expand.txt");
+	initGameMap(map);
+	Color color = BLACK;
+	initScore(color);
+	analyzeData data = getAnalyzeData(color, getNeighbor());
+	points ps = getExpandPoints(data, getNeighbor());
+	printMapWithStar(map, ps);
 }
 
 void testAnalyze() {
