@@ -11,3 +11,7 @@ bool reachable(int x, int y);
 void initGameMap(Color** value);
 
 Color ** getMap();
+
+long getMapHashCode();
+
+void updateHashCode(int x, int y, Color color);

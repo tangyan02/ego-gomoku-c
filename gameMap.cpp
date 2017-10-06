@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "gameMap.h"
+#include "stdlib.h"
+#include <time.h>  
 
 int **map;
 
@@ -8,16 +10,45 @@ extern int boardSize;
 static int directX[] = { 0, 1, 1, 1, 0, -1, -1, -1 };
 static int directY[] = { 1, 1, 0, -1, -1, -1, 0, 1 };
 
+static long weightBlack[20][20];
+static long weightWhite[20][20];
+
+long long hashCode = 0;
+
 Color ** getMap() {
 	return map;
 }
 
 void initGameMap(Color** value) {
 	map = value;
+
+	//初始化哈希权值
+	srand((unsigned)time(NULL));
+
+	for (int i = 0; i < boardSize; i++)
+		for (int j = 0; j < boardSize; j++) {
+			weightBlack[i][j] = rand() << 15 | rand();
+			weightWhite[i][j] = rand() << 15 | rand();
+		}
+
+	//初始化哈希码
+	for (int i = 0; i < boardSize; i++)
+		for (int j = 0; j < boardSize; j++) {
+			Color color = map[i][j];
+			if (color != NULL) {
+				updateHashCode(i, j, color);
+			}
+		}
 }
 
 void setColor(int x, int y, Color color)
 {
+	if (color != NULL) {
+		updateHashCode(x, y, color);
+	}
+	else {
+		updateHashCode(x, y, map[x][y]);
+	}
 	map[x][y] = color;
 }
 
@@ -79,4 +110,22 @@ bool reachable(int x, int y)
 	if (x < 0 || y < 0 || x >= boardSize || y >= boardSize)
 		return false;
 	return true;
+}
+
+
+long getMapHashCode()
+{
+	return hashCode;
+}
+
+void updateHashCode(int x, int y, Color color)
+{
+	if (color != NULL) {
+		if (color == BLACK) {
+			hashCode ^= weightBlack[x][y];
+		}
+		if (color == WHITE) {
+			hashCode ^= weightWhite[x][y];
+		}
+	}
 }

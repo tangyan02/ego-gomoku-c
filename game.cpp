@@ -6,6 +6,7 @@
 #include "levelProcessor.h"
 #include "analyzer.h"
 #include "console.h"
+#include "cache.h"
 #include <sys/timeb.h>
 
 
@@ -27,6 +28,7 @@ point search(Color aiColor, Color** map)
 	//初始化
 	initGameMap(map);
 	initScore(aiColor);
+	initCache(10000000);
 
 	points neighbors = getNeighbor();
 	analyzeData data = getAnalyzeData(aiColor, neighbors);
@@ -36,6 +38,7 @@ point search(Color aiColor, Color** map)
 	point result;
 	for (int level = 2; level <= searchLevel; level++)
 	{
+		cacheReset();
 		nodeCount = 0;
 		point currentResult;
 		int extreme = MIN_VALUE;
@@ -74,6 +77,10 @@ point search(Color aiColor, Color** map)
 }
 
 int dfs(int level, Color color, int parentMax, int parentMin, Color aiColor) {
+	//缓存查询
+	if (containsSearchKey(getMapHashCode())) {
+		return getSearchValue(getMapHashCode());
+	}
 	//叶子分数计算
 	if (level == 0) {
 		nodeCount++;
@@ -130,6 +137,8 @@ int dfs(int level, Color color, int parentMax, int parentMin, Color aiColor) {
 		}
 		setPoint(p, NULL, color, aiColor);
 	}
+	//缓存写入
+	addSearchEntry(getMapHashCode(), extreme);
 	return extreme;
 }
 

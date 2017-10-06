@@ -90,6 +90,9 @@
     <ClInclude Include="levelProcessor.h">
       <Filter>头文件\core</Filter>
     </ClInclude>
+    <ClInclude Include="cache.h">
+      <Filter>头文件\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -135,6 +138,9 @@
       <Filter>源文件\core</Filter>
     </ClCompile>
     <ClCompile Include="levelProcessor.cpp">
+      <Filter>源文件\core</Filter>
+    </ClCompile>
+    <ClCompile Include="cache.cpp">
       <Filter>源文件\core</Filter>
     </ClCompile>
   </ItemGroup>
