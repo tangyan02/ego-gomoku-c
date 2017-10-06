@@ -48,8 +48,10 @@ analyzeData getAnalyzeData(Color color, points ps)
 					}
 				}
 				if (otherColorCount == 0 && colorCount == 1) {
-					result.twoAttack.add(p);
-					twoAttackHash.add(p);
+					if (!twoAttackHash.contains(p)) {
+						result.twoAttack.add(p);
+						twoAttackHash.add(p);
+					}
 				}
 				if (otherColorCount == 0 && colorCount == 2) {
 					if (k != 0 && k != 4) {
@@ -125,7 +127,7 @@ analyzeData getAnalyzeData(Color color, points ps)
 									Color sideColor = map[sideX][sideY];
 									if (sideColor == NULL) {
 										if (!threeDenfenceHash.contains(p)) {
-											result.threeAttack.add(p);
+											result.threeDenfence.add(p);
 											threeDenfenceHash.add(p);
 										}
 									}
@@ -140,7 +142,7 @@ analyzeData getAnalyzeData(Color color, points ps)
 									Color sideColor = map[sideX][sideY];
 									if (sideColor == NULL) {
 										if (!threeDenfenceHash.contains(p)) {
-											result.threeAttack.add(p);
+											result.threeDenfence.add(p);
 											threeDenfenceHash.add(p);
 										}
 									}
@@ -153,7 +155,7 @@ analyzeData getAnalyzeData(Color color, points ps)
 							if (reachable(sideX, sideY) &&
 								map[sideX][sideY] == NULL) {
 								if (!threeDenfenceHash.contains(p)) {
-									result.threeAttack.add(p);
+									result.threeDenfence.add(p);
 									threeDenfenceHash.add(p);
 								}
 							}
@@ -162,7 +164,7 @@ analyzeData getAnalyzeData(Color color, points ps)
 							if (reachable(sideX, sideY) &&
 								map[sideX][sideY] == NULL) {
 								if (!threeDenfenceHash.contains(p)) {
-									result.threeAttack.add(p);
+									result.threeDenfence.add(p);
 									threeDenfenceHash.add(p);
 								}
 							}

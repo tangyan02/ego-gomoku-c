@@ -24,3 +24,16 @@ void printMap(Color ** map)
 		cout << endl;
 	}
 }
+
+void printMapWithStar(Color ** map, points ps)
+{
+	for (int i = 0; i < ps.count; i++) {
+		point p = ps.list[i];
+		map[p.x][p.y] = STAR;
+	}
+	printMap(map);
+	for (int i = 0; i < ps.count; i++) {
+		point p = ps.list[i];
+		map[p.x][p.y] = NULL;
+	}
+}
