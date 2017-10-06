@@ -18,3 +18,4 @@
 #include "config.h"
 #include "point.h"
 #include "points.h"
+#include "pointHash.h"

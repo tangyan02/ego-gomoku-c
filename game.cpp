@@ -10,6 +10,8 @@ extern int boardSize;
 
 extern int searchLevel;
 
+static int nodeCount;
+
 long long getSystemTime() {
 	struct timeb t;
 	ftime(&t);
@@ -32,7 +34,7 @@ point search(Color aiColor, Color** map)
 		point p = ps.list[i];
 		setPoint(p, color, NULL, aiColor);
 		int value = dfs(searchLevel, color, MIN_VALUE, MAX_VALUE, aiColor);
-		printf("(%d, %d) value: %d time: %ld ms \n", p.x, p.y, value, getSystemTime() - t);
+		printf("(%d, %d) value: %d count: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - t);
 		if (value >= max) {
 			result = p;
 			max = value;
@@ -43,10 +45,9 @@ point search(Color aiColor, Color** map)
 }
 
 int dfs(int level, Color color, int parentMax, int parentMin, Color aiColor) {
-	//todo 是否超时判断
-
 	//叶子分数计算
 	if (level == 0) {
+		nodeCount++;
 		return getScoreValue();
 	}
 	//输赢判定

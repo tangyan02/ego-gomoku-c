@@ -147,12 +147,14 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="analyzeData.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="console.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gameMap.h" />
     <ClInclude Include="io.h" />
     <ClInclude Include="point.h" />
+    <ClInclude Include="pointHash.h" />
     <ClInclude Include="points.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="stdafx.h" />
@@ -160,6 +162,7 @@
     <ClInclude Include="winChecker.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="analyzeData.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="console.cpp" />
     <ClCompile Include="gameMap.cpp" />
@@ -167,6 +170,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="point.cpp" />
+    <ClCompile Include="pointHash.cpp" />
     <ClCompile Include="points.cpp" />
     <ClCompile Include="score.cpp" />
     <ClCompile Include="stdafx.cpp">

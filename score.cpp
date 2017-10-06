@@ -19,7 +19,7 @@ void initScore(Color aiColor)
 {
 	value = 0;
 	for (int i = 0; i < boardSize; i++) {
-		for (int j = 0; j <boardSize; j++) {
+		for (int j = 0; j < boardSize; j++) {
 			point p = point(i, j);
 			Color color = getColor(p);
 			if (color != NULL) {
@@ -75,6 +75,16 @@ int getScoreValue()
 {
 	return value;
 }
+
+int getColorCount(Color color, int x, int y, int direct)
+{
+	if (color == BLACK)
+		return blackCount[x][y][direct];
+	if (color == WHITE)
+		return whiteCount[x][y][direct];
+	return 0;
+}
+
 
 int getValueByCount(int blackCount, int whiteCount, Color color)
 {

@@ -29,11 +29,7 @@ Color getColor(point p)
 points getNeighbor()
 {
 	points result;
-	bool signal[20][20];
-
-	for (int i = 0; i < boardSize; i++)
-		for (int j = 0; j < boardSize; j++)
-			signal[i][j] = false;
+	pointHash hash = pointHash(boardSize);
 
 	for (int i = 0; i < boardSize; i++)
 		for (int j = 0; j < boardSize; j++) {
@@ -44,7 +40,7 @@ points getNeighbor()
 					if (reachable(x, y)) {
 						Color color = map[x][y];
 						if (color == NULL) {
-							signal[x][y] = true;
+							hash.add(x, y);
 						}
 						else {
 							if (color == map[i][j]) {
@@ -54,12 +50,12 @@ points getNeighbor()
 								int y2 = j - directY[k] * 2;
 								if (reachable(x1, y1)) {
 									if (map[x1][y1] == NULL) {
-										signal[x1][y1] = true;
+										hash.add(x1, y1);
 									}
 								}
 								if (reachable(x2, y2)) {
 									if (map[x2][y2] == NULL) {
-										signal[x2][y2] = true;
+										hash.add(x2, y2);
 									}
 								}
 							}
@@ -71,7 +67,7 @@ points getNeighbor()
 
 	for (int i = 0; i < boardSize; i++)
 		for (int j = 0; j < boardSize; j++)
-			if (signal[i][j]) {
+			if (hash.contains(i, j)) {
 				result.add(point(i, j));
 			}
 
