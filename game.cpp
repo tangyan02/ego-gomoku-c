@@ -34,7 +34,7 @@ point search(Color aiColor, Color** map)
 	int values[128];
 
 	point result;
-	for (int level = 2; level < searchLevel; level++)
+	for (int level = 2; level <= searchLevel; level++)
 	{
 		nodeCount = 0;
 		point currentResult;

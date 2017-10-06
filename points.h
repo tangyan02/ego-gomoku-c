@@ -1,8 +1,12 @@
 #pragma once
+#include<vector>
+
+using namespace std;
+
 class points
 {
 public:
-	point list[128];
+	vector<point> list;
 	int count = 0;
 
 	points();
