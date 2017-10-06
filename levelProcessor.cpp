@@ -59,5 +59,6 @@ points getExpandPoints(analyzeData data, points neighbors)
 			result.add(p);
 		}
 	}
+
 	return result;
 }

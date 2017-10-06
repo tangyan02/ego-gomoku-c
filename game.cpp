@@ -31,20 +31,44 @@ point search(Color aiColor, Color** map)
 	points neighbors = getNeighbor();
 	analyzeData data = getAnalyzeData(aiColor, neighbors);
 	points ps = getExpandPoints(data, neighbors);
+	int values[128];
 
-	int extreme = MIN_VALUE;
-	point result = point();
-	Color color = aiColor;
-	for (int i = 0; i < ps.count; i++) {
-		point p = ps.list[i];
-		setPoint(p, color, NULL, aiColor);
-		int value = dfs(searchLevel - 1, getOtherColor(color), extreme, MAX_VALUE, aiColor);
-		printf("(%d, %d) value: %d count: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - t);
-		if (value >= extreme) {
-			result = p;
-			extreme = value;
+	point result;
+	for (int level = 2; level < searchLevel; level++)
+	{
+		nodeCount = 0;
+		point currentResult;
+		int extreme = MIN_VALUE;
+		Color color = aiColor;
+		for (int i = 0; i < ps.count; i++) {
+			point p = ps.list[i];
+			setPoint(p, color, NULL, aiColor);
+			int value = dfs(level - 1, getOtherColor(color), extreme, MAX_VALUE, aiColor);
+			values[i] = value;
+			printf("(%d, %d) value: %d count: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - t);
+			if (value >= extreme) {
+				currentResult = p;
+				extreme = value;
+			}
+			setPoint(p, NULL, color, aiColor);
 		}
-		setPoint(p, NULL, color, aiColor);
+
+		//对下次迭代排序
+		for (int i = 0; i < ps.count; i++) {
+			for (int j = i; j < ps.count; j++) {
+				if (values[i] < values[j]) {
+					int tempValue = values[i];
+					values[i] = values[j];
+					values[j] = tempValue;
+					point tempPoint = ps.list[i];
+					ps.list[i] = ps.list[j];
+					ps.list[j] = tempPoint;
+				}
+			}
+		}
+
+		printf("level %d ok \n", level);
+		result = currentResult;
 	}
 	return result;
 }
