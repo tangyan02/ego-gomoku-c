@@ -134,7 +134,7 @@ gameResult search(Color aiColor, Color** map)
 	return gameResult;
 }
 
-int dfs(int level, Color color, int parentMax, int parentMin, Color aiColor) {
+int dfs(int level, Color color, int alpha, int beta, Color aiColor) {
 	if (getSystemTime() - searchStartTime > timeOut) {
 		timeOutEnable = true;
 	}
@@ -171,8 +171,8 @@ int dfs(int level, Color color, int parentMax, int parentMin, Color aiColor) {
 		point p = ps.list[i];
 		setPoint(p, color, NULL, aiColor);
 		if (color == aiColor) {
-			int value = dfs(level - 1, getOtherColor(color), extreme, MAX_VALUE, aiColor);
-			if (value > parentMin) {
+			int value = dfs(level - 1, getOtherColor(color), extreme, beta, aiColor);
+			if (value > beta) {
 				setPoint(p, NULL, color, aiColor);
 				addSearchEntry(getMapHashCode(), value);
 				return value;
@@ -188,8 +188,8 @@ int dfs(int level, Color color, int parentMax, int parentMin, Color aiColor) {
 			}
 		}
 		if (color != aiColor) {
-			int value = dfs(level - 1, getOtherColor(color), MIN_VALUE, extreme, aiColor);
-			if (value < parentMax) {
+			int value = dfs(level - 1, getOtherColor(color), alpha, extreme, aiColor);
+			if (value < alpha) {
 				setPoint(p, NULL, color, aiColor);
 				addSearchEntry(getMapHashCode(), value);
 				return value;
