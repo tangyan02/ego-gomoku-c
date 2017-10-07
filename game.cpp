@@ -28,7 +28,7 @@ point search(Color aiColor, Color** map)
 	//初始化
 	initGameMap(map);
 	initScore(aiColor);
-	initCache(10000000);
+	initCache(5000000);
 
 	points neighbors = getNeighbor();
 	analyzeData data = getAnalyzeData(aiColor, neighbors);
@@ -36,7 +36,7 @@ point search(Color aiColor, Color** map)
 	int values[128];
 
 	point result;
-	for (int level = 2; level <= searchLevel; level++)
+	for (int level = 2; level <= searchLevel; level+=2)
 	{
 		cacheReset();
 		nodeCount = 0;
@@ -84,6 +84,7 @@ int dfs(int level, Color color, int parentMax, int parentMin, Color aiColor) {
 	//叶子分数计算
 	if (level == 0) {
 		nodeCount++;
+		addSearchEntry(getMapHashCode(), getScoreValue());
 		return getScoreValue();
 	}
 	//分析棋形
@@ -109,6 +110,7 @@ int dfs(int level, Color color, int parentMax, int parentMin, Color aiColor) {
 			int value = dfs(level - 1, getOtherColor(color), extreme, MAX_VALUE, aiColor);
 			if (value > parentMin) {
 				setPoint(p, NULL, color, aiColor);
+				addSearchEntry(getMapHashCode(), value);
 				return value;
 			}
 			if (value > extreme) {
@@ -116,6 +118,7 @@ int dfs(int level, Color color, int parentMax, int parentMin, Color aiColor) {
 				//如果能赢了，则直接剪掉后面的情形
 				if (extreme == MAX_VALUE) {
 					setPoint(p, NULL, color, aiColor);
+					addSearchEntry(getMapHashCode(), extreme);
 					return extreme;
 				}
 			}
@@ -124,6 +127,7 @@ int dfs(int level, Color color, int parentMax, int parentMin, Color aiColor) {
 			int value = dfs(level - 1, getOtherColor(color), MIN_VALUE, extreme, aiColor);
 			if (value < parentMax) {
 				setPoint(p, NULL, color, aiColor);
+				addSearchEntry(getMapHashCode(), value);
 				return value;
 			}
 			if (value < extreme) {
@@ -131,6 +135,7 @@ int dfs(int level, Color color, int parentMax, int parentMin, Color aiColor) {
 				//如果已经输了，则直接剪掉后面的情形
 				if (extreme == MIN_VALUE) {
 					setPoint(p, NULL, color, aiColor);
+					addSearchEntry(getMapHashCode(), extreme);
 					return extreme;
 				}
 			}

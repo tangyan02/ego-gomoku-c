@@ -10,8 +10,8 @@ extern int boardSize;
 static int directX[] = { 0, 1, 1, 1, 0, -1, -1, -1 };
 static int directY[] = { 1, 1, 0, -1, -1, -1, 0, 1 };
 
-static long weightBlack[20][20];
-static long weightWhite[20][20];
+static long long weightBlack[20][20];
+static long long weightWhite[20][20];
 
 long long hashCode = 0;
 
@@ -27,8 +27,10 @@ void initGameMap(Color** value) {
 
 	for (int i = 0; i < boardSize; i++)
 		for (int j = 0; j < boardSize; j++) {
-			weightBlack[i][j] = rand() << 15 | rand();
-			weightWhite[i][j] = rand() << 15 | rand();
+			for (int k = 0; k < 4; k++) {
+				weightBlack[i][j] = weightBlack[i][j] << 15 | rand();
+				weightWhite[i][j] = weightWhite[i][j] << 15 | rand();
+			}
 		}
 
 	//³õÊ¼»¯¹þÏ£Âë
@@ -113,7 +115,7 @@ bool reachable(int x, int y)
 }
 
 
-long getMapHashCode()
+long long getMapHashCode()
 {
 	return hashCode;
 }

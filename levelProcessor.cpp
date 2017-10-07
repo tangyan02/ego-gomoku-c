@@ -4,6 +4,8 @@
 
 extern int boardSize;
 
+extern int nodeLimit;
+
 points getExpandPoints(analyzeData data, points neighbors)
 {
 	points result;
@@ -59,6 +61,9 @@ points getExpandPoints(analyzeData data, points neighbors)
 			result.add(p);
 		}
 	}
+
+	if (result.count > nodeLimit)
+		result.count = nodeLimit;
 
 	return result;
 }

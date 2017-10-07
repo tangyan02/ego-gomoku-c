@@ -12,6 +12,6 @@ void initGameMap(Color** value);
 
 Color ** getMap();
 
-long getMapHashCode();
+long long getMapHashCode();
 
 void updateHashCode(int x, int y, Color color);
