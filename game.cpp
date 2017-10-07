@@ -24,7 +24,6 @@ long long getSystemTime() {
 
 point search(Color aiColor, Color** map)
 {
-	long long t = getSystemTime();
 	//≥ı ºªØ
 	initGameMap(map);
 	initScore(aiColor);
@@ -36,8 +35,9 @@ point search(Color aiColor, Color** map)
 	int values[128];
 
 	point result;
-	for (int level = 2; level <= searchLevel; level+=2)
+	for (int level = 2; level <= searchLevel; level += 2)
 	{
+		long long t = getSystemTime();
 		cacheReset();
 		nodeCount = 0;
 		point currentResult;
@@ -70,7 +70,10 @@ point search(Color aiColor, Color** map)
 			}
 		}
 
-		printf("level %d ok \n", level);
+		int speed = 0;
+		if ((getSystemTime() - t) > 0)
+			speed = nodeCount / ((getSystemTime() - t) / 1000.00) / 1000;
+		printf("level %d ok, speed %d k \n", level, speed);
 		result = currentResult;
 	}
 	return result;
