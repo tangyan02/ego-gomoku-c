@@ -3,10 +3,10 @@ class gameResult
 {
 public:
 	point result;
-	int speed;
-	int value;
-	int node;
-	int level;
+	int speed = 0;
+	int value = 0;
+	int node = 0;
+	int level = 0;
 
 	gameResult();
 	~gameResult();
