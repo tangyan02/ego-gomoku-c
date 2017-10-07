@@ -6,7 +6,6 @@
 #include "levelProcessor.h"
 #include "analyzer.h"
 #include "console.h"
-#include "cache.h"
 #include <sys/timeb.h>
 
 extern int boardSize;
@@ -16,8 +15,6 @@ extern int searchLevel;
 extern int timeOut;
 
 extern bool debugEnable;
-
-extern int cacheSize;
 
 static int nodeCount;
 
@@ -39,7 +36,6 @@ gameResult search(Color aiColor, Color** map)
 	//初始化
 	initGameMap(map);
 	initScore(aiColor);
-	initCache(cacheSize);
 
 	points neighbors = getNeighbor();
 	analyzeData data = getAnalyzeData(aiColor, neighbors);
@@ -59,7 +55,6 @@ gameResult search(Color aiColor, Color** map)
 	for (int level = 2; level <= searchLevel; level += 2)
 	{
 		long long t = getSystemTime();
-		cacheReset();
 		nodeCount = 0;
 		point currentResult;
 		int extreme = MIN_VALUE;
@@ -67,7 +62,9 @@ gameResult search(Color aiColor, Color** map)
 		for (int i = 0; i < ps.count; i++) {
 			point p = ps.list[i];
 			setPoint(p, color, NULL, aiColor);
-			int value = dfs(level - 1, getOtherColor(color), extreme, MAX_VALUE, aiColor);
+			int value = -dfs(level - 1, getOtherColor(color), MIN_VALUE, -extreme, aiColor);
+			setPoint(p, NULL, color, aiColor);
+
 			if (timeOutEnable) {
 				setPoint(p, NULL, color, aiColor);
 				break;
@@ -81,7 +78,6 @@ gameResult search(Color aiColor, Color** map)
 				extreme = value;
 
 				if (extreme == MAX_VALUE) {
-					setPoint(p, NULL, color, aiColor);
 					gameResult.result = p;
 					int speed = 0;
 					if ((getSystemTime() - t) > 0)
@@ -93,7 +89,6 @@ gameResult search(Color aiColor, Color** map)
 					return gameResult;
 				}
 			}
-			setPoint(p, NULL, color, aiColor);
 		}
 		if (timeOutEnable) {
 			if (debugEnable)
@@ -141,14 +136,9 @@ int dfs(int level, Color color, int alpha, int beta, Color aiColor) {
 	if (timeOutEnable) {
 		return 0;
 	}
-	//缓存查询
-	if (containsSearchKey(getMapHashCode())) {
-		return getSearchValue(getMapHashCode());
-	}
 	//叶子分数计算
 	if (level == 0) {
 		nodeCount++;
-		addSearchEntry(getMapHashCode(), getScoreValue());
 		return getScoreValue();
 	}
 	//分析棋形
@@ -166,48 +156,23 @@ int dfs(int level, Color color, int alpha, int beta, Color aiColor) {
 	//计算扩展节点
 	points ps = getExpandPoints(data, neighbors);
 	//遍历扩展节点
-	int extreme = color == aiColor ? MIN_VALUE : MAX_VALUE;
+	int extreme = MIN_VALUE;
 	for (int i = 0; i < ps.count; i++) {
 		point p = ps.list[i];
 		setPoint(p, color, NULL, aiColor);
-		if (color == aiColor) {
-			int value = dfs(level - 1, getOtherColor(color), extreme, beta, aiColor);
-			if (value > beta) {
-				setPoint(p, NULL, color, aiColor);
-				addSearchEntry(getMapHashCode(), value);
-				return value;
-			}
-			if (value > extreme) {
-				extreme = value;
-				//如果能赢了，则直接剪掉后面的情形
-				if (extreme == MAX_VALUE) {
-					setPoint(p, NULL, color, aiColor);
-					addSearchEntry(getMapHashCode(), extreme);
-					return extreme;
-				}
-			}
-		}
-		if (color != aiColor) {
-			int value = dfs(level - 1, getOtherColor(color), alpha, extreme, aiColor);
-			if (value < alpha) {
-				setPoint(p, NULL, color, aiColor);
-				addSearchEntry(getMapHashCode(), value);
-				return value;
-			}
-			if (value < extreme) {
-				extreme = value;
-				//如果已经输了，则直接剪掉后面的情形
-				if (extreme == MIN_VALUE) {
-					setPoint(p, NULL, color, aiColor);
-					addSearchEntry(getMapHashCode(), extreme);
-					return extreme;
-				}
-			}
-		}
+		int value = -dfs(level - 1, getOtherColor(color), -beta, -alpha, aiColor);
 		setPoint(p, NULL, color, aiColor);
+
+		if (value > extreme) {
+			extreme = value;
+			if (value > alpha) {
+				alpha = value;
+				if (value > beta) {
+					return value;
+				}
+			}
+		}
 	}
-	//缓存写入
-	addSearchEntry(getMapHashCode(), extreme);
 	return extreme;
 }
 

@@ -3,13 +3,8 @@
 #include "unordered_map"
 
 unordered_map<long long, int> cache;
-int cacheSize = 0;
+extern int cacheSize;
 int cacheCount = 0;
-
-void initCache(int size)
-{
-	cacheSize = size;
-}
 
 bool containsSearchKey(long long key)
 {
