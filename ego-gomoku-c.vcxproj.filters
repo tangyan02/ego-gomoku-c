@@ -48,9 +48,6 @@
     <ClInclude Include="stdafx.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="game.h">
       <Filter>头文件\core</Filter>
     </ClInclude>
@@ -92,6 +89,12 @@
     </ClInclude>
     <ClInclude Include="cache.h">
       <Filter>头文件\core</Filter>
+    </ClInclude>
+    <ClInclude Include="pisqpipe.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="gameResult.h">
+      <Filter>头文件\entity</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +145,15 @@
     </ClCompile>
     <ClCompile Include="cache.cpp">
       <Filter>源文件\core</Filter>
+    </ClCompile>
+    <ClCompile Include="example.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="pisqpipe.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="gameResult.cpp">
+      <Filter>源文件\entity</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

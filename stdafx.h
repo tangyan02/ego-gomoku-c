@@ -19,3 +19,4 @@
 #include "point.h"
 #include "points.h"
 #include "pointHash.h"
+#include "gameResult.h"

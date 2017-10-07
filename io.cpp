@@ -8,6 +8,18 @@ using namespace std;
 
 extern int boardSize;
 
+Color ** getEmptyMap() {
+	Color ** map = new Color*[boardSize];
+	for (int i = 0; i < boardSize; i++)
+		map[i] = new Color[boardSize];
+
+	for (int i = 0; i < boardSize; i++)
+		for (int j = 0; j < boardSize; j++)
+			map[i][j] = NULL;
+
+	return map;
+}
+
 Color ** readMap()
 {
 	return readMap("input.txt");

@@ -18,6 +18,13 @@ static int whiteCount[20][20][4];
 void initScore(Color aiColor)
 {
 	value = 0;
+	for (int i = 0; i < boardSize; i++)
+		for (int j = 0; j < boardSize; j++)
+			for (int k = 0; k < 4; k++) {
+				blackCount[i][j][k] = 0;
+				whiteCount[i][j][k] = 0;
+
+			}
 	for (int i = 0; i < boardSize; i++) {
 		for (int j = 0; j < boardSize; j++) {
 			point p = point(i, j);

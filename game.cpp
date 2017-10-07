@@ -15,6 +15,10 @@ extern int searchLevel;
 
 extern int timeOut;
 
+extern bool debugEnable;
+
+extern int cacheSize;
+
 static int nodeCount;
 
 static long long searchStartTime;
@@ -27,21 +31,31 @@ long long getSystemTime() {
 	return 1000 * t.time + t.millitm;
 }
 
-point search(Color aiColor, Color** map)
+gameResult search(Color aiColor, Color** map)
 {
+	gameResult gameResult;
 	searchStartTime = getSystemTime();
 	timeOutEnable = false;
 	//初始化
 	initGameMap(map);
 	initScore(aiColor);
-	initCache(5000000);
+	initCache(cacheSize);
 
 	points neighbors = getNeighbor();
 	analyzeData data = getAnalyzeData(aiColor, neighbors);
 	points ps = getExpandPoints(data, neighbors);
 	int values[128];
 
-	point result;
+	if (ps.count == 0) {
+		gameResult.result = point(boardSize / 2, boardSize / 2);
+		return gameResult;
+	}
+
+	if (ps.count == 1) {
+		gameResult.result = ps.list[0];
+		return gameResult;
+	}
+
 	for (int level = 2; level <= searchLevel; level += 2)
 	{
 		long long t = getSystemTime();
@@ -55,18 +69,36 @@ point search(Color aiColor, Color** map)
 			setPoint(p, color, NULL, aiColor);
 			int value = dfs(level - 1, getOtherColor(color), extreme, MAX_VALUE, aiColor);
 			if (timeOutEnable) {
+				setPoint(p, NULL, color, aiColor);
 				break;
 			}
 			values[i] = value;
-			printf("(%d, %d) value: %d count: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - t);
+			if (debugEnable)
+				printf("(%d, %d) value: %d count: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - t);
+
 			if (value >= extreme) {
 				currentResult = p;
 				extreme = value;
+
+				if (extreme == MAX_VALUE) {
+					setPoint(p, NULL, color, aiColor);
+					gameResult.result = p;
+					int speed = 0;
+					if ((getSystemTime() - t) > 0)
+						speed = (int)(nodeCount / ((getSystemTime() - t) / 1000.00) / 1000);
+					gameResult.speed = speed;
+					gameResult.node = nodeCount;
+					gameResult.value = extreme;
+					gameResult.level = level;
+					return gameResult;
+				}
 			}
 			setPoint(p, NULL, color, aiColor);
 		}
 		if (timeOutEnable) {
-			printf("time out\n");
+			if (debugEnable)
+				printf("time out\n");
+
 			break;
 		}
 		//对下次迭代排序
@@ -83,17 +115,23 @@ point search(Color aiColor, Color** map)
 			}
 		}
 
+		gameResult.result = currentResult;
 		int speed = 0;
 		if ((getSystemTime() - t) > 0)
-			speed = nodeCount / ((getSystemTime() - t) / 1000.00) / 1000;
-		printf("level %d ok, speed %d k \n", level, speed);
-		result = currentResult;
+			speed = (int)(nodeCount / ((getSystemTime() - t) / 1000.00) / 1000);
+		gameResult.speed = speed;
+		gameResult.node = nodeCount;
+		gameResult.value = extreme;
+		gameResult.level = level;
 
-		if (getSystemTime() - searchStartTime > timeOut / 3) {
+		if (debugEnable)
+			printf("level %d ok, speed %d k \n", level, speed);
+		if (getSystemTime() - searchStartTime > timeOut / 5) {
 			timeOutEnable = true;
 		}
 	}
-	return result;
+
+	return gameResult;
 }
 
 int dfs(int level, Color color, int parentMax, int parentMin, Color aiColor) {

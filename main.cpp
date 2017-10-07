@@ -7,11 +7,16 @@
 #include "analyzeData.h"
 #include "analyzer.h"
 #include "levelProcessor.h"
+#include "pisqpipe.h"
+
+extern bool debugEnable;
 
 void testPlay() {
+	debugEnable = true;
 	Color ** map = readMap();
-	point p = search(BLACK, map);
-	map[p.x][p.y] = STAR;
+	printMap(map);
+	gameResult result = search(WHITE, map);
+	map[result.result.x][result.result.y] = STAR;
 	printMap(map);
 }
 
@@ -76,7 +81,8 @@ void testNeighbor() {
 
 int main()
 {
-	testPlay();
+	piskvork();
+	//testPlay();
 	getchar();
 	return 0;
 }
