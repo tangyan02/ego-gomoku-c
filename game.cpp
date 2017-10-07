@@ -9,12 +9,17 @@
 #include "cache.h"
 #include <sys/timeb.h>
 
-
 extern int boardSize;
 
 extern int searchLevel;
 
+extern int timeOut;
+
 static int nodeCount;
+
+static long long searchStartTime;
+
+static bool timeOutEnable = false;
 
 long long getSystemTime() {
 	struct timeb t;
@@ -24,6 +29,8 @@ long long getSystemTime() {
 
 point search(Color aiColor, Color** map)
 {
+	searchStartTime = getSystemTime();
+	timeOutEnable = false;
 	//初始化
 	initGameMap(map);
 	initScore(aiColor);
@@ -47,6 +54,9 @@ point search(Color aiColor, Color** map)
 			point p = ps.list[i];
 			setPoint(p, color, NULL, aiColor);
 			int value = dfs(level - 1, getOtherColor(color), extreme, MAX_VALUE, aiColor);
+			if (timeOutEnable) {
+				break;
+			}
 			values[i] = value;
 			printf("(%d, %d) value: %d count: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - t);
 			if (value >= extreme) {
@@ -55,7 +65,10 @@ point search(Color aiColor, Color** map)
 			}
 			setPoint(p, NULL, color, aiColor);
 		}
-
+		if (timeOutEnable) {
+			printf("time out\n");
+			break;
+		}
 		//对下次迭代排序
 		for (int i = 0; i < ps.count; i++) {
 			for (int j = i; j < ps.count; j++) {
@@ -75,11 +88,21 @@ point search(Color aiColor, Color** map)
 			speed = nodeCount / ((getSystemTime() - t) / 1000.00) / 1000;
 		printf("level %d ok, speed %d k \n", level, speed);
 		result = currentResult;
+
+		if (getSystemTime() - searchStartTime > timeOut / 3) {
+			timeOutEnable = true;
+		}
 	}
 	return result;
 }
 
 int dfs(int level, Color color, int parentMax, int parentMin, Color aiColor) {
+	if (getSystemTime() - searchStartTime > timeOut) {
+		timeOutEnable = true;
+	}
+	if (timeOutEnable) {
+		return 0;
+	}
 	//缓存查询
 	if (containsSearchKey(getMapHashCode())) {
 		return getSearchValue(getMapHashCode());

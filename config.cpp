@@ -3,9 +3,11 @@
 
 int boardSize = 15;
 
-int searchLevel = 8;
+int searchLevel = 10;
 
 int nodeLimit = 99;
+
+int timeOut = 30 * 1000;
 
 Color getOtherColor(Color color)
 {
