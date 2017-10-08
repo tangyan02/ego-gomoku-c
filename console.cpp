@@ -25,7 +25,7 @@ void printMap(Color ** map)
 	}
 }
 
-void printMapWithStar(Color ** map, points ps)
+void printMapWithStars(Color ** map, points ps)
 {
 	for (int i = 0; i < ps.count; i++) {
 		point p = ps.list[i];
@@ -36,4 +36,11 @@ void printMapWithStar(Color ** map, points ps)
 		point p = ps.list[i];
 		map[p.x][p.y] = NULL;
 	}
+}
+
+void printMapWithStar(Color ** map, point p)
+{
+	map[p.x][p.y] = STAR;
+	printMap(map);
+	map[p.x][p.y] = NULL;
 }

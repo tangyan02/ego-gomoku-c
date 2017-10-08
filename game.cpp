@@ -25,7 +25,7 @@ static bool timeOutEnable = false;
 
 int currentLevel;
 
-points currentPointsResult;
+point currentPointResult;
 
 unordered_map<long long, point> cache;
 
@@ -67,7 +67,6 @@ gameResult search(Color aiColor, Color** map)
 
 		cacheLast = cache;
 		cache.clear();
-		currentPointsResult.clear();
 
 		currentLevel = level;
 		Color color = aiColor;
@@ -83,7 +82,7 @@ gameResult search(Color aiColor, Color** map)
 		}
 
 		if (!timeOutEnable) {
-			gameResult.result = currentPointsResult.list[rand()%currentPointsResult.count];
+			gameResult.result = currentPointResult;
 			int speed = 0;
 			if ((getSystemTime() - t) > 0)
 				speed = (int)(nodeCount / ((getSystemTime() - t) / 1000.00) / 1000);
@@ -91,8 +90,10 @@ gameResult search(Color aiColor, Color** map)
 			gameResult.node = nodeCount;
 			gameResult.value = value;
 			gameResult.level = level;
-			if (debugEnable)
+			if (debugEnable) {
 				printf("level %d, speed %d k, time %d ms\n", level, speed, getSystemTime() - t);
+				printMapWithStar(map, currentPointResult);
+			}
 		}
 		if (getSystemTime() - searchStartTime > timeOut / 6) {
 			timeOutEnable = true;
@@ -141,9 +142,10 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 
 	//遍历扩展节点
 	int extreme = MIN_VALUE;
-	point extremePoint;
+	points extremePoints;
 	for (int i = 0; i < ps.count; i++) {
 		point p = ps.list[i];
+
 		setPoint(p, color, NULL, aiColor);
 		int value;
 		if (i == 0)
@@ -157,20 +159,12 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 		}
 		setPoint(p, NULL, color, aiColor);
 
-		if (level == currentLevel) {
-			if (debugEnable)
-				printf("(%d, %d) value: %d count: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - searchStartTime);
-			if (value >= extreme) {
-				if (value > extreme) {
-					currentPointsResult.clear();
-				}
-				currentPointsResult.add(p);
-			}
-		}
-
 		if (value >= extreme) {
+			if (value > extreme) {
+				extremePoints.clear();
+			}
 			extreme = value;
-			extremePoint = p;
+			extremePoints.add(p);
 
 			if (value > alpha) {
 				alpha = value;
@@ -179,7 +173,19 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 				}
 			}
 		}
+
+		if (level == currentLevel) {
+			if (debugEnable)
+				printf("(%d, %d) value: %d count: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - searchStartTime);
+		}
+
 	}
+
+	point extremePoint = extremePoints.list[rand() % extremePoints.count];
+	if (level == currentLevel) {
+		currentPointResult = extremePoint;
+	}
+
 	cache[getMapHashCode()] = extremePoint;
 	return extreme;
 }

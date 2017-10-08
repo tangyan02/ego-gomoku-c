@@ -14,10 +14,7 @@ extern bool debugEnable;
 void testPlay() {
 	debugEnable = true;
 	Color ** map = readMap();
-	printMap(map);
 	gameResult result = search(WHITE, map);
-	map[result.result.x][result.result.y] = STAR;
-	printMap(map);
 }
 
 void removeStar(Color** map) {
@@ -39,7 +36,7 @@ void testExpand() {
 	initScore(color);
 	analyzeData data = getAnalyzeData(color, getNeighbor());
 	points ps = getExpandPoints(data, getNeighbor());
-	printMapWithStar(map, ps);
+	printMapWithStars(map, ps);
 }
 
 void testAnalyze() {
@@ -50,22 +47,22 @@ void testAnalyze() {
 	analyzeData data = getAnalyzeData(color, getNeighbor());
 
 	printf("5 A\n");
-	printMapWithStar(map, data.fiveAttack);
+	printMapWithStars(map, data.fiveAttack);
 
 	printf("4 A\n");
-	printMapWithStar(map, data.fourAttack);
+	printMapWithStars(map, data.fourAttack);
 
 	printf("4 D\n");
-	printMapWithStar(map, data.fourDefence);
+	printMapWithStars(map, data.fourDefence);
 
 	printf("3 A\n");
-	printMapWithStar(map, data.threeAttack);
+	printMapWithStars(map, data.threeAttack);
 
 	printf("3 D\n");
-	printMapWithStar(map, data.threeDenfence);
+	printMapWithStars(map, data.threeDenfence);
 
 	printf("2 A\n");
-	printMapWithStar(map, data.twoAttack);
+	printMapWithStars(map, data.twoAttack);
 }
 
 void testNeighbor() {
