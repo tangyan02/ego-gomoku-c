@@ -7,6 +7,7 @@
 #include "analyzer.h"
 #include "console.h"
 #include <sys/timeb.h>
+#include "unordered_map"
 
 extern int boardSize;
 
@@ -21,6 +22,14 @@ static int nodeCount;
 static long long searchStartTime;
 
 static bool timeOutEnable = false;
+
+int currentLevel;
+
+point currentPointResult;
+
+unordered_map<long long, point> cache;
+
+unordered_map<long long, point> cacheLast;
 
 long long getSystemTime() {
 	struct timeb t;
@@ -40,7 +49,6 @@ gameResult search(Color aiColor, Color** map)
 	points neighbors = getNeighbor();
 	analyzeData data = getAnalyzeData(aiColor, neighbors);
 	points ps = getExpandPoints(data, neighbors);
-	int values[128];
 
 	if (ps.count == 0) {
 		gameResult.result = point(boardSize / 2, boardSize / 2);
@@ -56,72 +64,36 @@ gameResult search(Color aiColor, Color** map)
 	{
 		long long t = getSystemTime();
 		nodeCount = 0;
-		point currentResult;
-		int extreme = MIN_VALUE;
+
+		cacheLast = cache;
+		cache.clear();
+
+		currentLevel = level;
 		Color color = aiColor;
-		for (int i = 0; i < ps.count; i++) {
-			point p = ps.list[i];
-			setPoint(p, color, NULL, aiColor);
-			int value = -dfs(level - 1, getOtherColor(color), aiColor, MIN_VALUE, -extreme);
-			setPoint(p, NULL, color, aiColor);
+		int alpha = MIN_VALUE;
+		int beta = MAX_VALUE;
 
-			if (timeOutEnable) {
-				setPoint(p, NULL, color, aiColor);
-				break;
-			}
-			values[i] = value;
-			if (debugEnable)
-				printf("(%d, %d) value: %d count: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - t);
+		int value = dfs(level, color, aiColor, alpha, beta);
 
-			if (value >= extreme) {
-				currentResult = p;
-				extreme = value;
-
-				if (extreme == MAX_VALUE) {
-					gameResult.result = p;
-					int speed = 0;
-					if ((getSystemTime() - t) > 0)
-						speed = (int)(nodeCount / ((getSystemTime() - t) / 1000.00) / 1000);
-					gameResult.speed = speed;
-					gameResult.node = nodeCount;
-					gameResult.value = extreme;
-					gameResult.level = level;
-					return gameResult;
-				}
-			}
-		}
 		if (timeOutEnable) {
 			if (debugEnable)
 				printf("time out\n");
-
 			break;
 		}
-		//对下次迭代排序
-		for (int i = 0; i < ps.count; i++) {
-			for (int j = i; j < ps.count; j++) {
-				if (values[i] < values[j]) {
-					int tempValue = values[i];
-					values[i] = values[j];
-					values[j] = tempValue;
-					point tempPoint = ps.list[i];
-					ps.list[i] = ps.list[j];
-					ps.list[j] = tempPoint;
-				}
-			}
+
+		if (!timeOutEnable) {
+			gameResult.result = currentPointResult;
+			int speed = 0;
+			if ((getSystemTime() - t) > 0)
+				speed = (int)(nodeCount / ((getSystemTime() - t) / 1000.00) / 1000);
+			gameResult.speed = speed;
+			gameResult.node = nodeCount;
+			gameResult.value = value;
+			gameResult.level = level;
+			if (debugEnable)
+				printf("level %d, speed %d k, time %d ms\n", level, speed, getSystemTime() - t);
 		}
-
-		gameResult.result = currentResult;
-		int speed = 0;
-		if ((getSystemTime() - t) > 0)
-			speed = (int)(nodeCount / ((getSystemTime() - t) / 1000.00) / 1000);
-		gameResult.speed = speed;
-		gameResult.node = nodeCount;
-		gameResult.value = extreme;
-		gameResult.level = level;
-
-		if (debugEnable)
-			printf("level %d ok, speed %d k \n", level, speed);
-		if (getSystemTime() - searchStartTime > timeOut / 5) {
+		if (getSystemTime() - searchStartTime > timeOut / 8) {
 			timeOutEnable = true;
 		}
 	}
@@ -155,8 +127,22 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 	}
 	//计算扩展节点
 	points ps = getExpandPoints(data, neighbors);
+	//调整最优节点顺序
+	if (cacheLast.find(getMapHashCode()) != cacheLast.end()) {
+		point p = cacheLast[getMapHashCode()];
+		for (int i = 0; i < ps.count; i++)
+			if (ps.list[i].x == p.x && ps.list[i].y == p.y) {
+				for (int j = i; j > i; j--) {
+					ps.list[j] = ps.list[j - 1];
+				}
+				ps.list[0] = p;
+				break;
+			}
+	}
+
 	//遍历扩展节点
 	int extreme = MIN_VALUE;
+	point extremePoint;
 	for (int i = 0; i < ps.count; i++) {
 		point p = ps.list[i];
 		setPoint(p, color, NULL, aiColor);
@@ -171,8 +157,17 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 		}
 		setPoint(p, NULL, color, aiColor);
 
-		if (value > extreme) {
+		if (level == currentLevel) {
+			printf("(%d, %d) value: %d count: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - searchStartTime);
+			if (value >= extreme) {
+				currentPointResult = p;
+			}
+		}
+
+		if (value >= extreme) {
 			extreme = value;
+			extremePoint = p;
+
 			if (value > alpha) {
 				alpha = value;
 				if (value > beta) {
@@ -181,6 +176,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 			}
 		}
 	}
+	cache[getMapHashCode()] = extremePoint;
 	return extreme;
 }
 
