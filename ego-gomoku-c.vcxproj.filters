@@ -96,6 +96,12 @@
     <ClInclude Include="gameResult.h">
       <Filter>头文件\entity</Filter>
     </ClInclude>
+    <ClInclude Include="comboProcessor.h">
+      <Filter>头文件\core</Filter>
+    </ClInclude>
+    <ClInclude Include="comboResult.h">
+      <Filter>头文件\entity</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -153,6 +159,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="gameResult.cpp">
+      <Filter>源文件\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="comboProcessor.cpp">
+      <Filter>源文件\core</Filter>
+    </ClCompile>
+    <ClCompile Include="comboResult.cpp">
       <Filter>源文件\entity</Filter>
     </ClCompile>
   </ItemGroup>

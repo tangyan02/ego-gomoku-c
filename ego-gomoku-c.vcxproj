@@ -153,6 +153,8 @@
     <ClInclude Include="analyzeData.h" />
     <ClInclude Include="analyzer.h" />
     <ClInclude Include="cache.h" />
+    <ClInclude Include="comboProcessor.h" />
+    <ClInclude Include="comboResult.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="console.h" />
     <ClInclude Include="game.h" />
@@ -172,6 +174,8 @@
     <ClCompile Include="analyzeData.cpp" />
     <ClCompile Include="analyzer.cpp" />
     <ClCompile Include="cache.cpp" />
+    <ClCompile Include="comboProcessor.cpp" />
+    <ClCompile Include="comboResult.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="console.cpp" />
     <ClCompile Include="example.cpp" />

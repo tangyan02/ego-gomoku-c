@@ -93,7 +93,7 @@ gameResult search(Color aiColor, Color** map)
 			gameResult.value = value;
 			gameResult.level = level;
 			if (debugEnable) {
-				printf("level %d, speed %d k, time %d ms\n", level, speed, getSystemTime() - t);
+				printf("level %d, speed %d k, time %lld ms\n", level, speed, getSystemTime() - t);
 				printMapWithStar(map, currentPointResult);
 			}
 			if (value == MAX_VALUE)
@@ -117,7 +117,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 		return 0;
 	}
 	//²é±í
-	int hashCode = getMapHashCode();
+	long long hashCode = getMapHashCode();
 	if (containsSearchKey(hashCode, alpha, beta)) {
 		return getSearchValue(hashCode, alpha, beta);
 	}
