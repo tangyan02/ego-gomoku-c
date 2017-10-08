@@ -3,11 +3,15 @@
 
 int boardSize = 15;
 
-int searchLevel = 10;
+int searchLevel = 20;
+
+int comboLevel = 25;
 
 int nodeLimit = 99;
 
-int timeOut = 30 * 1000;
+int timeOut = 20 * 1000;
+
+int comboTimeOut = 10 * 1000;
 
 int cacheSize = 5000000;
 

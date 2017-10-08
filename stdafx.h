@@ -20,3 +20,4 @@
 #include "points.h"
 #include "pointHash.h"
 #include "gameResult.h"
+#include "comboResult.h"

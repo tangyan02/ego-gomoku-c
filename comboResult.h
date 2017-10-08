@@ -3,7 +3,7 @@ class comboResult
 {
 public:
 	point p;
-	bool timout = false;
+	bool timeOut = false;
 	bool fourWin = false;
 	bool win = false;
 	void reset();

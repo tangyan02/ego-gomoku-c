@@ -4,7 +4,7 @@
 
 void comboResult::reset()
 {
-	timout = false;
+	timeOut = false;
 	fourWin = false;
 	win = false;
 }

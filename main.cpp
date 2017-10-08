@@ -7,6 +7,7 @@
 #include "analyzeData.h"
 #include "analyzer.h"
 #include "levelProcessor.h"
+#include "comboProcessor.h"
 #include "pisqpipe.h"
 
 extern bool debugEnable;
@@ -27,6 +28,20 @@ void removeStar(Color** map) {
 			}
 		}
 	}
+}
+
+void testCombo() {
+	Color ** map = readMap();
+	Color color = WHITE;
+	initGameMap(map);
+	initScore(color);
+	int level = 15;
+	comboResult result = canKill(color, level, getSystemTime(), 9999999999);
+	if (result.win) {
+		printMapWithStar(map, result.p);
+		printf("four win = %d \n", result.fourWin);
+	}
+	printf("NO\n");
 }
 
 void testExpand() {
@@ -78,8 +93,8 @@ void testNeighbor() {
 
 int main()
 {
-	piskvork();
-	//testPlay();
+	//piskvork();
+	testCombo();
 	getchar();
 	return 0;
 }

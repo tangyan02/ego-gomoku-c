@@ -9,12 +9,17 @@
 #include <sys/timeb.h>
 #include "unordered_map"
 #include "cache.h"
+#include "comboProcessor.h"
 
 extern int boardSize;
 
 extern int searchLevel;
 
+extern int comboLevel;
+
 extern int timeOut;
+
+extern int comboTimeOut;
 
 extern bool debugEnable;
 
@@ -47,6 +52,7 @@ gameResult search(Color aiColor, Color** map)
 	initGameMap(map);
 	initScore(aiColor);
 
+	//初始分析
 	points neighbors = getNeighbor();
 	analyzeData data = getAnalyzeData(aiColor, neighbors);
 	points ps = getExpandPoints(data, neighbors);
@@ -60,7 +66,18 @@ gameResult search(Color aiColor, Color** map)
 		gameResult.result = ps.list[0];
 		return gameResult;
 	}
+	//连击搜索
+	for (int level = 3; level <= comboLevel; level += 2) {
+		comboResult result = canKill(aiColor, level, searchStartTime, comboTimeOut);
+		gameResult.combo = level;
+		if (result.win) {
+			gameResult.value = MAX_VALUE;
+			gameResult.result = result.p;
+			return gameResult;
+		}
+	}
 
+	//得分搜索
 	for (int level = 2; level <= searchLevel; level += 2)
 	{
 		long long t = getSystemTime();

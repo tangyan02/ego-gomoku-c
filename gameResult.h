@@ -7,6 +7,7 @@ public:
 	int value = 0;
 	int node = 0;
 	int level = 0;
+	int combo = 0;
 
 	gameResult();
 	~gameResult();

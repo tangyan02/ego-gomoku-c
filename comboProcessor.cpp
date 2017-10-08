@@ -57,6 +57,11 @@ points getComboDefencePoints(analyzeData data, ComboType comboType) {
 }
 
 bool dfsKill(Color color, Color targetColor, int level, ComboType comboType) {
+	//超时判断
+	if (getSystemTime() - startTime > limitTime) {
+		result.timeOut = true;
+		return false;
+	}
 
 	if (level == 0) {
 		return false;
@@ -129,15 +134,16 @@ comboResult canKill(Color targetColor, int level, long long startTimeValue, long
 	result.reset();
 	dfsKill(targetColor, targetColor,
 		level,FOUR_COMBO);
+	printf("my four over\n");
 	if (result.win) {
 		result.fourWin = true;
 		return result;
 	}
-
 	//计算对手四连杀
 	result.reset();
 	dfsKill(getOtherColor(targetColor), getOtherColor(targetColor),
 		level, FOUR_COMBO);
+	printf("other four over\n");
 	if (result.win) {
 		result.win = false;
 		return result;
@@ -147,6 +153,7 @@ comboResult canKill(Color targetColor, int level, long long startTimeValue, long
 	result.reset();
 	dfsKill(targetColor, targetColor,
 		level, THREE_COMBO);
+	printf("other three over\n");
 	if (result.win) {
 		result.fourWin = false;
 		return result;

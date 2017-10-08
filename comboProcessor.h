@@ -1,4 +1,4 @@
 #pragma once
 #include"comboResult.h"
 
-comboResult canKill(Color targetColor, int level, long startTime, long limitTime);
+comboResult canKill(Color targetColor, int level, long long startTime, long long limitTime);

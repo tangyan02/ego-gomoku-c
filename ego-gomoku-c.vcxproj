@@ -145,6 +145,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="analyze.txt" />
+    <Text Include="combo.txt" />
     <Text Include="expand.txt" />
     <Text Include="input.txt" />
     <Text Include="ReadMe.txt" />

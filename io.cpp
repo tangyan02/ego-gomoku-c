@@ -58,6 +58,10 @@ Color ** readMap(char * path)
 				map[i][j] = BLACK;
 			if (c == 'o')
 				map[i][j] = WHITE;
+			if (c == '¡Á')
+				map[i][j] = BLACK;
+			if (c == '¡ñ')
+				map[i][j] = WHITE;
 		}
 		i++;
 	}

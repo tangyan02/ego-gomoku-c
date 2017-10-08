@@ -31,6 +31,12 @@
     <Filter Include="头文件\helper">
       <UniqueIdentifier>{5df854db-e047-4319-8427-14735593913a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\gomocup">
+      <UniqueIdentifier>{0f49ab96-b300-486a-a427-b00ab1a23505}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\gomocup">
+      <UniqueIdentifier>{7ce88d83-d144-49a5-a184-adcfe9cb4a34}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -41,6 +47,9 @@
       <Filter>资源文件</Filter>
     </Text>
     <Text Include="expand.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="combo.txt">
       <Filter>资源文件</Filter>
     </Text>
   </ItemGroup>
@@ -90,9 +99,6 @@
     <ClInclude Include="cache.h">
       <Filter>头文件\core</Filter>
     </ClInclude>
-    <ClInclude Include="pisqpipe.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="gameResult.h">
       <Filter>头文件\entity</Filter>
     </ClInclude>
@@ -101,6 +107,9 @@
     </ClInclude>
     <ClInclude Include="comboResult.h">
       <Filter>头文件\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="pisqpipe.h">
+      <Filter>头文件\gomocup</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -152,12 +161,6 @@
     <ClCompile Include="cache.cpp">
       <Filter>源文件\core</Filter>
     </ClCompile>
-    <ClCompile Include="example.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="pisqpipe.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="gameResult.cpp">
       <Filter>源文件\entity</Filter>
     </ClCompile>
@@ -166,6 +169,12 @@
     </ClCompile>
     <ClCompile Include="comboResult.cpp">
       <Filter>源文件\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="example.cpp">
+      <Filter>源文件\gomocup</Filter>
+    </ClCompile>
+    <ClCompile Include="pisqpipe.cpp">
+      <Filter>源文件\gomocup</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
