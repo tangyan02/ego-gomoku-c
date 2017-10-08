@@ -78,8 +78,8 @@ void testNeighbor() {
 
 int main()
 {
-	//piskvork();
-	testPlay();
+	piskvork();
+	//testPlay();
 	getchar();
 	return 0;
 }

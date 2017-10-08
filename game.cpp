@@ -8,6 +8,7 @@
 #include "console.h"
 #include <sys/timeb.h>
 #include "unordered_map"
+#include "cache.h"
 
 extern int boardSize;
 
@@ -65,6 +66,7 @@ gameResult search(Color aiColor, Color** map)
 		long long t = getSystemTime();
 		nodeCount = 0;
 
+		cacheReset();
 		cacheLast = cache;
 		cache.clear();
 
@@ -94,6 +96,8 @@ gameResult search(Color aiColor, Color** map)
 				printf("level %d, speed %d k, time %d ms\n", level, speed, getSystemTime() - t);
 				printMapWithStar(map, currentPointResult);
 			}
+			if (value == MAX_VALUE)
+				break;
 		}
 		if (getSystemTime() - searchStartTime > timeOut / 6) {
 			timeOutEnable = true;
@@ -112,6 +116,12 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 	if (timeOutEnable) {
 		return 0;
 	}
+	//查表
+	int hashCode = getMapHashCode();
+	if (containsSearchKey(hashCode, alpha, beta)) {
+		return getSearchValue(hashCode, alpha, beta);
+	}
+
 	//叶子分数计算
 	if (level == 0) {
 		nodeCount++;
@@ -128,8 +138,8 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 	points ps = getExpandPoints(data, neighbors);
 
 	//调整最优节点顺序
-	if (cacheLast.find(getMapHashCode()) != cacheLast.end()) {
-		point p = cacheLast[getMapHashCode()];
+	if (cacheLast.find(hashCode) != cacheLast.end()) {
+		point p = cacheLast[hashCode];
 		for (int i = 0; i < ps.count; i++)
 			if (ps.list[i].x == p.x && ps.list[i].y == p.y) {
 				for (int j = i; j > i; j--) {
@@ -186,7 +196,8 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 		currentPointResult = extremePoint;
 	}
 
-	cache[getMapHashCode()] = extremePoint;
+	cache[hashCode] = extremePoint;
+	addSearchEntry(hashCode, extreme, alpha, beta);
 	return extreme;
 }
 
