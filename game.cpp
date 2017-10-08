@@ -93,7 +93,7 @@ gameResult search(Color aiColor, Color** map)
 			if (debugEnable)
 				printf("level %d, speed %d k, time %d ms\n", level, speed, getSystemTime() - t);
 		}
-		if (getSystemTime() - searchStartTime > timeOut / 8) {
+		if (getSystemTime() - searchStartTime > timeOut / 6) {
 			timeOutEnable = true;
 		}
 	}
@@ -101,6 +101,8 @@ gameResult search(Color aiColor, Color** map)
 	return gameResult;
 }
 
+/* PVS
+*/
 int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 	if (getSystemTime() - searchStartTime > timeOut) {
 		timeOutEnable = true;
@@ -118,12 +120,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 	analyzeData data = getAnalyzeData(color, neighbors);
 	//输赢判定
 	if (data.fiveAttack.count > 0) {
-		if (color == aiColor) {
-			return MAX_VALUE;
-		}
-		if (color == getOtherColor(aiColor)) {
-			return MIN_VALUE;
-		}
+		return MAX_VALUE;
 	}
 	//计算扩展节点
 	points ps = getExpandPoints(data, neighbors);
@@ -158,10 +155,10 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 		setPoint(p, NULL, color, aiColor);
 
 		if (level == currentLevel) {
-			printf("(%d, %d) value: %d count: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - searchStartTime);
-			if (value >= extreme) {
+			if (debugEnable)
+				printf("(%d, %d) value: %d count: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - searchStartTime);
+			if (value >= extreme)
 				currentPointResult = p;
-			}
 		}
 
 		if (value >= extreme) {
