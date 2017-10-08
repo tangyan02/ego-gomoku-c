@@ -25,7 +25,7 @@ static bool timeOutEnable = false;
 
 int currentLevel;
 
-point currentPointResult;
+points currentPointsResult;
 
 unordered_map<long long, point> cache;
 
@@ -67,6 +67,7 @@ gameResult search(Color aiColor, Color** map)
 
 		cacheLast = cache;
 		cache.clear();
+		currentPointsResult.clear();
 
 		currentLevel = level;
 		Color color = aiColor;
@@ -82,7 +83,7 @@ gameResult search(Color aiColor, Color** map)
 		}
 
 		if (!timeOutEnable) {
-			gameResult.result = currentPointResult;
+			gameResult.result = currentPointsResult.list[rand()%currentPointsResult.count];
 			int speed = 0;
 			if ((getSystemTime() - t) > 0)
 				speed = (int)(nodeCount / ((getSystemTime() - t) / 1000.00) / 1000);
@@ -101,7 +102,7 @@ gameResult search(Color aiColor, Color** map)
 	return gameResult;
 }
 
-/* PVS
+/* 零窗口测试法
 */
 int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 	if (getSystemTime() - searchStartTime > timeOut) {
@@ -124,6 +125,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 	}
 	//计算扩展节点
 	points ps = getExpandPoints(data, neighbors);
+
 	//调整最优节点顺序
 	if (cacheLast.find(getMapHashCode()) != cacheLast.end()) {
 		point p = cacheLast[getMapHashCode()];
@@ -157,8 +159,12 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 		if (level == currentLevel) {
 			if (debugEnable)
 				printf("(%d, %d) value: %d count: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - searchStartTime);
-			if (value >= extreme)
-				currentPointResult = p;
+			if (value >= extreme) {
+				if (value > extreme) {
+					currentPointsResult.clear();
+				}
+				currentPointsResult.add(p);
+			}
 		}
 
 		if (value >= extreme) {

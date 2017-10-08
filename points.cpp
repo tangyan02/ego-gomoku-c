@@ -24,3 +24,9 @@ void points::addMany(points ps)
 		count++;
 	}
 }
+
+void points::clear()
+{
+	list.clear();
+	count = 0;
+}
