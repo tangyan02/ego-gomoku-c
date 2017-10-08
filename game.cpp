@@ -62,7 +62,7 @@ gameResult search(Color aiColor, Color** map)
 		for (int i = 0; i < ps.count; i++) {
 			point p = ps.list[i];
 			setPoint(p, color, NULL, aiColor);
-			int value = -dfs(level - 1, getOtherColor(color), MIN_VALUE, -extreme, aiColor);
+			int value = -dfs(level - 1, getOtherColor(color), aiColor, MIN_VALUE, -extreme);
 			setPoint(p, NULL, color, aiColor);
 
 			if (timeOutEnable) {
@@ -129,7 +129,7 @@ gameResult search(Color aiColor, Color** map)
 	return gameResult;
 }
 
-int dfs(int level, Color color, int alpha, int beta, Color aiColor) {
+int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 	if (getSystemTime() - searchStartTime > timeOut) {
 		timeOutEnable = true;
 	}
@@ -160,7 +160,15 @@ int dfs(int level, Color color, int alpha, int beta, Color aiColor) {
 	for (int i = 0; i < ps.count; i++) {
 		point p = ps.list[i];
 		setPoint(p, color, NULL, aiColor);
-		int value = -dfs(level - 1, getOtherColor(color), -beta, -alpha, aiColor);
+		int value;
+		if (i == 0)
+			value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha);
+		else {
+			value = -dfs(level - 1, getOtherColor(color), aiColor, -alpha - 1, -alpha);
+			if (value > alpha && value < beta) {
+				value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha);
+			}
+		}
 		setPoint(p, NULL, color, aiColor);
 
 		if (value > extreme) {

@@ -5,6 +5,6 @@
 
 void setPoint(point p, Color color, Color forwardColor, Color aiColor);
 
-int dfs(int level, Color color, int parentMax, int parentMin, Color aiColor);
+int dfs(int level, Color color, Color aiColor, int parentMax, int parentMin);
 
 gameResult search(Color aiColor, Color** map);

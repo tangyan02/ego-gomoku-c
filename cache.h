@@ -1,7 +1,5 @@
 #pragma once
 
-void initCache(int size);
-
 bool containsSearchKey(long long key);
 
 int getSearchValue(long long key);
