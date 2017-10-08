@@ -149,6 +149,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 		if (i == 0)
 			value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha);
 		else {
+			//Áã´°¿Ú²âÊÔ
 			value = -dfs(level - 1, getOtherColor(color), aiColor, -alpha - 1, -alpha);
 			if (value > alpha && value < beta) {
 				value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha);

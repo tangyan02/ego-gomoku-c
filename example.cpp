@@ -105,7 +105,7 @@ void brain_turn()
 	pipeOut("MESSAGE time limit %d", timeOut);
 	gameResult result = search(BLACK, map);
 	point p = result.result;
-	pipeOut("MESSAGE [%d,%d] level %d, value %d, node %d, speed %d", p.x, p.y, result.level, result.value, result.node, result.speed);
+	pipeOut("MESSAGE [%d,%d] level %d, value %d, nodes %d, speed %d k", p.x, p.y, result.level, result.value, result.node, result.speed);
 	do_mymove(p.x, p.y);
 }
 
