@@ -6,6 +6,8 @@ Color getColor(point p);
 
 points getNeighbor();
 
+points getPointLinesNeighbor(point p);
+
 bool reachable(int x, int y);
 
 void initGameMap(Color** value);

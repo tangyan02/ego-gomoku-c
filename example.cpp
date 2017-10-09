@@ -11,6 +11,7 @@ static Color** map;
 static unsigned seed;
 extern int boardSize;
 extern int timeOut;
+extern int comboTimeOut;
 
 void brain_init()
 {
@@ -86,8 +87,8 @@ unsigned rnd(unsigned n)
 
 void brain_turn()
 {
-	timeOut = 1000 * 1000;
-	timeOut = min(info_timeout_turn, timeOut);
+	int thisTimeOut = info_time_left / 10;
+	thisTimeOut = min(info_timeout_turn, thisTimeOut);
 	int pointCount = 0;
 	for (int i = 0; i < boardSize; i++)
 	{
@@ -100,12 +101,14 @@ void brain_turn()
 	}
 	if (pointCount < 40) {
 		long maxTime = info_time_left / (40 - pointCount);
-		timeOut = min(maxTime, timeOut);
+		thisTimeOut = min(maxTime, thisTimeOut);
 	}
-	pipeOut("MESSAGE time limit %d", timeOut);
+	pipeOut("MESSAGE time limit %d", thisTimeOut);
+	timeOut = thisTimeOut / 3 * 2;
+	comboTimeOut = thisTimeOut - timeOut;
 	gameResult result = search(BLACK, map);
 	point p = result.result;
-	pipeOut("MESSAGE [%d,%d] level %d, value %d, nodes %d, speed %d k", p.x, p.y, result.level, result.value, result.node, result.speed);
+	pipeOut("MESSAGE [%d,%d] value %d, level %d, combo %d, nodes %d, speed %d k", p.x, p.y, result.value, result.level, result.combo, result.node, result.speed);
 	do_mymove(p.x, p.y);
 }
 

@@ -29,13 +29,15 @@ static long long searchStartTime;
 
 static bool timeOutEnable = false;
 
-int currentLevel;
+static int currentLevel;
 
-point currentPointResult;
+static point currentPointResult;
 
-unordered_map<long long, point> cache;
+static pointHash loseSet;
 
-unordered_map<long long, point> cacheLast;
+static unordered_map<long long, point> cache;
+
+static unordered_map<long long, point> cacheLast;
 
 long long getSystemTime() {
 	struct timeb t;
@@ -46,7 +48,6 @@ long long getSystemTime() {
 gameResult search(Color aiColor, Color** map)
 {
 	gameResult gameResult;
-	searchStartTime = getSystemTime();
 	timeOutEnable = false;
 	//初始化
 	initGameMap(map);
@@ -67,17 +68,102 @@ gameResult search(Color aiColor, Color** map)
 		return gameResult;
 	}
 	//连击搜索
+	int node = 0;
+	int lastNodeCount = 0;
+	long long comboStart = getSystemTime();
+	points threeWins;
+	bool comboTimeLimit = false;
+	bool comboFinish = false;
+	bool otherComboFinish = false;
+	loseSet.reset();
 	for (int level = 3; level <= comboLevel; level += 2) {
-		comboResult result = canKill(aiColor, level, searchStartTime, comboTimeOut);
-		gameResult.combo = level;
-		if (result.win) {
+		if (!comboFinish) {
+			comboResult result = canKill(aiColor, level, comboStart, comboTimeOut);
+			if (result.win) {
+				if (result.fourWin) {
+					gameResult.value = MAX_VALUE;
+					gameResult.result = result.p;
+					return gameResult;
+				}
+				else
+				{
+					threeWins.add(result.p);
+				}
+			}
+			//如果搜的叶子数量相同则，说明已经搜到底
+			if (node == result.node)
+				comboFinish = true;
+			if (result.timeOut)
+				break;
+			node = result.node;
+			gameResult.combo = level;
+		}
+
+
+		//对方连击
+		if (!otherComboFinish) {
+			int nodeCount = 0;
+			for (int i = 0; i < ps.count; i++)
+			{
+				point p = ps.list[i];
+				if (loseSet.contains(p))
+					continue;
+				setPoint(p, aiColor, NULL, aiColor);
+				comboResult result = canKill(getOtherColor(aiColor), level, comboStart, comboTimeOut);
+				setPoint(p, NULL, aiColor, aiColor);
+				if (result.win) {
+					loseSet.add(p);
+				}
+				nodeCount += result.node;
+				if (result.timeOut) {
+					comboTimeLimit = true;
+					break;
+				}
+			}
+			if (comboTimeLimit)
+				break;
+			//如果搜的叶子数量相同则，说明已经搜到底
+			if (nodeCount == lastNodeCount)
+				otherComboFinish = true;
+			lastNodeCount = nodeCount;
+			gameResult.combo = level;
+		}
+		if (debugEnable) {
+			printf("combo level %d finish %lld ms\n", level, getSystemTime() - comboStart);
+		}
+	}
+	if (debugEnable) {
+		printf("three wins ");
+		printPoints(threeWins);
+	}
+	if (debugEnable) {
+		printf("loseset ");
+		printHash(loseSet);
+	}
+
+	//检查三连击的胜利是否有效
+	for (int i = 0; i < threeWins.count; i++) {
+		point p = threeWins.list[i];
+		if (!loseSet.contains(p)) {
 			gameResult.value = MAX_VALUE;
-			gameResult.result = result.p;
+			gameResult.result = p;
 			return gameResult;
 		}
 	}
 
+	//如果只有一个节点不败，则执行该节点
+	if (ps.count - 1 == loseSet.count) {
+		for (int i = 0; i < ps.count; i++) {
+			point p = ps.list[i];
+			if (!loseSet.contains(p)) {
+				gameResult.result = p;
+				return gameResult;
+			}
+		}
+	}
+
 	//得分搜索
+	searchStartTime = getSystemTime();
 	for (int level = 2; level <= searchLevel; level += 2)
 	{
 		long long t = getSystemTime();
@@ -159,7 +245,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 		point p = cacheLast[hashCode];
 		for (int i = 0; i < ps.count; i++)
 			if (ps.list[i].x == p.x && ps.list[i].y == p.y) {
-				for (int j = i; j > i; j--) {
+				for (int j = i; j > 0; j--) {
 					ps.list[j] = ps.list[j - 1];
 				}
 				ps.list[0] = p;
@@ -175,13 +261,19 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 
 		setPoint(p, color, NULL, aiColor);
 		int value;
-		if (i == 0)
-			value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha);
+		//先查必败表
+		if (level == currentLevel && loseSet.contains(p)) {
+			value = MIN_VALUE;
+		}
 		else {
-			//零窗口测试
-			value = -dfs(level - 1, getOtherColor(color), aiColor, -alpha - 1, -alpha);
-			if (value > alpha && value < beta) {
+			if (i == 0)
 				value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha);
+			else {
+				//零窗口测试
+				value = -dfs(level - 1, getOtherColor(color), aiColor, -alpha - 1, -alpha);
+				if (value > alpha && value < beta) {
+					value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha);
+				}
 			}
 		}
 		setPoint(p, NULL, color, aiColor);

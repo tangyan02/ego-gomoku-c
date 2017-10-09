@@ -21,7 +21,7 @@ points getExpandPoints(analyzeData data, points neighbors)
 	}
 	//如果有对方活3，则防活3或者冲四
 	if (data.threeDenfence.count > 0) {
-		pointHash hash = pointHash(boardSize);
+		pointHash hash = pointHash();
 		for (int i = 0; i < data.fourAttack.count; i++) {
 			point p = data.fourAttack.list[i];
 			if (!hash.contains(p)) {
@@ -38,7 +38,7 @@ points getExpandPoints(analyzeData data, points neighbors)
 		}
 		return result;
 	}
-	pointHash hash = pointHash(boardSize);
+	pointHash hash = pointHash();
 	result.addMany(data.fourAttack);
 	for (int i = 0; i < data.threeAttack.count; i++) {
 		point p = data.threeAttack.list[i];

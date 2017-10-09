@@ -12,12 +12,12 @@ analyzeData getAnalyzeData(Color color, points ps)
 {
 	Color** map = getMap();
 	analyzeData result;
-	pointHash fiveAttackHash = pointHash(boardSize);
-	pointHash fourAttackHash = pointHash(boardSize);
-	pointHash fourDefenceHash = pointHash(boardSize);
-	pointHash threeAttackHash = pointHash(boardSize);
-	pointHash threeDenfenceHash = pointHash(boardSize);
-	pointHash twoAttackHash = pointHash(boardSize);
+	pointHash fiveAttackHash;
+	pointHash fourAttackHash;
+	pointHash fourDefenceHash;
+	pointHash threeAttackHash;
+	pointHash threeDenfenceHash;
+	pointHash twoAttackHash;
 
 	for (int i = 0; i < ps.count; i++)
 	{

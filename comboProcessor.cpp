@@ -56,7 +56,7 @@ points getComboDefencePoints(analyzeData data, ComboType comboType) {
 	return result;
 }
 
-bool dfsKill(Color color, Color targetColor, int level, ComboType comboType) {
+bool dfsKill(Color color, Color targetColor, int level, ComboType comboType, point* father, point* grandFather) {
 	//超时判断
 	if (getSystemTime() - startTime > limitTime) {
 		result.timeOut = true;
@@ -64,12 +64,38 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType) {
 	}
 
 	if (level == 0) {
+		result.node++;
 		return false;
 	}
 
-	//分析选取的点
-	analyzeData data = getAnalyzeData(color, getNeighbor());
-
+	//分析前两步周围的点
+	points basePoints;
+	if (father == nullptr)
+		basePoints = getNeighbor();
+	else {
+		if (grandFather == nullptr)
+			basePoints = getPointLinesNeighbor(*father);
+		else {
+			points fatherPoints = getPointLinesNeighbor(*father);
+			points grandPoints = getPointLinesNeighbor(*grandFather);
+			pointHash hash;
+			for (int i = 0; i < fatherPoints.count; i++) {
+				point p = fatherPoints.list[i];
+				if (!hash.contains(p)) {
+					basePoints.add(p);
+					hash.add(fatherPoints.list[i]);
+				}
+			}
+			for (size_t i = 0; i < grandPoints.count; i++) {
+				point p = grandPoints.list[i];
+				if (!hash.contains(p)) {
+					basePoints.add(p);
+					hash.add(grandPoints.list[i]);
+				}
+			}
+		}
+	}
+	analyzeData data = getAnalyzeData(color, basePoints);
 	//如果对面形成活三，则转换会冲四
 	if (comboType == THREE_COMBO) {
 		if (color == targetColor && data.threeDenfence.count > 0) {
@@ -88,7 +114,7 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType) {
 		{
 			point p = ps.list[i];
 			setColor(p, color, NULL, targetColor);
-			bool value = dfsKill(getOtherColor(color), targetColor, level - 1, comboType);
+			bool value = dfsKill(getOtherColor(color), targetColor, level - 1, comboType, &p, father);
 			setColor(p, NULL, color, targetColor);
 			if (level == currentLevel && value) {
 				result.p = p;
@@ -112,7 +138,7 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType) {
 		{
 			point p = ps.list[i];
 			setColor(p, color, NULL, targetColor);
-			bool value = dfsKill(getOtherColor(color), targetColor, level - 1, comboType);
+			bool value = dfsKill(getOtherColor(color), targetColor, level - 1, comboType, &p, father);
 			setColor(p, NULL, color, targetColor);
 			if (!value) {
 				return false;
@@ -133,8 +159,7 @@ comboResult canKill(Color targetColor, int level, long long startTimeValue, long
 	//计算我方四连杀
 	result.reset();
 	dfsKill(targetColor, targetColor,
-		level,FOUR_COMBO);
-	printf("my four over\n");
+		level, FOUR_COMBO, nullptr, nullptr);
 	if (result.win) {
 		result.fourWin = true;
 		return result;
@@ -142,8 +167,7 @@ comboResult canKill(Color targetColor, int level, long long startTimeValue, long
 	//计算对手四连杀
 	result.reset();
 	dfsKill(getOtherColor(targetColor), getOtherColor(targetColor),
-		level, FOUR_COMBO);
-	printf("other four over\n");
+		level, FOUR_COMBO, nullptr, nullptr);
 	if (result.win) {
 		result.win = false;
 		return result;
@@ -152,8 +176,7 @@ comboResult canKill(Color targetColor, int level, long long startTimeValue, long
 	//计算我方三连杀
 	result.reset();
 	dfsKill(targetColor, targetColor,
-		level, THREE_COMBO);
-	printf("other three over\n");
+		level, THREE_COMBO, nullptr, nullptr);
 	if (result.win) {
 		result.fourWin = false;
 		return result;

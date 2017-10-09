@@ -59,10 +59,38 @@ Color getColor(point p)
 	return map[p.x][p.y];
 }
 
+points getPointLinesNeighbor(point p) {
+	points neighbor = getNeighbor();
+	pointHash hash = pointHash();
+	for (int i = 0; i < neighbor.count; i++) {
+		point p = neighbor.list[i];
+		hash.add(p);
+	}
+	points result;
+	for (int i = 0; i < 8; i++) {
+		int x = p.x;
+		int y = p.y;
+		for (int k = 0; k < 4; k++) {
+			x += directX[i];
+			y += directY[i];
+			if (!reachable(x, y)) {
+				break;
+			}
+			if (map[x][y] != NULL)
+				continue;
+			point newPoint = point(x, y);
+			if (hash.contains(newPoint)) {
+				result.add(newPoint);
+			}
+		}
+	}
+	return result;
+}
+
 points getNeighbor()
 {
 	points result;
-	pointHash hash = pointHash(boardSize);
+	pointHash hash = pointHash();
 
 	for (int i = 0; i < boardSize; i++)
 		for (int j = 0; j < boardSize; j++) {

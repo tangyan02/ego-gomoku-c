@@ -52,6 +52,9 @@
     <Text Include="combo.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="combo2.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -81,9 +84,6 @@
     <ClInclude Include="score.h">
       <Filter>头文件\core</Filter>
     </ClInclude>
-    <ClInclude Include="winChecker.h">
-      <Filter>头文件\core</Filter>
-    </ClInclude>
     <ClInclude Include="analyzeData.h">
       <Filter>头文件\entity</Filter>
     </ClInclude>
@@ -110,6 +110,9 @@
     </ClInclude>
     <ClInclude Include="pisqpipe.h">
       <Filter>头文件\gomocup</Filter>
+    </ClInclude>
+    <ClInclude Include="winChecker.h">
+      <Filter>头文件\helper</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -143,9 +146,6 @@
     <ClCompile Include="score.cpp">
       <Filter>源文件\core</Filter>
     </ClCompile>
-    <ClCompile Include="winChecker.cpp">
-      <Filter>源文件\core</Filter>
-    </ClCompile>
     <ClCompile Include="analyzeData.cpp">
       <Filter>源文件\entity</Filter>
     </ClCompile>
@@ -175,6 +175,9 @@
     </ClCompile>
     <ClCompile Include="pisqpipe.cpp">
       <Filter>源文件\gomocup</Filter>
+    </ClCompile>
+    <ClCompile Include="winChecker.cpp">
+      <Filter>源文件\helper</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

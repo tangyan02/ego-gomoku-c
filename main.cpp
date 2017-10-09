@@ -16,6 +16,7 @@ void testPlay() {
 	debugEnable = true;
 	Color ** map = readMap();
 	gameResult result = search(WHITE, map);
+	printMapWithStar(map, result.result);
 }
 
 void removeStar(Color** map) {
@@ -31,7 +32,8 @@ void removeStar(Color** map) {
 }
 
 void testCombo() {
-	Color ** map = readMap();
+	long long t = getSystemTime();
+	Color ** map = readMap("combo2.txt");
 	Color color = WHITE;
 	initGameMap(map);
 	initScore(color);
@@ -41,7 +43,9 @@ void testCombo() {
 		printMapWithStar(map, result.p);
 		printf("four win = %d \n", result.fourWin);
 	}
-	printf("NO\n");
+	else
+		printf("NO\n");
+	printf("%lld ms\n", getSystemTime() - t);
 }
 
 void testExpand() {
@@ -93,8 +97,9 @@ void testNeighbor() {
 
 int main()
 {
-	//piskvork();
-	testCombo();
+	piskvork();
+	//testCombo();
+	//testPlay();
 	getchar();
 	return 0;
 }

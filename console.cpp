@@ -6,6 +6,27 @@ using namespace std;
 
 extern int boardSize;
 
+void printPoints(points ps) {
+	for (int i = 0; i < ps.count; i++)
+	{
+		point p = ps.list[i];
+		printf("%d,%d ", p.x, p.y);
+	}
+	printf("\n");
+}
+
+void printHash(pointHash hash) {
+	for (int i = 0; i < boardSize; i++)
+	{
+		for (int j = 0; j < boardSize; j++) {
+			if (hash.contains(point(i, j))) {
+				printf("%d,%d ", i, j);
+			}
+		}
+	}
+	printf("\n");
+}
+
 void printMap(Color ** map)
 {
 	for (int i = 0; i < boardSize; i++)
