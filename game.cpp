@@ -288,6 +288,8 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 			if (value > alpha) {
 				alpha = value;
 				if (value > beta) {
+					cache[hashCode] = p;
+					addSearchEntry(hashCode, extreme, alpha, beta);
 					return value;
 				}
 			}
