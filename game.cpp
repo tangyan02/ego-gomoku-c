@@ -164,6 +164,8 @@ gameResult search(Color aiColor, Color** map)
 
 	//µÃ·ÖËÑË÷
 	searchStartTime = getSystemTime();
+	cacheLast.clear();
+	cache.clear();
 	for (int level = 2; level <= searchLevel; level += 2)
 	{
 		long long t = getSystemTime();
@@ -202,7 +204,7 @@ gameResult search(Color aiColor, Color** map)
 			if (value == MAX_VALUE)
 				break;
 		}
-		if (getSystemTime() - searchStartTime > timeOut / 6) {
+		if (getSystemTime() - searchStartTime > timeOut / 5) {
 			timeOutEnable = true;
 		}
 	}

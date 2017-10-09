@@ -97,9 +97,9 @@ void testNeighbor() {
 
 int main()
 {
-	//piskvork();
+	piskvork();
 	//testCombo();
-	testPlay();
+	//testPlay();
 	getchar();
 	return 0;
 }
