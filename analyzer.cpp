@@ -164,20 +164,30 @@ analyzeData getAnalyzeData(Color color, points ps, bool moreAnalyze)
 						if (headColor == NULL && tailColor == NULL) {
 							int sideX = x + directX[direct];
 							int sideY = y + directY[direct];
+							point sidePoint(sideX, sideY);
 							if (reachable(sideX, sideY) &&
 								map[sideX][sideY] == NULL) {
 								if (!threeDenfenceHash.contains(p)) {
 									result.threeDenfence.add(p);
 									threeDenfenceHash.add(p);
 								}
+								if (!threeDenfenceHash.contains(sidePoint)) {
+									result.threeDenfence.add(sidePoint);
+									threeDenfenceHash.add(sidePoint);
+								}
 							}
 							sideX = headX - directX[direct];
 							sideY = headY - directY[direct];
+							point sidePoint2(sideX, sideY);
 							if (reachable(sideX, sideY) &&
 								map[sideX][sideY] == NULL) {
 								if (!threeDenfenceHash.contains(p)) {
 									result.threeDenfence.add(p);
 									threeDenfenceHash.add(p);
+								}
+								if (!threeDenfenceHash.contains(sidePoint2)) {
+									result.threeDenfence.add(sidePoint2);
+									threeDenfenceHash.add(sidePoint2);
 								}
 							}
 						}

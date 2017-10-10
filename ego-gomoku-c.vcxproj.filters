@@ -60,6 +60,9 @@
     </Text>
     <Text Include="README.md" />
     <Text Include="License" />
+    <Text Include="analyze2.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

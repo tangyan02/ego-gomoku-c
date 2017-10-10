@@ -61,9 +61,9 @@ void testExpand() {
 }
 
 void testAnalyze() {
-	Color ** map = readMap();
+	Color ** map = readMap("analyze2.txt");
 	initGameMap(map);
-	Color color = WHITE;
+	Color color = BLACK;
 	initScore(color);
 	analyzeData data = getAnalyzeData(color, getNeighbor(), true);
 
@@ -85,10 +85,10 @@ void testAnalyze() {
 	printf("2 A\n");
 	printMapWithStars(map, data.twoAttack);
 
-	printf("3D\n");
+	printf("w3D\n");
 	printMapWithStars(map, data.weakThreeDefence);
 
-	printf("4D\n");
+	printf("w4D\n");
 	printMapWithStars(map, data.weakFourDefence);
 
 	printf("34D\n");

@@ -145,6 +145,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="analyze.txt" />
+    <Text Include="analyze2.txt" />
     <Text Include="combo.txt" />
     <Text Include="combo2.txt" />
     <Text Include="expand.txt" />
