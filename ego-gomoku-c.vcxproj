@@ -150,7 +150,9 @@
     <Text Include="expand.txt" />
     <Text Include="failCombo.txt" />
     <Text Include="input.txt" />
+    <Text Include="License" />
     <Text Include="ReadMe.txt" />
+    <Text Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="analyzeData.h" />

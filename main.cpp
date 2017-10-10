@@ -111,10 +111,10 @@ void testNeighbor() {
 
 int main()
 {
-	//piskvork();
-	testCombo();
+	piskvork();
+	//testCombo();
 	//testPlay();
 	//testAnalyze();
-	getchar();
+	//getchar();
 	return 0;
 }

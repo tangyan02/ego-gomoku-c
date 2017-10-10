@@ -58,6 +58,8 @@
     <Text Include="failCombo.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="README.md" />
+    <Text Include="License" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
