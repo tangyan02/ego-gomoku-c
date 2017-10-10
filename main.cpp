@@ -98,8 +98,8 @@ void testNeighbor() {
 int main()
 {
 	//piskvork();
-	testCombo();
-	//testPlay();
+	//testCombo();
+	testPlay();
 	getchar();
 	return 0;
 }
