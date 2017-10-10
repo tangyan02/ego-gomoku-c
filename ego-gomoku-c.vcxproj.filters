@@ -117,6 +117,9 @@
     <ClInclude Include="winChecker.h">
       <Filter>头文件\helper</Filter>
     </ClInclude>
+    <ClInclude Include="pointSet.h">
+      <Filter>头文件\entity</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -181,6 +184,9 @@
     </ClCompile>
     <ClCompile Include="winChecker.cpp">
       <Filter>源文件\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="PointSet.cpp">
+      <Filter>源文件\entity</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

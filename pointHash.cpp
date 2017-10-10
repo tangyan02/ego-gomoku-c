@@ -15,6 +15,12 @@ void pointHash::add(point p)
 	count++;
 }
 
+void pointHash::addMany(points ps)
+{
+	for (int i = 0; i < ps.count; i++)
+		add(ps.list[i]);
+}
+
 bool pointHash::contains(int x, int y)
 {
 	return signal[x][y];
@@ -29,7 +35,6 @@ pointHash::pointHash()
 {
 	reset();
 }
-
 
 pointHash::~pointHash()
 {

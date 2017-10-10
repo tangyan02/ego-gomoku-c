@@ -2,13 +2,17 @@
 #include "analyzeData.h"
 #include "analyzer.h"
 #include "score.h"
+#include "unordered_map"
 
 
 static int directX[] = { 0, 1, 1, 1 };
 
 static int directY[] = { 1, 1, 0, -1 };
+analyzeData getAnalyzeData(Color color, points ps) {
+	return getAnalyzeData(color, ps, false);
+}
 
-analyzeData getAnalyzeData(Color color, points ps)
+analyzeData getAnalyzeData(Color color, points ps, bool moreAnalyze)
 {
 	Color** map = getMap();
 	analyzeData result;
@@ -18,6 +22,12 @@ analyzeData getAnalyzeData(Color color, points ps)
 	pointHash threeAttackHash;
 	pointHash threeDenfenceHash;
 	pointHash twoAttackHash;
+
+	unordered_map<int, int> weakFourDefenceMap;
+	unordered_map<int, int> weakThreeDefenceMap;
+	pointHash doubleWeakFourDefenceHash;
+	pointHash weakThreeAndFourDefenceHash;
+	pointHash doubleWeakThreeDefenceHash;
 
 	for (int i = 0; i < ps.count; i++)
 	{
@@ -166,6 +176,171 @@ analyzeData getAnalyzeData(Color color, points ps)
 								if (!threeDenfenceHash.contains(p)) {
 									result.threeDenfence.add(p);
 									threeDenfenceHash.add(p);
+								}
+							}
+						}
+					}
+				}
+
+				//复杂的分析
+				if (moreAnalyze) {
+					if (otherColorCount == 3 && colorCount == 0) {
+						//双四
+						if (weakFourDefenceMap.find(p.hash()) != weakFourDefenceMap.end()) {
+							if (weakFourDefenceMap[p.hash()] != direct) {
+								if (!doubleWeakFourDefenceHash.contains(p)) {
+									doubleWeakFourDefenceHash.add(p);
+									result.doubleWeakFourDefence.add(p);
+								}
+							}
+						}
+						//三四
+						if (weakThreeDefenceMap.find(p.hash()) != weakThreeDefenceMap.end()) {
+							if (weakThreeDefenceMap[p.hash()] != direct) {
+								if (!weakThreeAndFourDefenceHash.contains(p)) {
+									weakThreeAndFourDefenceHash.add(p);
+									result.weakThreeAndFourDefence.add(p);
+								}
+							}
+						}
+
+						if (weakFourDefenceMap.find(p.hash()) == weakFourDefenceMap.end()) {
+							result.weakFourDefence.add(p);
+						}
+						weakFourDefenceMap[p.hash()] = direct;
+					}
+					if (otherColorCount == 2 && colorCount == 0) {
+						int headX = x - directX[direct] * 4;
+						int headY = y - directY[direct] * 4;
+						if (k != 0 && k != 4) {
+							if (reachable(headX, headY)) {
+								Color headColor = map[headX][headY];
+								Color tailColor = map[x][y];
+								if (headColor == NULL && tailColor == NULL) {
+									int sideX = x + directX[direct];
+									int sideY = y + directY[direct];
+									if (reachable(sideX, sideY)) {
+										Color sideColor = map[sideX][sideY];
+										if (sideColor == NULL) {
+											//双三
+											if (weakThreeDefenceMap.find(p.hash()) != weakThreeDefenceMap.end()) {
+												if (weakThreeDefenceMap[p.hash()] != direct) {
+													if (!doubleWeakThreeDefenceHash.contains(p)) {
+														doubleWeakThreeDefenceHash.add(p);
+														result.doubleWeakThreeDefence.add(p);
+													}
+												}
+											}
+											//四三
+											if (weakFourDefenceMap.find(p.hash()) != weakFourDefenceMap.end()) {
+												if (weakFourDefenceMap[p.hash()] != direct) {
+													if (!weakThreeAndFourDefenceHash.contains(p)) {
+														weakThreeAndFourDefenceHash.add(p);
+														result.weakThreeAndFourDefence.add(p);
+													}
+												}
+											}
+
+											if (weakThreeDefenceMap.find(p.hash()) == weakThreeDefenceMap.end()) {
+												result.weakThreeDefence.add(p);
+											}
+											weakThreeDefenceMap[p.hash()] = direct;
+										}
+									}
+									sideX = headX - directX[direct];
+									sideY = headY - directY[direct];
+									if (reachable(sideX, sideY)) {
+										Color sideColor = map[sideX][sideY];
+										if (sideColor == NULL) {
+											//双三
+											if (weakThreeDefenceMap.find(p.hash()) != weakThreeDefenceMap.end()) {
+												if (weakThreeDefenceMap[p.hash()] != direct) {
+													if (!doubleWeakThreeDefenceHash.contains(p)) {
+														doubleWeakThreeDefenceHash.add(p);
+														result.doubleWeakThreeDefence.add(p);
+													}
+												}
+											}
+											//四三
+											if (weakFourDefenceMap.find(p.hash()) != weakFourDefenceMap.end()) {
+												if (weakFourDefenceMap[p.hash()] != direct) {
+													if (!weakThreeAndFourDefenceHash.contains(p)) {
+														weakThreeAndFourDefenceHash.add(p);
+														result.weakThreeAndFourDefence.add(p);
+													}
+												}
+											}
+
+											if (weakThreeDefenceMap.find(p.hash()) == weakThreeDefenceMap.end()) {
+												result.weakThreeDefence.add(p);
+											}
+											weakThreeDefenceMap[p.hash()] = direct;
+										}
+									}
+								}
+								if (headColor == NULL && tailColor != NULL) {
+									int sideX = x + directX[direct];
+									int sideY = y + directY[direct];
+									if (reachable(sideX, sideY)) {
+										Color sideColor = map[sideX][sideY];
+										if (sideColor == NULL) {
+											//双三
+											if (weakThreeDefenceMap.find(p.hash()) != weakThreeDefenceMap.end()) {
+												if (weakThreeDefenceMap[p.hash()] != direct) {
+													if (!doubleWeakThreeDefenceHash.contains(p)) {
+														doubleWeakThreeDefenceHash.add(p);
+														result.doubleWeakThreeDefence.add(p);
+													}
+												}
+											}
+											//四三
+											if (weakFourDefenceMap.find(p.hash()) != weakFourDefenceMap.end()) {
+												if (weakFourDefenceMap[p.hash()] != direct) {
+													if (!weakThreeAndFourDefenceHash.contains(p)) {
+														weakThreeAndFourDefenceHash.add(p);
+														result.weakThreeAndFourDefence.add(p);
+													}
+												}
+											}
+
+											if (weakThreeDefenceMap.find(p.hash()) == weakThreeDefenceMap.end()) {
+												result.weakThreeDefence.add(p);
+											}
+											weakThreeDefenceMap[p.hash()] = direct;
+										}
+									}
+								}
+								if (headColor != NULL && tailColor == NULL) {
+									int sideX = headX - directX[direct];
+									int sideY = headY - directY[direct];
+									if (reachable(sideX, sideY)) {
+										Color sideColor = map[sideX][sideY];
+										if (sideColor == NULL) {
+											//双三
+											if (weakThreeDefenceMap.find(p.hash()) != weakThreeDefenceMap.end()) {
+												if (weakThreeDefenceMap[p.hash()] != direct) {
+													if (!doubleWeakThreeDefenceHash.contains(p)) {
+														doubleWeakThreeDefenceHash.add(p);
+														result.doubleWeakThreeDefence.add(p);
+													}
+												}
+											}
+											//四三
+											if (weakFourDefenceMap.find(p.hash()) != weakFourDefenceMap.end()) {
+												if (weakFourDefenceMap[p.hash()] != direct) {
+													if (!weakThreeAndFourDefenceHash.contains(p)) {
+														weakThreeAndFourDefenceHash.add(p);
+														result.weakThreeAndFourDefence.add(p);
+													}
+												}
+											}
+
+											if (weakThreeDefenceMap.find(p.hash()) == weakThreeDefenceMap.end()) {
+												result.weakThreeDefence.add(p);
+											}
+											weakThreeDefenceMap[p.hash()] = direct;
+										}
+									}
 								}
 							}
 						}

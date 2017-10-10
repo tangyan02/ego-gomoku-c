@@ -8,7 +8,11 @@ public:
 	points threeAttack;
 	points threeDenfence;
 	points twoAttack;
-
+	points weakThreeDefence;
+	points weakFourDefence;
+	points doubleWeakFourDefence;
+	points weakThreeAndFourDefence;
+	points doubleWeakThreeDefence;
 	analyzeData();
 	~analyzeData();
 };

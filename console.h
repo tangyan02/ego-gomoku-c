@@ -1,4 +1,8 @@
 #pragma once
+#include"point.h"
+#include"points.h"
+#include"config.h"
+#include"pointHash.h"
 
 void printPoints(points ps);
 

@@ -6,6 +6,8 @@ extern int boardSize;
 
 extern int nodeLimit;
 
+extern bool moreAnalyze;
+
 points getExpandPoints(analyzeData data, points neighbors)
 {
 	points result;
@@ -38,6 +40,75 @@ points getExpandPoints(analyzeData data, points neighbors)
 		}
 		return result;
 	}
+	if (moreAnalyze) {
+		//如果对手有双四进攻点
+		if (data.doubleWeakFourDefence.count > 0) {
+			point deadPoint = data.doubleWeakFourDefence.list[0];
+			points linePoints = getPointLinesNeighbor(deadPoint);
+			pointHash linePointsHash;
+			linePointsHash.addMany(linePoints);
+
+			PointSet result;
+			result.add(deadPoint);
+			result.addMany(data.fourAttack);
+			for (int i = 0; i < data.weakFourDefence.count; i++)
+			{
+				point p = data.weakFourDefence.list[i];
+				if (linePointsHash.contains(p)) {
+					result.add(p);
+				}
+			}
+			return result.ps;
+		}
+		//如果对手有三四进攻点
+		if (data.weakThreeAndFourDefence.count > 0) {
+			point deadPoint = data.weakThreeAndFourDefence.list[0];
+			points linePoints = getPointLinesNeighbor(deadPoint);
+			pointHash linePointsHash;
+			linePointsHash.addMany(linePoints);
+
+			PointSet result;
+			result.add(deadPoint);
+			result.addMany(data.fourAttack);
+
+			for (int i = 0; i < data.weakThreeDefence.count; i++)
+			{
+				point p = data.weakThreeDefence.list[i];
+				if (linePointsHash.contains(p)) {
+					result.add(p);
+				}
+			}
+			for (int i = 0; i < data.weakFourDefence.count; i++)
+			{
+				point p = data.weakFourDefence.list[i];
+				if (linePointsHash.contains(p)) {
+					result.add(p);
+				}
+			}
+			return result.ps;
+		}
+		//如果对手有双三进攻点
+		if (data.doubleWeakThreeDefence.count > 0) {
+			point deadPoint = data.doubleWeakThreeDefence.list[0];
+			points linePoints = getPointLinesNeighbor(deadPoint);
+			pointHash linePointsHash;
+			linePointsHash.addMany(linePoints);
+
+			PointSet result;
+			result.add(deadPoint);
+			result.addMany(data.fourAttack);
+
+			for (int i = 0; i < data.weakThreeDefence.count; i++)
+			{
+				point p = data.weakThreeDefence.list[i];
+				if (linePointsHash.contains(p)) {
+					result.add(p);
+				}
+			}
+			return result.ps;
+		}
+	}
+
 	pointHash hash = pointHash();
 	result.addMany(data.fourAttack);
 	for (int i = 0; i < data.threeAttack.count; i++) {

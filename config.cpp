@@ -17,6 +17,8 @@ int cacheSize = 5000000;
 
 bool debugEnable = false;
 
+bool moreAnalyze = false;
+
 Color getOtherColor(Color color)
 {
 	if (color == 1 || color == 2)

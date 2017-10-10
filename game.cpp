@@ -204,7 +204,7 @@ gameResult search(Color aiColor, Color** map)
 			if (value == MAX_VALUE)
 				break;
 		}
-		if (getSystemTime() - searchStartTime > timeOut / 5) {
+		if (getSystemTime() - searchStartTime > timeOut / 4) {
 			timeOutEnable = true;
 		}
 	}

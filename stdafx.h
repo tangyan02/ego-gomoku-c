@@ -14,10 +14,12 @@
 
 // TODO: 在此处引用程序需要的其他头文件
 
+#include "console.h"
 #include "game.h"
 #include "config.h"
 #include "point.h"
 #include "points.h"
+#include "pointSet.h"
 #include "pointHash.h"
 #include "gameResult.h"
 #include "comboResult.h"

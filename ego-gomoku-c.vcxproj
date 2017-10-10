@@ -168,6 +168,7 @@
     <ClInclude Include="point.h" />
     <ClInclude Include="pointHash.h" />
     <ClInclude Include="points.h" />
+    <ClInclude Include="pointSet.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="gameResult.h" />
     <ClInclude Include="stdafx.h" />
@@ -191,6 +192,7 @@
     <ClCompile Include="point.cpp" />
     <ClCompile Include="pointHash.cpp" />
     <ClCompile Include="points.cpp" />
+    <ClCompile Include="PointSet.cpp" />
     <ClCompile Include="score.cpp" />
     <ClCompile Include="gameResult.cpp" />
     <ClCompile Include="stdafx.cpp">
