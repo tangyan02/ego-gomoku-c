@@ -162,6 +162,10 @@ gameResult search(Color aiColor, Color** map)
 		}
 	}
 
+	//如果必败，则朴素搜索
+	if (ps.count == loseSet.count) {
+		loseSet.reset();
+	}
 	//得分搜索
 	searchStartTime = getSystemTime();
 	cacheLast.clear();
