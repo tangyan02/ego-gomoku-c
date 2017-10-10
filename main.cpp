@@ -33,7 +33,7 @@ void removeStar(Color** map) {
 
 void testCombo() {
 	long long t = getSystemTime();
-	Color ** map = readMap("combo2.txt");
+	Color ** map = readMap("failCombo.txt");
 	Color color = WHITE;
 	initGameMap(map);
 	initScore(color);
@@ -97,8 +97,8 @@ void testNeighbor() {
 
 int main()
 {
-	piskvork();
-	//testCombo();
+	//piskvork();
+	testCombo();
 	//testPlay();
 	getchar();
 	return 0;

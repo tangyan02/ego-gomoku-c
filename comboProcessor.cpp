@@ -67,7 +67,24 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType, poi
 		result.node++;
 		return false;
 	}
-
+	//分析对面有没有被迫形成潜在的三四（潜在四四的情形暂无）
+	if (comboType == THREE_COMBO)
+		if (targetColor == color) {
+			if (father != nullptr) {
+				points fatherPoints = getPointLinesNeighbor(*father);
+				analyzeData data = getAnalyzeData(getOtherColor(color), fatherPoints);
+				pointHash hash;
+				for (int i = 0; i < data.fourAttack.count; i++) {
+					hash.add(data.fourAttack.list[i]);
+				}
+				for (int i = 0; i < data.threeAttack.count; i++) {
+					if (hash.contains(data.threeAttack.list[i])) {
+						comboType = FOUR_COMBO;
+						break;
+					}
+				}
+			}
+		}
 	//分析前两步周围的点
 	points basePoints;
 	if (father == nullptr)
@@ -106,6 +123,7 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType, poi
 		if (data.fiveAttack.count > 0) {
 			if (level == currentLevel) {
 				result.p = data.fiveAttack.list[0];
+				result.win = true;
 			}
 			return true;
 		}

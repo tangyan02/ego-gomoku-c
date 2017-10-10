@@ -55,6 +55,9 @@
     <Text Include="combo2.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="failCombo.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
