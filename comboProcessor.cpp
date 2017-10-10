@@ -50,7 +50,7 @@ points getComboDefencePoints(analyzeData data, ComboType comboType) {
 		//如果有对方活3，则防活3或者冲四
 		if (data.threeDenfence.count > 0) {
 			result.addMany(data.threeDenfence);
-			result.addMany(data.fourAttack);
+			//result.addMany(data.fourAttack);
 			return result;
 		}
 	}

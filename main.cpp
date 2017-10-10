@@ -32,13 +32,14 @@ void removeStar(Color** map) {
 }
 
 void testCombo() {
+	boardSize = 20;
 	long long t = getSystemTime();
-	//Color ** map = readMap();
-	Color ** map = readMap("failCombo.txt");
-	Color color = WHITE;
+	Color ** map = readMap();
+	//Color ** map = readMap("failCombo.txt");
+	Color color = BLACK;
 	initGameMap(map);
 	initScore(color);
-	int level = 15;
+	int level = 17;
 	comboResult result = canKill(color, level, getSystemTime(), 9999999999);
 	if (result.win) {
 		printMapWithStar(map, result.p);
