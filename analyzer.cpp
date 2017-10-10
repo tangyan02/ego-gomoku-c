@@ -23,6 +23,8 @@ analyzeData getAnalyzeData(Color color, points ps, bool moreAnalyze)
 	pointHash threeDenfenceHash;
 	pointHash twoAttackHash;
 
+	//第一维表示当前局面哈希值，第二位表示方向的二进制集合码, 用位运算识别不同方向的复合
+	//暂不考虑相同方向的复合
 	unordered_map<int, int> weakFourDefenceMap;
 	unordered_map<int, int> weakThreeDefenceMap;
 	pointHash doubleWeakFourDefenceHash;
@@ -186,8 +188,9 @@ analyzeData getAnalyzeData(Color color, points ps, bool moreAnalyze)
 				if (moreAnalyze) {
 					if (otherColorCount == 3 && colorCount == 0) {
 						//双四
+						//此处位运算操作是判断是和其他三个方向做判断
 						if (weakFourDefenceMap.find(p.hash()) != weakFourDefenceMap.end()) {
-							if (weakFourDefenceMap[p.hash()] != direct) {
+							if (weakFourDefenceMap[p.hash()] & (((1 << 4) - 1) - (1 << direct))) {
 								if (!doubleWeakFourDefenceHash.contains(p)) {
 									doubleWeakFourDefenceHash.add(p);
 									result.doubleWeakFourDefence.add(p);
@@ -196,7 +199,7 @@ analyzeData getAnalyzeData(Color color, points ps, bool moreAnalyze)
 						}
 						//三四
 						if (weakThreeDefenceMap.find(p.hash()) != weakThreeDefenceMap.end()) {
-							if (weakThreeDefenceMap[p.hash()] != direct) {
+							if (weakThreeDefenceMap[p.hash()] & (((1 << 4) - 1) - (1 << direct))) {
 								if (!weakThreeAndFourDefenceHash.contains(p)) {
 									weakThreeAndFourDefenceHash.add(p);
 									result.weakThreeAndFourDefence.add(p);
@@ -207,7 +210,7 @@ analyzeData getAnalyzeData(Color color, points ps, bool moreAnalyze)
 						if (weakFourDefenceMap.find(p.hash()) == weakFourDefenceMap.end()) {
 							result.weakFourDefence.add(p);
 						}
-						weakFourDefenceMap[p.hash()] = direct;
+						weakFourDefenceMap[p.hash()] |= 1 << direct;
 					}
 					if (otherColorCount == 2 && colorCount == 0) {
 						int headX = x - directX[direct] * 4;
@@ -224,7 +227,7 @@ analyzeData getAnalyzeData(Color color, points ps, bool moreAnalyze)
 										if (sideColor == NULL) {
 											//双三
 											if (weakThreeDefenceMap.find(p.hash()) != weakThreeDefenceMap.end()) {
-												if (weakThreeDefenceMap[p.hash()] != direct) {
+												if (weakThreeDefenceMap[p.hash()] & (((1 << 4) - 1) - (1 << direct))) {
 													if (!doubleWeakThreeDefenceHash.contains(p)) {
 														doubleWeakThreeDefenceHash.add(p);
 														result.doubleWeakThreeDefence.add(p);
@@ -233,7 +236,7 @@ analyzeData getAnalyzeData(Color color, points ps, bool moreAnalyze)
 											}
 											//四三
 											if (weakFourDefenceMap.find(p.hash()) != weakFourDefenceMap.end()) {
-												if (weakFourDefenceMap[p.hash()] != direct) {
+												if (weakFourDefenceMap[p.hash()] & (((1 << 4) - 1) - (1 << direct))) {
 													if (!weakThreeAndFourDefenceHash.contains(p)) {
 														weakThreeAndFourDefenceHash.add(p);
 														result.weakThreeAndFourDefence.add(p);
@@ -244,7 +247,7 @@ analyzeData getAnalyzeData(Color color, points ps, bool moreAnalyze)
 											if (weakThreeDefenceMap.find(p.hash()) == weakThreeDefenceMap.end()) {
 												result.weakThreeDefence.add(p);
 											}
-											weakThreeDefenceMap[p.hash()] = direct;
+											weakThreeDefenceMap[p.hash()] |= 1 << direct;
 										}
 									}
 									sideX = headX - directX[direct];
@@ -254,7 +257,7 @@ analyzeData getAnalyzeData(Color color, points ps, bool moreAnalyze)
 										if (sideColor == NULL) {
 											//双三
 											if (weakThreeDefenceMap.find(p.hash()) != weakThreeDefenceMap.end()) {
-												if (weakThreeDefenceMap[p.hash()] != direct) {
+												if (weakThreeDefenceMap[p.hash()] & (((1 << 4) - 1) - (1 << direct))) {
 													if (!doubleWeakThreeDefenceHash.contains(p)) {
 														doubleWeakThreeDefenceHash.add(p);
 														result.doubleWeakThreeDefence.add(p);
@@ -263,7 +266,7 @@ analyzeData getAnalyzeData(Color color, points ps, bool moreAnalyze)
 											}
 											//四三
 											if (weakFourDefenceMap.find(p.hash()) != weakFourDefenceMap.end()) {
-												if (weakFourDefenceMap[p.hash()] != direct) {
+												if (weakFourDefenceMap[p.hash()] & (((1 << 4) - 1) - (1 << direct))) {
 													if (!weakThreeAndFourDefenceHash.contains(p)) {
 														weakThreeAndFourDefenceHash.add(p);
 														result.weakThreeAndFourDefence.add(p);
@@ -274,7 +277,7 @@ analyzeData getAnalyzeData(Color color, points ps, bool moreAnalyze)
 											if (weakThreeDefenceMap.find(p.hash()) == weakThreeDefenceMap.end()) {
 												result.weakThreeDefence.add(p);
 											}
-											weakThreeDefenceMap[p.hash()] = direct;
+											weakThreeDefenceMap[p.hash()] |= 1 << direct;
 										}
 									}
 								}
@@ -286,7 +289,7 @@ analyzeData getAnalyzeData(Color color, points ps, bool moreAnalyze)
 										if (sideColor == NULL) {
 											//双三
 											if (weakThreeDefenceMap.find(p.hash()) != weakThreeDefenceMap.end()) {
-												if (weakThreeDefenceMap[p.hash()] != direct) {
+												if (weakThreeDefenceMap[p.hash()] & (((1 << 4) - 1) - (1 << direct))) {
 													if (!doubleWeakThreeDefenceHash.contains(p)) {
 														doubleWeakThreeDefenceHash.add(p);
 														result.doubleWeakThreeDefence.add(p);
@@ -295,7 +298,7 @@ analyzeData getAnalyzeData(Color color, points ps, bool moreAnalyze)
 											}
 											//四三
 											if (weakFourDefenceMap.find(p.hash()) != weakFourDefenceMap.end()) {
-												if (weakFourDefenceMap[p.hash()] != direct) {
+												if (weakFourDefenceMap[p.hash()] & (((1 << 4) - 1) - (1 << direct))) {
 													if (!weakThreeAndFourDefenceHash.contains(p)) {
 														weakThreeAndFourDefenceHash.add(p);
 														result.weakThreeAndFourDefence.add(p);
@@ -306,7 +309,7 @@ analyzeData getAnalyzeData(Color color, points ps, bool moreAnalyze)
 											if (weakThreeDefenceMap.find(p.hash()) == weakThreeDefenceMap.end()) {
 												result.weakThreeDefence.add(p);
 											}
-											weakThreeDefenceMap[p.hash()] = direct;
+											weakThreeDefenceMap[p.hash()] |= 1 << direct;
 										}
 									}
 								}
@@ -318,7 +321,7 @@ analyzeData getAnalyzeData(Color color, points ps, bool moreAnalyze)
 										if (sideColor == NULL) {
 											//双三
 											if (weakThreeDefenceMap.find(p.hash()) != weakThreeDefenceMap.end()) {
-												if (weakThreeDefenceMap[p.hash()] != direct) {
+												if (weakThreeDefenceMap[p.hash()] & (((1 << 4) - 1) - (1 << direct))) {
 													if (!doubleWeakThreeDefenceHash.contains(p)) {
 														doubleWeakThreeDefenceHash.add(p);
 														result.doubleWeakThreeDefence.add(p);
@@ -327,7 +330,7 @@ analyzeData getAnalyzeData(Color color, points ps, bool moreAnalyze)
 											}
 											//四三
 											if (weakFourDefenceMap.find(p.hash()) != weakFourDefenceMap.end()) {
-												if (weakFourDefenceMap[p.hash()] != direct) {
+												if (weakFourDefenceMap[p.hash()] & (((1 << 4) - 1) - (1 << direct))) {
 													if (!weakThreeAndFourDefenceHash.contains(p)) {
 														weakThreeAndFourDefenceHash.add(p);
 														result.weakThreeAndFourDefence.add(p);
@@ -338,7 +341,7 @@ analyzeData getAnalyzeData(Color color, points ps, bool moreAnalyze)
 											if (weakThreeDefenceMap.find(p.hash()) == weakThreeDefenceMap.end()) {
 												result.weakThreeDefence.add(p);
 											}
-											weakThreeDefenceMap[p.hash()] = direct;
+											weakThreeDefenceMap[p.hash()] |= 1 << direct;
 										}
 									}
 								}

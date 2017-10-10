@@ -109,8 +109,8 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType, poi
 		if (targetColor == color) {
 			if (data.doubleWeakFourDefence.count > 0)
 				comboType = FOUR_COMBO;
-			if (data.weakThreeAndFourDefence.count > 0)
-				comboType == FOUR_COMBO;
+			if (data.weakThreeAndFourDefence.count > 0) 
+				comboType = FOUR_COMBO;
 		}
 	//如果对面形成活三，则转换为冲四
 	if (comboType == THREE_COMBO) {

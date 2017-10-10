@@ -33,9 +33,9 @@ void removeStar(Color** map) {
 
 void testCombo() {
 	long long t = getSystemTime();
-	Color ** map = readMap();
-	//Color ** map = readMap("failCombo.txt");
-	Color color = BLACK;
+	//Color ** map = readMap();
+	Color ** map = readMap("failCombo.txt");
+	Color color = WHITE;
 	initGameMap(map);
 	initScore(color);
 	int level = 15;
@@ -60,11 +60,11 @@ void testExpand() {
 }
 
 void testAnalyze() {
-	Color ** map = readMap("analyze.txt");
+	Color ** map = readMap();
 	initGameMap(map);
 	Color color = WHITE;
 	initScore(color);
-	analyzeData data = getAnalyzeData(color, getNeighbor());
+	analyzeData data = getAnalyzeData(color, getNeighbor(), true);
 
 	printf("5 A\n");
 	printMapWithStars(map, data.fiveAttack);
@@ -83,6 +83,19 @@ void testAnalyze() {
 
 	printf("2 A\n");
 	printMapWithStars(map, data.twoAttack);
+
+	printf("3D\n");
+	printMapWithStars(map, data.weakThreeDefence);
+
+	printf("4D\n");
+	printMapWithStars(map, data.weakFourDefence);
+
+	printf("34D\n");
+	printMapWithStars(map, data.weakThreeAndFourDefence);
+
+	printf("44D\n");
+	printMapWithStars(map, data.doubleWeakFourDefence);
+
 }
 
 void testNeighbor() {
@@ -99,8 +112,9 @@ void testNeighbor() {
 int main()
 {
 	//piskvork();
-	//testCombo();
-	testPlay();
+	testCombo();
+	//testPlay();
+	//testAnalyze();
 	getchar();
 	return 0;
 }
