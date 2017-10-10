@@ -15,7 +15,6 @@ extern int comboTimeOut;
 
 void brain_init()
 {
-	map = getEmptyMap();
 	if (width < 5 || height < 5) {
 		pipeOut("ERROR size of the board");
 		return;
@@ -25,6 +24,7 @@ void brain_init()
 		return;
 	}
 	boardSize = width;
+	map = getEmptyMap();
 	seed = start_time;
 	pipeOut("OK");
 }
