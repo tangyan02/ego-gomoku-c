@@ -13,6 +13,7 @@
 extern bool debugEnable;
 
 void testPlay() {
+	boardSize = 20;
 	debugEnable = true;
 	Color ** map = readMap();
 	gameResult result = search(WHITE, map);
@@ -112,10 +113,10 @@ void testNeighbor() {
 
 int main()
 {
-	piskvork();
+	//piskvork();
 	//testCombo();
-	//testPlay();
+	testPlay();
 	//testAnalyze();
-	//getchar();
+	getchar();
 	return 0;
 }
