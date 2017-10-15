@@ -3,7 +3,7 @@
 #include "analyzeData.h"
 #include "gameMap.h"
 
-extern int boardSize;
+void initAnalyze();
 
 analyzeData getAnalyzeData(Color color, points ps);
 

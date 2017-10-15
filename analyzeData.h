@@ -6,7 +6,7 @@ public:
 	points fourAttack;
 	points fourDefence;
 	points threeAttack;
-	points threeDenfence;
+	points threeDefence;
 	points twoAttack;
 	points weakThreeDefence;
 	points weakFourDefence;

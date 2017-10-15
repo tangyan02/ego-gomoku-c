@@ -12,6 +12,8 @@
 
 extern bool debugEnable;
 
+extern int boardSize;
+
 void testPlay() {
 	boardSize = 20;
 	debugEnable = true;
@@ -81,7 +83,7 @@ void testAnalyze() {
 	printMapWithStars(map, data.threeAttack);
 
 	printf("3 D\n");
-	printMapWithStars(map, data.threeDenfence);
+	printMapWithStars(map, data.threeDefence);
 
 	printf("2 A\n");
 	printMapWithStars(map, data.twoAttack);
@@ -115,6 +117,7 @@ int main()
 {
 	//piskvork();
 	//testCombo();
+	initAnalyze();
 	testPlay();
 	//testAnalyze();
 	getchar();

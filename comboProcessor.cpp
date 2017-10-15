@@ -6,6 +6,10 @@
 #include  "gameMap.h"
 #include  "cache.h"
 
+#define ComboType int
+#define THREE_COMBO 0
+#define FOUR_COMBO 1
+
 static int currentLevel;
 
 static long long startTime;
@@ -27,7 +31,7 @@ points getComboAttackPoints(analyzeData data, ComboType comboType) {
 		return result;
 	}
 	//如果有对方活3，冲四
-	if (data.threeDenfence.count > 0) {
+	if (data.threeDefence.count > 0) {
 		result.addMany(data.fourAttack);
 		return result;
 	}
@@ -48,8 +52,8 @@ points getComboDefencePoints(analyzeData data, ComboType comboType) {
 	}
 	if (comboType == THREE_COMBO) {
 		//如果有对方活3，则防活3或者冲四
-		if (data.threeDenfence.count > 0) {
-			result.addMany(data.threeDenfence);
+		if (data.threeDefence.count > 0) {
+			result.addMany(data.threeDefence);
 			//result.addMany(data.fourAttack);
 			return result;
 		}
@@ -114,7 +118,7 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType, poi
 		}
 	//如果对面形成活三，则转换为冲四
 	if (comboType == THREE_COMBO) {
-		if (color == targetColor && data.threeDenfence.count > 0) {
+		if (color == targetColor && data.threeDefence.count > 0) {
 			comboType = FOUR_COMBO;
 		}
 	}
