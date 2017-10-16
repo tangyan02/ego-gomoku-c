@@ -41,7 +41,13 @@ points getExpandPoints(analyzeData data, points neighbors)
 		return result;
 	}
 	pointHash hash = pointHash();
-	result.addMany(data.fourAttack);
+	for (int i = 0; i < data.fourAttack.count; i++) {
+		point p = data.fourAttack.list[i];
+		if (!hash.contains(p)) {
+			hash.add(p);
+			result.add(p);
+		}
+	}
 	for (int i = 0; i < data.threeAttack.count; i++) {
 		point p = data.threeAttack.list[i];
 		if (!hash.contains(p)) {
