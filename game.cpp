@@ -225,15 +225,11 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 	if (timeOutEnable) {
 		return 0;
 	}
-	//查表
+	nodeCount++;
 	long long hashCode = getMapHashCode();
-	if (containsSearchKey(hashCode, alpha, beta)) {
-		return getSearchValue(hashCode, alpha, beta);
-	}
 
 	//叶子分数计算
 	if (level == 0) {
-		nodeCount++;
 		return getScoreValue();
 	}
 	//分析棋形
@@ -295,7 +291,6 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 				alpha = value;
 				if (value > beta) {
 					cache[hashCode] = p;
-					addSearchEntry(hashCode, extreme, alpha, beta);
 					return value;
 				}
 			}
@@ -314,7 +309,6 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 	}
 
 	cache[hashCode] = extremePoint;
-	addSearchEntry(hashCode, extreme, alpha, beta);
 	return extreme;
 }
 

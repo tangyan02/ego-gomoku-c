@@ -13,7 +13,7 @@
 extern bool debugEnable;
 
 void testPlay() {
-	boardSize = 20;
+	boardSize = 15;
 	debugEnable = true;
 	Color ** map = readMap();
 	gameResult result = search(WHITE, map);
