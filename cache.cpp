@@ -15,6 +15,8 @@ static int comboCacheCount = 0;
 
 
 int getKey(long long key) {
+	if (key < 0)
+		key = -key;
 	return key%hashSize;
 }
 

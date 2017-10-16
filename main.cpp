@@ -66,7 +66,7 @@ void testAnalyze() {
 	initGameMap(map);
 	Color color = BLACK;
 	initScore(color);
-	analyzeData data = getAnalyzeData(color, getNeighbor(), true);
+	analyzeData data = getAnalyzeData(color, getNeighbor());
 
 	printf("5 A\n");
 	printMapWithStars(map, data.fiveAttack);
@@ -85,19 +85,6 @@ void testAnalyze() {
 
 	printf("2 A\n");
 	printMapWithStars(map, data.twoAttack);
-
-	printf("w3D\n");
-	printMapWithStars(map, data.weakThreeDefence);
-
-	printf("w4D\n");
-	printMapWithStars(map, data.weakFourDefence);
-
-	printf("34D\n");
-	printMapWithStars(map, data.weakThreeAndFourDefence);
-
-	printf("44D\n");
-	printMapWithStars(map, data.doubleWeakFourDefence);
-
 }
 
 void testNeighbor() {
@@ -113,10 +100,10 @@ void testNeighbor() {
 
 int main()
 {
-	//piskvork();
+	piskvork();
 	//testCombo();
-	testPlay();
+	//testPlay();
 	//testAnalyze();
-	getchar();
+	//getchar();
 	return 0;
 }
