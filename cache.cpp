@@ -2,33 +2,43 @@
 #include "cache.h"
 #include "unordered_map"
 
+const int hashSize = 1 << 18;
+
+struct comboNode {
+	long long key;
+	int flag;
+};
+
 extern int cacheSize;
-unordered_map<long long, int> comboCache;
-int comboCacheCount = 0;
+static comboNode comboCache[hashSize];
+static int comboCacheCount = 0;
 
-bool containsCombo(long long key)
-{
-	if (comboCache.find(key) != comboCache.end())
-		return true;
-	return false;
+
+int getKey(long long key) {
+	return key%hashSize;
 }
-
 
 void addComboEntry(long long key, bool value)
 {
-	if (comboCacheCount > cacheSize)
-		return;
-	comboCache[key] = value;
-	comboCacheCount++;
+	comboNode* node = &comboCache[getKey(key)];
+	node->key = key;
+	if (value)
+		node->flag = COMBO_TRUE;
+	else
+		node->flag = COMBO_FALSE;
 }
 
-bool getComboValue(long long key)
+int getComboValue(long long key)
 {
-	return comboCache[key];
+	if (comboCache[getKey(key)].key == key) {
+		return comboCache[getKey(key)].flag;
+	}
+	return COMBO_EMPTY;
 }
 
 void cacheReset()
 {
-	comboCache.clear();
+	for (int i = 0; i < hashSize; i++)
+		comboCache[i].flag = COMBO_EMPTY;
 	comboCacheCount = 0;
 }

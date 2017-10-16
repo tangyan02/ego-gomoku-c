@@ -69,8 +69,13 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType, poi
 	}
 	//查询缓存
 	long long hashCode = getMapHashCode();
-	if (containsCombo(hashCode))
-		return getComboValue(hashCode);
+	int comboValue = getComboValue(hashCode);
+	if (comboValue != COMBO_EMPTY) {
+		if (comboValue == COMBO_TRUE)
+			return true;
+		else
+			return false;
+	}
 
 	if (level == 0) {
 		result.node++;
@@ -109,7 +114,7 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType, poi
 		if (targetColor == color) {
 			if (data.doubleWeakFourDefence.count > 0)
 				comboType = FOUR_COMBO;
-			if (data.weakThreeAndFourDefence.count > 0) 
+			if (data.weakThreeAndFourDefence.count > 0)
 				comboType = FOUR_COMBO;
 		}
 	//如果对面形成活三，则转换为冲四
