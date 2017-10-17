@@ -46,6 +46,19 @@ int getScore(point p, Color color) {
 	return value;
 }
 
+void sort(points *neighbors, int score[]) {
+	for (int i = 0; i < neighbors->count; i++)
+		for (int j = i; j < neighbors->count; j++)
+			if (score[i] < score[j]) {
+				int t = score[i];
+				score[i] = score[j];
+				score[j] = t;
+				point p = neighbors->list[i];
+				neighbors->list[i] = neighbors->list[j];
+				neighbors->list[j] = p;
+			}
+}
+
 void sortPoints(points *neighbors, Color color) {
 	//棋类知识检查
 	points fourAttack;
@@ -67,7 +80,7 @@ void sortPoints(points *neighbors, Color color) {
 			point leftPoint = point(neighbors->list[i].x - 5 * directX[k], neighbors->list[i].y - 5 * directY[k]);
 			point rightPoint = point(neighbors->list[i].x + 5 * directX[k], neighbors->list[i].y + 5 * directY[k]);
 			int left = getPointTableColor(leftPoint.x, leftPoint.y, color);
-			int right = getPointTableColor( rightPoint.x, rightPoint.y, color);
+			int right = getPointTableColor(rightPoint.x, rightPoint.y, color);
 			if (threeDefenceTable[key][left][right])
 				threeDefence.add(neighbors->list[i]);
 		}
@@ -85,21 +98,12 @@ void sortPoints(points *neighbors, Color color) {
 		neighbors->count = count;
 		return;
 	}
-	
+
 	//计算得分
 	for (int i = 0; i < neighbors->count; i++) {
 		score[i] = getScore(neighbors->list[i], color);
 	}
-	for (int i = 0; i < neighbors->count; i++)
-		for (int j = i; j < neighbors->count; j++)
-			if (score[i] < score[j]) {
-				int t = score[i];
-				score[i] = score[j];
-				score[j] = t;
-				point p = neighbors->list[i];
-				neighbors->list[i] = neighbors->list[j];
-				neighbors->list[j] = p;
-			}
+	sort(neighbors, score);
 }
 
 points getExpandPoints(analyzeData data, points neighbors)
