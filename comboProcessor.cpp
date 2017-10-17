@@ -85,11 +85,7 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType) {
 		result.node++;
 		return false;
 	}
-	//分析前两步周围的点
-	points basePoints;
-	//if (father == nullptr)
-		basePoints = getNeighbor();
-	analyzeData data = getAnalyzeData(color, basePoints);
+	analyzeData data = getAnalyzeData(color, getNeighbor());
 	//如果对面形成活三，则转换为冲四
 	if (comboType == THREE_COMBO) {
 		if (color == targetColor && data.threeDefence.count > 0) {
