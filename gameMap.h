@@ -11,6 +11,8 @@ Color getColor(point p);
 
 int getMapLineKey(int x, int y, int direct, Color targetColor);
 
+int getPointTableColor(int x, int y, Color targetColor);
+
 points getNeighbor();
 
 points getPointLinesNeighbor(point p);

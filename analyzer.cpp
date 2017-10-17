@@ -19,14 +19,12 @@
 #define THREE_DEFENCE 5
 #define TWO_ATTACK 6
 
-static const int maxTableSize = 65536;
-
-static bool fiveAttackTable[maxTableSize];
-static bool fourAttackTable[maxTableSize];
-static bool fourDefenceTable[maxTableSize];
-static bool threeAttackTable[maxTableSize];
-static bool threeDefenceTable[maxTableSize][4][4];
-static bool twoAttackTable[maxTableSize];
+bool fiveAttackTable[MAX_TABLE_SIZE];
+bool fourAttackTable[MAX_TABLE_SIZE];
+bool fourDefenceTable[MAX_TABLE_SIZE];
+bool threeAttackTable[MAX_TABLE_SIZE];
+bool twoAttackTable[MAX_TABLE_SIZE];
+bool threeDefenceTable[MAX_TABLE_SIZE][4][4];
 
 static int directX[] = { 0, 1, 1, 1 };
 

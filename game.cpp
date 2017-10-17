@@ -232,15 +232,14 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 	if (level == 0) {
 		return getScoreValue();
 	}
-	//分析棋形
-	points neighbors = getNeighbor();
-	analyzeData data = getAnalyzeData(color, neighbors);
 	//输赢判定
-	if (data.fiveAttack.count > 0) {
+	Color winColor = win(getMap());
+	if (winColor != NULL) {
 		return MAX_VALUE;
 	}
-	//计算扩展节点
-	points ps = getExpandPoints(data, neighbors);
+	//排序
+	points ps = getNeighbor();
+	sortPoints(&ps, color);
 
 	//调整最优节点顺序
 	if (cacheLast.find(hashCode) != cacheLast.end()) {

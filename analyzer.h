@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "analyzeData.h"
 #include "gameMap.h"
+#define MAX_TABLE_SIZE 1<<16
 
 void initAnalyze();
 
