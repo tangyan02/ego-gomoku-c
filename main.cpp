@@ -15,7 +15,7 @@ extern bool debugEnable;
 extern int boardSize;
 
 void testPlay() {
-	boardSize = 20;
+	boardSize = 15;
 	debugEnable = true;
 	Color ** map = readMap();
 	gameResult result = search(WHITE, map);
@@ -68,7 +68,7 @@ void testAnalyze() {
 	initGameMap(map);
 	Color color = BLACK;
 	initScore(color);
-	analyzeData data = getAnalyzeData(color, getNeighbor(), true);
+	analyzeData data = getAnalyzeData(color, getNeighbor());
 
 	printf("5 A\n");
 	printMapWithStars(map, data.fiveAttack);
@@ -87,19 +87,6 @@ void testAnalyze() {
 
 	printf("2 A\n");
 	printMapWithStars(map, data.twoAttack);
-
-	printf("w3D\n");
-	printMapWithStars(map, data.weakThreeDefence);
-
-	printf("w4D\n");
-	printMapWithStars(map, data.weakFourDefence);
-
-	printf("34D\n");
-	printMapWithStars(map, data.weakThreeAndFourDefence);
-
-	printf("44D\n");
-	printMapWithStars(map, data.doubleWeakFourDefence);
-
 }
 
 void testNeighbor() {
@@ -115,9 +102,9 @@ void testNeighbor() {
 
 int main()
 {
+	initAnalyze();
 	//piskvork();
 	//testCombo();
-	initAnalyze();
 	testPlay();
 	//testAnalyze();
 	getchar();

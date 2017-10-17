@@ -2,68 +2,45 @@
 #include "cache.h"
 #include "unordered_map"
 
-unordered_map<long long, int> cache;
+const int hashSize = 1 << 18;
+
+struct comboNode {
+	long long key;
+	int flag;
+};
+
 extern int cacheSize;
-int cacheCount = 0;
-
-unordered_map<long long, int> comboCache;
-int comboCacheCount = 0;
+static comboNode comboCache[hashSize];
+static int comboCacheCount = 0;
 
 
-long long getFinalKey(long long key, int alpha, int beta) {
-	key ^= alpha;
-	key ^= beta;
-	return key;
+int getKey(long long key) {
+	if (key < 0)
+		key = -key;
+	return key%hashSize;
 }
-
-bool containsSearchKey(long long key, int alpha, int beta)
-{
-	key = getFinalKey(key, alpha, beta);
-	if (cache.find(key) != cache.end())
-		return true;
-	return false;
-}
-
-int getSearchValue(long long key, int alpha, int beta)
-{
-	key = getFinalKey(key, alpha, beta);
-	return cache[key];
-}
-
-void addSearchEntry(long long key, int value, int alpha, int beta)
-{
-	key = getFinalKey(key, alpha, beta);
-	if (cacheCount > cacheSize)
-		return;
-	cache[key] = value;
-	cacheCount++;
-}
-
-bool containsCombo(long long key)
-{
-	if (comboCache.find(key) != comboCache.end())
-		return true;
-	return false;
-}
-
 
 void addComboEntry(long long key, bool value)
 {
-	if (comboCacheCount > cacheSize)
-		return;
-	comboCache[key] = value;
-	comboCacheCount++;
+	comboNode* node = &comboCache[getKey(key)];
+	node->key = key;
+	if (value)
+		node->flag = COMBO_TRUE;
+	else
+		node->flag = COMBO_FALSE;
 }
 
-bool getComboValue(long long key)
+int getComboValue(long long key)
 {
-	return comboCache[key];
+	if (comboCache[getKey(key)].key == key) {
+		return comboCache[getKey(key)].flag;
+	}
+	return COMBO_EMPTY;
 }
 
 void cacheReset()
 {
-	cache.clear();
-	comboCache.clear();
-	cacheCount = 0;
+	for (int i = 0; i < hashSize; i++)
+		comboCache[i].flag = COMBO_EMPTY;
 	comboCacheCount = 0;
 }

@@ -1,0 +1,12 @@
+diff a/game.cpp b/game.cpp	(rejected hunks)
+@@ -138,6 +138,10 @@
+ 		return value;
+ 	}
+ 
++	//��������
++	points neighbors = getNeighbor();
++	analyzeData data = getAnalyzeData(color, neighbors);
++
+ 	//Ҷ�ӷ�������
+ 	if (level <= 0) {
+ 		int value = getScoreValue();
