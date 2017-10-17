@@ -54,9 +54,8 @@ gameResult search(Color aiColor, Color** map)
 	initScore(aiColor);
 
 	//≥ı º∑÷Œˆ
-	points neighbors = getNeighbor();
-	analyzeData data = getAnalyzeData(aiColor, neighbors);
-	points ps = getExpandPoints(data, neighbors);
+	points ps = getNeighbor();
+	sortPoints(&ps, aiColor);
 
 	if (ps.count == 0) {
 		gameResult.result = point(boardSize / 2, boardSize / 2);

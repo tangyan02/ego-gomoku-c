@@ -53,16 +53,6 @@ void testCombo() {
 	printf("%lld ms\n", getSystemTime() - t);
 }
 
-void testExpand() {
-	Color ** map = readMap("expand.txt");
-	initGameMap(map);
-	Color color = BLACK;
-	initScore(color);
-	analyzeData data = getAnalyzeData(color, getNeighbor());
-	points ps = getExpandPoints(data, getNeighbor());
-	printMapWithStars(map, ps);
-}
-
 void testAnalyze() {
 	Color ** map = readMap("analyze2.txt");
 	initGameMap(map);
