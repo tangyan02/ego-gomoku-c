@@ -19,7 +19,6 @@
 #include "config.h"
 #include "point.h"
 #include "points.h"
-#include "pointSet.h"
 #include "pointHash.h"
 #include "gameResult.h"
 #include "comboResult.h"

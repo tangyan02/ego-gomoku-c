@@ -61,52 +61,6 @@ int getLineKey(int line[]) {
 	return key;
 }
 
-int getLineKey(Color** map, point p, int direct, Color targetColor) {
-	int key = 0;
-	int line[8];
-	int x = p.x - 4 * directX[direct];
-	int y = p.y - 4 * directY[direct];
-	//printf("target color %d\n", targetColor);
-	for (int i = 0; i < 4; i++) {
-		//printf("color[%d][%d] %d \n", x, y, map[x][y]);
-		if (!reachable(x, y))
-			line[i] = INVALID_COLOR;
-		else {
-			if (map[x][y] == targetColor)
-				line[i] = CURRENT_COLOR;
-			if (map[x][y] == NULL)
-				line[i] = NULL_COLOR;
-			if (map[x][y] == getOtherColor(targetColor))
-				line[i] = OTHER_COLOR;
-		}
-		x += directX[direct];
-		y += directY[direct];
-	}
-
-	for (int i = 4; i < 8; i++) {
-		x += directX[direct];
-		y += directY[direct];
-		//printf("color[%d][%d] %d \n", x, y, map[x][y]);
-		if (!reachable(x, y))
-			line[i] = INVALID_COLOR;
-		else {
-			if (map[x][y] == targetColor)
-				line[i] = CURRENT_COLOR;
-			if (map[x][y] == NULL)
-				line[i] = NULL_COLOR;
-			if (map[x][y] == getOtherColor(targetColor))
-				line[i] = OTHER_COLOR;
-		}
-	}
-	//printMapWithStar(map, p);
-	//printf("%d %d - %d\n", p.x, p.y, direct);
-	//for (int i = 0; i < 8; i++) {
-	//	printf("%d", line[i]);
-	//}
-	//printf("\n");
-	return getLineKey(line);
-}
-
 void caculate(int line[]) {
 	int currentCountList[8] = { 0 };
 	int otherCountList[8] = { 0 };
@@ -228,47 +182,6 @@ void caculate(int line[]) {
 	}
 }
 
-void caculate(Color** map, point p, int direct, Color targetColor) {
-	int key = 0;
-	int line[8];
-	int x = p.x - 4 * directX[direct];
-	int y = p.y - 4 * directY[direct];
-	//printf("target color %d\n", targetColor);
-	for (int i = 0; i < 4; i++) {
-		//printf("color[%d][%d] %d \n", x, y, map[x][y]);
-		if (!reachable(x, y))
-			line[i] = INVALID_COLOR;
-		else {
-			if (map[x][y] == targetColor)
-				line[i] = CURRENT_COLOR;
-			if (map[x][y] == NULL)
-				line[i] = NULL_COLOR;
-			if (map[x][y] == getOtherColor(targetColor))
-				line[i] = OTHER_COLOR;
-		}
-		x += directX[direct];
-		y += directY[direct];
-	}
-
-	for (int i = 4; i < 8; i++) {
-		x += directX[direct];
-		y += directY[direct];
-		//printf("color[%d][%d] %d \n", x, y, map[x][y]);
-		if (!reachable(x, y))
-			line[i] = INVALID_COLOR;
-		else {
-			if (map[x][y] == targetColor)
-				line[i] = CURRENT_COLOR;
-			if (map[x][y] == NULL)
-				line[i] = NULL_COLOR;
-			if (map[x][y] == getOtherColor(targetColor))
-				line[i] = OTHER_COLOR;
-		}
-	}
-	caculate(line);
-}
-
-
 void buildLine(int i, int line[]) {
 	if (i == 0) {
 		caculate(line);
@@ -299,7 +212,8 @@ analyzeData getAnalyzeData(Color color, points ps) {
 		bool ok = false;
 		point p = ps.list[i];
 		for (int k = 0; k < 4; k++) {
-			int key = getLineKey(map, p, k, color);
+			int key = getMapLineKey(p.x, p.y, k, color);
+			
 			if (fiveAttackTable[key]) {
 				if (!fiveAttackHash.contains(p)) {
 					result.fiveAttack.add(p);

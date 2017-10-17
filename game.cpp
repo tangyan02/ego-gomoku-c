@@ -235,23 +235,6 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 	//·ÖÎöÆåÐÎ
 	points neighbors = getNeighbor();
 	analyzeData data = getAnalyzeData(color, neighbors);
-	/*analyzeData data2 = getAnalyzeData(color, neighbors);
-	if (data.fiveAttack.count != data2.fiveAttack.count) {
-		printf("wtf\n");
-	}
-	if (data.fourAttack.count != data2.fourAttack.count) {
-		printf("wtf\n");
-	}
-	if (data.threeAttack.count != data2.threeAttack.count) {
-		printf("wtf\n");
-	}
-	if (data.fourDefence.count != data2.fourDefence.count) {
-		printMapWithStar(getMap(), data.fourDefence.list[0]);
-		printf("wtf\n");
-	}
-	if (data.twoAttack.count != data2.twoAttack.count) {
-		printf("wtf\n");
-	}*/
 	//ÊäÓ®ÅÐ¶¨
 	if (data.fiveAttack.count > 0) {
 		return MAX_VALUE;
