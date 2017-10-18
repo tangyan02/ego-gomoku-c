@@ -312,7 +312,6 @@ analyzeData getAnalyzeData(Color color, points ps) {
 	pointHash fourDefenceHash;
 	pointHash threeAttackHash;
 	pointHash threeDenfenceHash;
-	pointHash twoAttackHash;
 
 	for (int i = 0; i < ps.count; i++) {
 		bool ok = false;
@@ -353,12 +352,6 @@ analyzeData getAnalyzeData(Color color, points ps) {
 					result.threeDefence.add(p);
 					threeDenfenceHash.add(p);
 				}
-			if (twoAttackTable[key]) {
-				if (!twoAttackHash.contains(p)) {
-					result.twoAttack.add(p);
-					twoAttackHash.add(p);
-				}
-			}
 		}
 	}
 

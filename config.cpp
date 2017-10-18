@@ -5,7 +5,7 @@ int boardSize = 15;
 
 int searchLevel = 20;
 
-int comboLevel = 0;
+int comboLevel = 35;
 
 int nodeLimit = 99;
 

@@ -75,8 +75,6 @@ void testAnalyze() {
 	printf("3 D\n");
 	printMapWithStars(map, data.threeDefence);
 
-	printf("2 A\n");
-	printMapWithStars(map, data.twoAttack);
 }
 
 void testNeighbor() {

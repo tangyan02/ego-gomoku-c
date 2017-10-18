@@ -27,7 +27,7 @@ points getComboAttackPoints(analyzeData data, ComboType comboType) {
 	//如果有对方冲4，则防冲4
 	points result;
 	if (data.fourDefence.count > 0) {
-		result.addMany(data.fourDefence);
+		result.add(data.fourDefence.list[0]);
 		return result;
 	}
 	//如果有对方活3，冲四
@@ -47,7 +47,7 @@ points getComboDefencePoints(analyzeData data, ComboType comboType) {
 	points result;
 	//如果有对方冲4，则防冲4
 	if (data.fourDefence.count > 0) {
-		result.addMany(data.fourDefence);
+		result.add(data.fourDefence.list[0]);
 		return result;
 	}
 	if (comboType == THREE_COMBO) {
