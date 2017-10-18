@@ -231,11 +231,16 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 	if (level == 0) {
 		return getScoreValue();
 	}
+
 	// ‰”Æ≈–∂®
 	Color winColor = win(getMap());
 	if (winColor != NULL) {
-		return MAX_VALUE;
+		if (winColor == color)
+			return MAX_VALUE;
+		else
+			return MIN_VALUE;
 	}
+
 	//≈≈–Ú
 	points ps = getNeighbor();
 	sortPoints(&ps, color);
