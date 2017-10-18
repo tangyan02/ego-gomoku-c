@@ -168,7 +168,7 @@ void caculate(int line[]) {
 								if (left == NULL_COLOR)
 									threeDefenceTable[key][left][right] = true;
 						}
-						if (i == 8) {
+						if (i == 7) {
 							//OOOO-XXXO
 							if (tailColor == NULL_COLOR) {
 								if (line[3] == NULL_COLOR || right == NULL_COLOR)
