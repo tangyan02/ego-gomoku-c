@@ -107,7 +107,7 @@ void caculate(int line[]) {
 		}
 	}
 
-	for (int i = 4; i < 7; i++) {
+	for (int i = 3; i < 8; i++) {
 		int current = currentCountList[i];
 		int other = otherCountList[i];
 		int headColor = line[i - 3];
@@ -235,6 +235,8 @@ int updateLineKey(int x, int y, int direct, int n, Color targetColor) {
 		key = whiteLineKey[px][py][direct];
 	else
 		key = blackLineKey[px][py][direct];
+
+
 	key &= t;
 	tableColor = tableColor << (n * 2);
 	key |= tableColor;
