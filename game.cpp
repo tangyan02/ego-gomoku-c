@@ -236,6 +236,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 
 	//获取扩展节点
 	points ps = getNeighbor();
+
 	//输赢判定
 	for (int i = 0; i < ps.count; i++) {
 		point p = ps.list[i];
@@ -307,6 +308,14 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 		if (level == currentLevel) {
 			if (debugEnable)
 				printf("(%d, %d) value: %d count: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - searchStartTime);
+
+			if (value == MAX_VALUE) {
+				currentPointResult = p;
+				return value;
+			}
+			if (value == MIN_VALUE) {
+				loseSet.add(p);
+			}
 		}
 
 	}
