@@ -57,13 +57,24 @@ void sort(points *neighbors, int score[]) {
 
 void sortPoints(points *neighbors, Color color) {
 	//棋类知识检查
+	for (int i = 0; i < neighbors->count; i++) {
+		//冲五
+		for (int k = 0; k < 4; k++) {
+			int key = getMapLineKey(neighbors->list[i].x, neighbors->list[i].y, k, color);
+			if (fiveAttackTable[key]) {
+				neighbors->list[0] = neighbors->list[i];
+				neighbors->count = 1;
+				return;
+			}
+		}
+	}
 	points fourAttack;
 	points threeDefence;
 	for (int i = 0; i < neighbors->count; i++) {
 		for (int k = 0; k < 4; k++) {
-			//冲五和防四
+			//防四
 			int key = getMapLineKey(neighbors->list[i].x, neighbors->list[i].y, k, color);
-			if (fourDefenceTable[key] || fiveAttackTable[key]) {
+			if (fourDefenceTable[key]) {
 				neighbors->list[0] = neighbors->list[i];
 				neighbors->count = 1;
 				return;

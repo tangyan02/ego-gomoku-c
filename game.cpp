@@ -23,6 +23,8 @@ extern int comboTimeOut;
 
 extern bool debugEnable;
 
+extern bool fiveAttackTable[MAX_TABLE_SIZE];
+
 static int nodeCount;
 
 static long long searchStartTime;
@@ -232,17 +234,20 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 		return getScoreValue();
 	}
 
+	//获取扩展节点
+	points ps = getNeighbor();
 	//输赢判定
-	Color winColor = win(getMap());
-	if (winColor != NULL) {
-		if (winColor == color)
-			return MAX_VALUE;
-		else
-			return MIN_VALUE;
+	for (int i = 0; i < ps.count; i++) {
+		point p = ps.list[i];
+		for (int k = 0; k < 4; k++) {
+			int key = getMapLineKey(p.x, p.y, k, color);
+			if (fiveAttackTable[key]) {
+				return MAX_VALUE;
+			}
+		}
 	}
 
 	//排序
-	points ps = getNeighbor();
 	sortPoints(&ps, color);
 
 	//调整最优节点顺序
