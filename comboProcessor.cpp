@@ -65,7 +65,7 @@ void recordCombo(bool value) {
 	addComboEntry(getMapHashCode(), value);
 }
 
-bool dfsKill(Color color, Color targetColor, int level, ComboType comboType) {
+bool dfsKill(Color color, Color targetColor, int level, ComboType comboType, point* father, point* grandFather) {
 	//超时判断
 	if (getSystemTime() - startTime > limitTime) {
 		result.timeOut = true;
@@ -85,7 +85,34 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType) {
 		result.node++;
 		return false;
 	}
-	analyzeData data = getAnalyzeData(color, getNeighbor());
+	//分析前两步周围的点
+	points basePoints;
+	if (father == nullptr)
+		basePoints = getNeighbor();
+	else {
+		if (grandFather == nullptr)
+			basePoints = getPointLinesNeighbor(*father);
+		else {
+			points fatherPoints = getPointLinesNeighbor(*father);
+			points grandPoints = getPointLinesNeighbor(*grandFather);
+			pointHash hash;
+			for (int i = 0; i < fatherPoints.count; i++) {
+				point p = fatherPoints.list[i];
+				if (!hash.contains(p)) {
+					basePoints.add(p);
+					hash.add(fatherPoints.list[i]);
+				}
+			}
+			for (size_t i = 0; i < grandPoints.count; i++) {
+				point p = grandPoints.list[i];
+				if (!hash.contains(p)) {
+					basePoints.add(p);
+					hash.add(grandPoints.list[i]);
+				}
+			}
+		}
+	}
+	analyzeData data = getAnalyzeData(color, basePoints);
 	//如果对面形成活三，则转换为冲四
 	if (comboType == THREE_COMBO) {
 		if (color == targetColor && data.threeDefence.count > 0) {
@@ -106,7 +133,7 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType) {
 		{
 			point p = ps.list[i];
 			setColor(p, color, NULL, targetColor);
-			bool value = dfsKill(getOtherColor(color), targetColor, level - 1, comboType);
+			bool value = dfsKill(getOtherColor(color), targetColor, level - 1, comboType, &p, father);
 			setColor(p, NULL, color, targetColor);
 			if (level == currentLevel && value) {
 				result.p = p;
@@ -135,7 +162,7 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType) {
 		{
 			point p = ps.list[i];
 			setColor(p, color, NULL, targetColor);
-			bool value = dfsKill(getOtherColor(color), targetColor, level - 1, comboType);
+			bool value = dfsKill(getOtherColor(color), targetColor, level - 1, comboType, &p, father);
 			setColor(p, NULL, color, targetColor);
 			if (!value) {
 				recordCombo(false);
@@ -159,7 +186,7 @@ comboResult canKill(Color targetColor, int level, long long startTimeValue, long
 	result.reset();
 	cacheReset();
 	dfsKill(targetColor, targetColor,
-		level, FOUR_COMBO);
+		level, FOUR_COMBO, nullptr, nullptr);
 	if (result.win) {
 		result.fourWin = true;
 		return result;
@@ -168,7 +195,7 @@ comboResult canKill(Color targetColor, int level, long long startTimeValue, long
 	result.reset();
 	cacheReset();
 	dfsKill(getOtherColor(targetColor), getOtherColor(targetColor),
-		level, FOUR_COMBO);
+		level, FOUR_COMBO, nullptr, nullptr);
 	if (result.win) {
 		result.win = false;
 		return result;
@@ -178,7 +205,7 @@ comboResult canKill(Color targetColor, int level, long long startTimeValue, long
 	result.reset();
 	cacheReset();
 	dfsKill(targetColor, targetColor,
-		level, THREE_COMBO);
+		level, THREE_COMBO, nullptr, nullptr);
 	if (result.win) {
 		result.fourWin = false;
 		return result;
