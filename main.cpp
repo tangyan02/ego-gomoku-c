@@ -94,7 +94,7 @@ void testNeighbor() {
 int main()
 {
 	initAnalyze();
-	//piskvork();
+	piskvork();
 	//testCombo();
 	testPlay();
 	//testAnalyze();

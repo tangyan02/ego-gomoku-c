@@ -108,7 +108,7 @@ void brain_turn()
 	comboTimeOut = thisTimeOut - timeOut;
 	gameResult result = search(BLACK, map);
 	point p = result.result;
-	pipeOut("MESSAGE [%d,%d] value %d, level %d, combo %d, nodes %d, speed %d k", p.x, p.y, result.value, result.level, result.combo, result.node, result.speed);
+	pipeOut("MESSAGE [%d,%d] value %d, level %d, extend %d, combo %d, nodes %d, speed %d k", p.x, p.y, result.value, result.level, result.extend, result.combo, result.node, result.speed);
 	do_mymove(p.x, p.y);
 }
 

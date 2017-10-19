@@ -95,9 +95,9 @@ int getColorCount(Color color, int x, int y, int direct)
 
 int getValueByCount(int blackCount, int whiteCount, Color color)
 {
-	int ONE = 4;
-	int TWO = 20;
-	int THREE = 40;
+	int ONE = 6;
+	int TWO = 25;
+	int THREE = 100;
 	float weight = 1.0f;
 
 	int valueWhite = 0;

@@ -34,6 +34,8 @@ static bool timeOutEnable = false;
 
 static int currentLevel;
 
+static int currentExtend;
+
 static point currentPointResult;
 
 static pointHash loseSet;
@@ -182,6 +184,7 @@ gameResult search(Color aiColor, Color** map)
 		cache.clear();
 
 		currentLevel = level;
+		currentExtend = 0;
 		Color color = aiColor;
 		int alpha = MIN_VALUE;
 		int beta = MAX_VALUE;
@@ -203,8 +206,9 @@ gameResult search(Color aiColor, Color** map)
 			gameResult.node = nodeCount;
 			gameResult.value = value;
 			gameResult.level = level;
+			gameResult.extend = currentExtend;
 			if (debugEnable) {
-				printf("level %d, speed %d k, time %lld ms\n", level, speed, getSystemTime() - t);
+				printf("level %d, extend %d, speed %d k, time %lld ms\n", level, currentExtend, speed, getSystemTime() - t);
 				printMapWithStar(map, currentPointResult);
 			}
 			if (value == MAX_VALUE)
@@ -234,7 +238,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	points ps;
 
 	//µ•≤Ω—”…Ï
-	if (level == 0 && extend < currentLevel) {
+	if (level <= 0 && extend < currentLevel) {
 		ps = getNeighbor();
 		bool needExpend = false;
 		for (int i = 0; i < ps.count; i++) {
@@ -252,6 +256,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		if (needExpend) {
 			level++;
 			extend++;
+			currentExtend = extend > currentExtend ? extend : currentExtend;
 		}
 	}
 
