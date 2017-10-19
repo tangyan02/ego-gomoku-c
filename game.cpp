@@ -24,6 +24,7 @@ extern int comboTimeOut;
 extern bool debugEnable;
 
 extern bool fiveAttackTable[MAX_TABLE_SIZE];
+extern bool fourDefenceTable[MAX_TABLE_SIZE];
 
 static int nodeCount;
 
@@ -185,7 +186,7 @@ gameResult search(Color aiColor, Color** map)
 		int alpha = MIN_VALUE;
 		int beta = MAX_VALUE;
 
-		int value = dfs(level, color, aiColor, alpha, beta);
+		int value = dfs(level, color, aiColor, alpha, beta, 0);
 
 		if (timeOutEnable) {
 			if (debugEnable)
@@ -219,7 +220,7 @@ gameResult search(Color aiColor, Color** map)
 
 /* 零窗口测试法
 */
-int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
+int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) {
 	if (getSystemTime() - searchStartTime > timeOut) {
 		timeOutEnable = true;
 	}
@@ -229,13 +230,42 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 	nodeCount++;
 	long long hashCode = getMapHashCode();
 
-	//叶子分数计算
-	if (level == 0) {
-		return getScoreValue();
+	//获取扩展节点
+	points ps;
+
+	//单步延伸
+	if (level == 0 && extend < currentLevel) {
+		ps = getNeighbor();
+		bool needExpend = false;
+		for (int i = 0; i < ps.count; i++) {
+			if (needExpend)
+				break;
+			point p = ps.list[i];
+			for (int k = 0; k < 4; k++) {
+				int key = getMapLineKey(p.x, p.y, k, color);
+				if (fourDefenceTable[key]) {
+					needExpend = true;
+					break;
+				}
+			}
+		}
+		if (needExpend) {
+			level++;
+			extend++;
+		}
 	}
 
-	//获取扩展节点
-	points ps = getNeighbor();
+	//叶子分数计算
+	if (level == 0) {
+		int value = getScoreValue();
+		if (color != aiColor)
+			value = -value;
+		return value;
+	}
+
+	if (ps.count == 0) {
+		ps = getNeighbor();
+	}
 
 	//输赢判定
 	for (int i = 0; i < ps.count; i++) {
@@ -278,12 +308,12 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta) {
 		}
 		else {
 			if (i == 0)
-				value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha);
+				value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha, extend);
 			else {
 				//零窗口测试
-				value = -dfs(level - 1, getOtherColor(color), aiColor, -alpha - 1, -alpha);
+				value = -dfs(level - 1, getOtherColor(color), aiColor, -alpha - 1, -alpha, extend);
 				if (value > alpha && value < beta) {
-					value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha);
+					value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha, extend);
 				}
 			}
 		}
