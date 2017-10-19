@@ -14,8 +14,11 @@ extern bool debugEnable;
 
 extern int boardSize;
 
+extern int comboLevel;
+
 void testPlay() {
-	boardSize = 15;
+	boardSize = 20;
+	comboLevel = 0;
 	debugEnable = true;
 	Color ** map = readMap();
 	gameResult result = search(WHITE, map);
