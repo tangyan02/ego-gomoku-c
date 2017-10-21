@@ -103,7 +103,7 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType, poi
 					hash.add(fatherPoints.list[i]);
 				}
 			}
-			for (size_t i = 0; i < grandPoints.count; i++) {
+			for (int i = 0; i < grandPoints.count; i++) {
 				point p = grandPoints.list[i];
 				if (!hash.contains(p)) {
 					basePoints.add(p);
