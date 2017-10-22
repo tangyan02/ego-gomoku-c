@@ -17,8 +17,8 @@ extern int boardSize;
 extern int comboLevel;
 
 void testPlay() {
-	boardSize = 15;
-	comboLevel = 0;
+	boardSize = 20;
+	comboLevel = 30;
 	debugEnable = true;
 	Color ** map = readMap();
 	gameResult result = search(WHITE, map);
@@ -94,7 +94,7 @@ void testNeighbor() {
 int main()
 {
 	initAnalyze();
-	//piskvork();
+	piskvork();
 	//testCombo();
 	testPlay();
 	//testAnalyze();

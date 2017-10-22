@@ -238,27 +238,27 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	points ps;
 
 	//单步延伸
-	if (level <= 0 && extend < currentLevel) {
-		ps = getNeighbor();
-		bool needExpend = false;
-		for (int i = 0; i < ps.count; i++) {
-			if (needExpend)
-				break;
-			point p = ps.list[i];
-			for (int k = 0; k < 4; k++) {
-				int key = getMapLineKey(p.x, p.y, k, color);
-				if (fourDefenceTable[key]) {
-					needExpend = true;
-					break;
-				}
-			}
-		}
-		if (needExpend) {
-			level++;
-			extend++;
-			currentExtend = extend > currentExtend ? extend : currentExtend;
-		}
-	}
+	//if (level <= 1 && extend < currentLevel) {
+	//	ps = getNeighbor();
+	//	bool needExpend = false;
+	//	for (int i = 0; i < ps.count; i++) {
+	//		if (needExpend)
+	//			break;
+	//		point p = ps.list[i];
+	//		for (int k = 0; k < 4; k++) {
+	//			int key = getMapLineKey(p.x, p.y, k, color);
+	//			if (fourDefenceTable[key]) {
+	//				needExpend = true;
+	//				break;
+	//			}
+	//		}
+	//	}
+	//	if (needExpend) {
+	//		level++;
+	//		extend++;
+	//		currentExtend = extend > currentExtend ? extend : currentExtend;
+	//	}
+	//}
 
 	//叶子分数计算
 	if (level == 0) {
@@ -308,7 +308,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		setPoint(p, color, NULL, aiColor);
 		int value;
 		//先查必败表
-		if (level == currentLevel && loseSet.contains(p)) {
+		if (level == currentLevel && extend == 0 && loseSet.contains(p)) {
 			value = MIN_VALUE;
 		}
 		else {
@@ -340,7 +340,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 			}
 		}
 
-		if (level == currentLevel) {
+		if (level == currentLevel && extend == 0) {
 			if (debugEnable)
 				printf("(%d, %d) value: %d count: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - searchStartTime);
 
@@ -356,7 +356,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	}
 
 	point extremePoint = extremePoints.list[rand() % extremePoints.count];
-	if (level == currentLevel) {
+	if (level == currentLevel && extend == 0) {
 		currentPointResult = extremePoint;
 	}
 
