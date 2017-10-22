@@ -91,28 +91,15 @@ void initGameMap(Color** value) {
 			}
 		}
 
-	//初始化地图和哈希码
+	//初始化棋盘和相关属性
 	for (int i = 0; i < boardSize; i++)
 		for (int j = 0; j < boardSize; j++) {
 			Color color = map[i][j];
 			if (color != NULL) {
-				updateHashCode(i, j, color);
-				bool isAdd = color == NULL ? false : true;
-				updateNeighbor(i, j, isAdd);
+				setColor(i, j, color);
 			}
 		}
-
-	for (int i = 0; i < boardSize; i++)
-		for (int j = 0; j < boardSize; j++) {
-			for (int k = 0; k < 4; k++) {
-				setLineKey(point(i, j), k, BLACK);
-				setLineKey(point(i, j), k, WHITE);
-			}
-		}
-
-	getNeighbor();
 }
-
 
 void setColor(int x, int y, Color color)
 {

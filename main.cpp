@@ -17,7 +17,7 @@ extern int boardSize;
 extern int comboLevel;
 
 void testPlay() {
-	boardSize = 20;
+	boardSize = 15;
 	comboLevel = 0;
 	debugEnable = true;
 	Color ** map = readMap();
