@@ -97,8 +97,8 @@ int getValueByCount(int blackCount, int whiteCount, Color color)
 {
 	int ONE = 10;
 	int TWO = 50;
-	int THREE = 120;
-	int FOUR = 250;
+	int THREE = 100;
+	int FOUR = 200;
 	float weight = 1.0f;
 
 	int valueWhite = 0;
@@ -121,8 +121,8 @@ int getValueByCount(int blackCount, int whiteCount, Color color)
 			valueBlack += TWO;
 		if (blackCount == 3)
 			valueBlack += THREE;
-		if (whiteCount == 4)
-			valueWhite += FOUR;
+		if (blackCount == 4)
+			valueBlack += FOUR;
 	}
 
 	int value = 0;

@@ -99,10 +99,6 @@ void brain_turn()
 			}
 		}
 	}
-	if (pointCount < 40) {
-		long maxTime = info_time_left / (40 - pointCount);
-		thisTimeOut = min(maxTime, thisTimeOut);
-	}
 	pipeOut("MESSAGE time limit %d", thisTimeOut);
 	timeOut = thisTimeOut / 3 * 2;
 	comboTimeOut = thisTimeOut - timeOut;

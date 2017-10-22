@@ -35,6 +35,8 @@ static int directX[] = { 0, 1, 1, 1 };
 
 static int directY[] = { 1, 1, 0, -1 };
 
+static bool inited = false;
+
 int getPointTableColor(Color** map, int x, int y, Color targetColor) {
 	if (!reachable(x, y))
 		return INVALID_COLOR;
@@ -197,6 +199,8 @@ void buildLine(int i, int line[]) {
 }
 
 void initAnalyze() {
+	if (inited)
+		return;
 	int line[8] = { 0 };
 	buildLine(8, line);
 }

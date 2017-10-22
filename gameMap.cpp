@@ -160,6 +160,8 @@ points getPointLinesNeighbor(point p) {
 }
 
 points getNeighbor() {
+	if (history.size() == 0)
+		return points();
 	return history.back();
 }
 

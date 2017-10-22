@@ -25,6 +25,14 @@ extern bool debugEnable;
 
 extern bool fiveAttackTable[MAX_TABLE_SIZE];
 extern bool fourDefenceTable[MAX_TABLE_SIZE];
+extern bool fourAttackTable[MAX_TABLE_SIZE];
+extern bool fourDefenceTable[MAX_TABLE_SIZE];
+extern bool threeAttackTable[MAX_TABLE_SIZE];
+extern bool threeDefenceTable[MAX_TABLE_SIZE][4][4];
+
+static int directX[] = { 0, 1, 1, 1 };
+
+static int directY[] = { 1, 1, 0, -1 };
 
 static int nodeCount;
 
@@ -55,6 +63,7 @@ gameResult search(Color aiColor, Color** map)
 	gameResult gameResult;
 	timeOutEnable = false;
 	//初始化
+	initAnalyze();
 	initGameMap(map);
 	initScore(aiColor);
 
@@ -237,35 +246,42 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	//获取扩展节点
 	points ps;
 
-	//单步延伸
-	//if (level <= 1 && extend < currentLevel) {
-	//	ps = getNeighbor();
-	//	bool needExpend = false;
-	//	for (int i = 0; i < ps.count; i++) {
-	//		if (needExpend)
-	//			break;
-	//		point p = ps.list[i];
-	//		for (int k = 0; k < 4; k++) {
-	//			int key = getMapLineKey(p.x, p.y, k, color);
-	//			if (fourDefenceTable[key]) {
-	//				needExpend = true;
-	//				break;
-	//			}
-	//		}
-	//	}
-	//	if (needExpend) {
-	//		level++;
-	//		extend++;
-	//		currentExtend = extend > currentExtend ? extend : currentExtend;
-	//	}
-	//}
-
 	//叶子分数计算
 	if (level == 0) {
 		int value = getScoreValue();
 		if (color != aiColor)
 			value = -value;
-		return value;
+		bool needExpend = false;
+		if (value > alpha && value < beta && extend < currentLevel && false) {
+			ps = getNeighbor();
+			for (int i = 0; i < ps.count; i++) {
+				if (needExpend)
+					break;
+				point p = ps.list[i];
+				for (int k = 0; k < 4; k++) {
+					int key = getMapLineKey(p.x, p.y, k, color);
+					point leftPoint = point(ps.list[i].x - 5 * directX[k], ps.list[i].y - 5 * directY[k]);
+					point rightPoint = point(ps.list[i].x + 5 * directX[k], ps.list[i].y + 5 * directY[k]);
+					int left = getPointTableColor(leftPoint.x, leftPoint.y, color);
+					int right = getPointTableColor(rightPoint.x, rightPoint.y, color);
+					if (fiveAttackTable[key]) {
+						return MAX_VALUE;
+					}
+					if (fourDefenceTable[key] || threeDefenceTable[key][left][right] || fourAttackTable[key] || threeAttackTable[key]) {
+						needExpend = true;
+						break;
+					}
+				}
+			}
+
+		}
+		if (needExpend) {
+			level++;
+			extend++;
+			currentExtend = extend > currentExtend ? extend : currentExtend;
+		}
+		else
+			return value;
 	}
 
 	if (ps.count == 0) {
