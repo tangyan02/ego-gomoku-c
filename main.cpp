@@ -17,11 +17,11 @@ extern int boardSize;
 extern int comboLevel;
 
 void testPlay() {
-	boardSize = 20;
-	comboLevel = 30;
+	//boardSize = 20;
+	comboLevel = 0;
 	debugEnable = true;
 	Color ** map = readMap();
-	gameResult result = search(WHITE, map);
+	gameResult result = search(BLACK, map);
 	printMapWithStar(map, result.result);
 }
 
@@ -61,7 +61,7 @@ void testAnalyze() {
 	initGameMap(map);
 	Color color = BLACK;
 	initScore(color);
-	analyzeData data = getAnalyzeData(color, getNeighbor());
+	analyzeData data = getAnalyzeData(color, &getNeighbor());
 
 	printf("5 A\n");
 	printMapWithStars(map, data.fiveAttack);

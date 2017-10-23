@@ -5,7 +5,7 @@
 
 long long getSystemTime();
 
-void setPoint(point p, Color color, Color forwardColor, Color aiColor);
+void setPoint(int px, int py, Color color, Color forwardColor, Color aiColor);
 
 int dfs(int level, Color color, Color aiColor, int parentMax, int parentMin, int extend);
 

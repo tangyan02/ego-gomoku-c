@@ -7,6 +7,7 @@ class points
 {
 public:
 	vector<point> list;
+	//point list[128];
 	int count = 0;
 
 	points();

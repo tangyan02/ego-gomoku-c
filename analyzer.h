@@ -11,8 +11,8 @@ int getMapLineKey(int x, int y, int direct, Color targetColor);
 
 int getPointTableColor(int x, int y, Color targetColor);
 
-void updatePointKey(point p);
+void updatePointKey(int px, int py);
 
-void setLineKey(point p, int direct, Color targetColor);
+void setLineKey(int px, int py, int direct, Color targetColor);
 
-analyzeData getAnalyzeData(Color color, points ps);
+analyzeData getAnalyzeData(Color color, points *ps);

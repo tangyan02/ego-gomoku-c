@@ -107,8 +107,8 @@ void initGameMap(Color** value) {
 	for (int i = 0; i < boardSize; i++)
 		for (int j = 0; j < boardSize; j++) {
 			for (int k = 0; k < 4; k++) {
-				setLineKey(point(i, j), k, BLACK);
-				setLineKey(point(i, j), k, WHITE);
+				setLineKey(i, j, k, BLACK);
+				setLineKey(i, j, k, WHITE);
 			}
 		}
 }
@@ -123,15 +123,15 @@ void setColor(int x, int y, Color color)
 	map[x][y] = color;
 	bool isAdd = color == NULL ? false : true;
 	updateNeighbor(x, y, isAdd);
-	updatePointKey(point(x, y));
+	updatePointKey(x, y);
 }
 
-Color getColor(point p)
+Color getColor(int x, int y)
 {
-	return map[p.x][p.y];
+	return map[x][y];
 }
 
-points getPointLinesNeighbor(point p) {
+points getPointLinesNeighbor(int px, int py) {
 	points neighbor = getNeighbor();
 	pointHash hash = pointHash();
 	for (int i = 0; i < neighbor.count; i++) {
@@ -140,8 +140,8 @@ points getPointLinesNeighbor(point p) {
 	}
 	points result;
 	for (int i = 0; i < 8; i++) {
-		int x = p.x;
-		int y = p.y;
+		int x = px;
+		int y = py;
 		for (int k = 0; k < 4; k++) {
 			x += directX[i];
 			y += directY[i];

@@ -121,9 +121,9 @@ gameResult search(Color aiColor, Color** map)
 				point p = ps.list[i];
 				if (loseSet.contains(p))
 					continue;
-				setPoint(p, aiColor, NULL, aiColor);
+				setPoint(p.x, p.y, aiColor, NULL, aiColor);
 				comboResult result = canKill(getOtherColor(aiColor), level, comboStart, comboTimeOut);
-				setPoint(p, NULL, aiColor, aiColor);
+				setPoint(p.x, p.y, NULL, aiColor, aiColor);
 				if (result.win) {
 					loseSet.add(p);
 				}
@@ -260,8 +260,8 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 				point p = ps.list[i];
 				for (int k = 0; k < 4; k++) {
 					int key = getMapLineKey(p.x, p.y, k, color);
-					point leftPoint = point(ps.list[i].x - 5 * directX[k], ps.list[i].y - 5 * directY[k]);
-					point rightPoint = point(ps.list[i].x + 5 * directX[k], ps.list[i].y + 5 * directY[k]);
+					point leftPoint = point(p.x - 5 * directX[k], p.y - 5 * directY[k]);
+					point rightPoint = point(p.x + 5 * directX[k], p.y + 5 * directY[k]);
 					int left = getPointTableColor(leftPoint.x, leftPoint.y, color);
 					int right = getPointTableColor(rightPoint.x, rightPoint.y, color);
 					if (fiveAttackTable[key]) {
@@ -276,8 +276,8 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 
 		}
 		if (needExpend) {
-			level++;
-			extend++;
+			level+=2;
+			extend+=2;
 			currentExtend = extend > currentExtend ? extend : currentExtend;
 		}
 		else
@@ -321,7 +321,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	for (int i = 0; i < ps.count; i++) {
 		point p = ps.list[i];
 
-		setPoint(p, color, NULL, aiColor);
+		setPoint(p.x, p.y, color, NULL, aiColor);
 		int value;
 		//先查必败表
 		if (level == currentLevel && extend == 0 && loseSet.contains(p)) {
@@ -338,7 +338,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 				}
 			}
 		}
-		setPoint(p, NULL, color, aiColor);
+		setPoint(p.x, p.y, NULL, color, aiColor);
 
 		if (value >= extreme) {
 			if (value > extreme) {
@@ -380,7 +380,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	return extreme;
 }
 
-void setPoint(point p, Color color, Color forwardColor, Color aiColor) {
-	updateScore(p, color, forwardColor, aiColor);
-	setColor(p.x, p.y, color);
+void setPoint(int px, int py, Color color, Color forwardColor, Color aiColor) {
+	updateScore(px, py, color, forwardColor, aiColor);
+	setColor(px, py, color);
 }

@@ -251,10 +251,10 @@ int updateLineKey(int x, int y, int direct, int n, Color targetColor) {
 	return key;
 }
 
-void setLineKey(point p, int direct, Color targetColor) {
+void setLineKey(int px, int py, int direct, Color targetColor) {
 	int line[8];
-	int x = p.x - 4 * directX[direct];
-	int y = p.y - 4 * directY[direct];
+	int x = px - 4 * directX[direct];
+	int y = py - 4 * directY[direct];
 	for (int i = 0; i < 4; i++) {
 		if (!reachable(x, y))
 			line[i] = INVALID_COLOR;
@@ -285,15 +285,15 @@ void setLineKey(point p, int direct, Color targetColor) {
 		}
 	}
 	if (targetColor == BLACK)
-		blackLineKey[p.x][p.y][direct] = getLineKey(line);
+		blackLineKey[px][py][direct] = getLineKey(line);
 	if (targetColor == WHITE)
-		whiteLineKey[p.x][p.y][direct] = getLineKey(line);
+		whiteLineKey[px][py][direct] = getLineKey(line);
 }
 
-void updatePointKey(point p) {
+void updatePointKey(int px, int py) {
 	for (int i = 0; i < 4; i++) {
-		int x = p.x - 5 * directX[i];
-		int y = p.y - 5 * directY[i];
+		int x = px - 5 * directX[i];
+		int y = py - 5 * directY[i];
 		for (int k = 0; k <= 8; k++) {
 			x += directX[i];
 			y += directY[i];
@@ -302,13 +302,13 @@ void updatePointKey(point p) {
 			}
 			if (k == 4)
 				continue;
-			updateLineKey(p.x, p.y, i, k, BLACK);
-			updateLineKey(p.x, p.y, i, k, WHITE);
+			updateLineKey(px, py, i, k, BLACK);
+			updateLineKey(px, py, i, k, WHITE);
 		}
 	}
 }
 
-analyzeData getAnalyzeData(Color color, points ps) {
+analyzeData getAnalyzeData(Color color, points *ps) {
 	Color** map = getMap();
 	analyzeData result;
 	pointHash fiveAttackHash;
@@ -317,12 +317,12 @@ analyzeData getAnalyzeData(Color color, points ps) {
 	pointHash threeAttackHash;
 	pointHash threeDenfenceHash;
 
-	for (int i = 0; i < ps.count; i++) {
+	for (int i = 0; i < ps->count; i++) {
 		bool ok = false;
-		point p = ps.list[i];
+		point p = ps->list[i];
 		for (int k = 0; k < 4; k++) {
 			int key = getMapLineKey(p.x, p.y, k, color);
-			
+
 			if (fiveAttackTable[key]) {
 				if (!fiveAttackHash.contains(p)) {
 					result.fiveAttack.add(p);

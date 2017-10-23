@@ -24,10 +24,10 @@ static int directX[] = { 0, 1, 1, 1 };
 
 static int directY[] = { 1, 1, 0, -1 };
 
-int getScore(point p, Color color) {
+int getScore(int x, int y, Color color) {
 	int value = 0;
 	for (int i = 0; i < 4; i++) {
-		int key = getMapLineKey(p.x, p.y, i, color);
+		int key = getMapLineKey(x, y, i, color);
 		if (fiveAttackTable[key])
 			value += fiveAttackScore;
 		if (fourDefenceTable[key])
@@ -84,10 +84,8 @@ void sortPoints(points *neighbors, Color color) {
 				fourAttack.add(neighbors->list[i]);
 			}
 			//保存防御活三
-			point leftPoint = point(neighbors->list[i].x - 5 * directX[k], neighbors->list[i].y - 5 * directY[k]);
-			point rightPoint = point(neighbors->list[i].x + 5 * directX[k], neighbors->list[i].y + 5 * directY[k]);
-			int left = getPointTableColor(leftPoint.x, leftPoint.y, color);
-			int right = getPointTableColor(rightPoint.x, rightPoint.y, color);
+			int left = getPointTableColor(neighbors->list[i].x - 5 * directX[k], neighbors->list[i].y - 5 * directY[k], color);
+			int right = getPointTableColor(neighbors->list[i].x + 5 * directX[k], neighbors->list[i].y + 5 * directY[k], color);
 			if (threeDefenceTable[key][left][right])
 				threeDefence.add(neighbors->list[i]);
 		}
@@ -108,7 +106,7 @@ void sortPoints(points *neighbors, Color color) {
 
 	//计算得分
 	for (int i = 0; i < neighbors->count; i++) {
-		score[i] = getScore(neighbors->list[i], color);
+		score[i] = getScore(neighbors->list[i].x, neighbors->list[i].y, color);
 	}
 	sort(neighbors, score);
 }

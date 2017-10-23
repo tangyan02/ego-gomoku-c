@@ -27,20 +27,19 @@ void initScore(Color aiColor)
 			}
 	for (int i = 0; i < boardSize; i++) {
 		for (int j = 0; j < boardSize; j++) {
-			point p = point(i, j);
-			Color color = getColor(p);
+			Color color = getColor(i, j);
 			if (color != NULL) {
-				updateScore(p, color, NULL, aiColor);
+				updateScore(i, j, color, NULL, aiColor);
 			}
 		}
 	}
 }
 
-void updateScore(point point, Color color, Color forwardColor, Color aiColor)
+void updateScore(int px, int py, Color color, Color forwardColor, Color aiColor)
 {
 	for (int i = 0; i < 4; i++) {
-		int x = point.x - directX[i];
-		int y = point.y - directY[i];
+		int x = px - directX[i];
+		int y = py - directY[i];
 		for (int k = 0; k < 5; k++) {
 			x += directX[i];
 			y += directY[i];

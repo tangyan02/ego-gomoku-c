@@ -7,11 +7,11 @@
 
 void setColor(int x, int y, Color color);
 
-Color getColor(point p);
+Color getColor(int x, int y);
 
 points getNeighbor();
 
-points getPointLinesNeighbor(point p);
+points getPointLinesNeighbor(int px, int py);
 
 bool reachable(int x, int y);
 

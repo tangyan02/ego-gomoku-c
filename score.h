@@ -2,7 +2,7 @@
 
 void initScore(Color aiColor);
 
-void updateScore(point point, Color color, Color forwardColor, Color aiColor);
+void updateScore(int px, int py, Color color, Color forwardColor, Color aiColor);
 
 int getValueByCount(int blackCount, int whiteCount, Color color);
 
