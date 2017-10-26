@@ -207,6 +207,9 @@ gameResult search(Color aiColor, Color** map)
 		}
 
 		if (!timeOutEnable) {
+			if (level > 2 && loseSet.count == ps.count) {
+				return gameResult;
+			}
 			gameResult.result = currentPointResult;
 			int speed = 0;
 			if ((getSystemTime() - t) > 0)
@@ -217,7 +220,7 @@ gameResult search(Color aiColor, Color** map)
 			gameResult.level = level;
 			gameResult.extend = currentExtend;
 			if (debugEnable) {
-				printf("level %d, extend %d, speed %d k, time %lld ms\n", level, currentExtend, speed, getSystemTime() - t);
+				printf("level %d, extend %d, value %d, speed %d k, time %lld ms\n", level, currentExtend, value, speed, getSystemTime() - t);
 				printMapWithStar(map, currentPointResult);
 			}
 			if (value == MAX_VALUE)
@@ -276,8 +279,8 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 
 		}
 		if (needExpend) {
-			level+=2;
-			extend+=2;
+			level += 2;
+			extend += 2;
 			currentExtend = extend > currentExtend ? extend : currentExtend;
 		}
 		else

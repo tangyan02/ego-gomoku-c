@@ -174,6 +174,40 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType, poi
 	}
 }
 
+
+bool canKillThree(Color targetColor, int level) {
+	currentLevel = level;
+	startTime = 0;
+	limitTime = 10 * 1000;
+	currentLevel = level;
+	//计算我方四连杀
+	result.reset();
+	cacheReset();
+	dfsKill(targetColor, targetColor,
+		level, FOUR_COMBO, nullptr, nullptr);
+	if (result.win) 
+		return true;
+
+	//计算对手四连杀
+	result.reset();
+	cacheReset();
+	dfsKill(getOtherColor(targetColor), getOtherColor(targetColor),
+		level, FOUR_COMBO, nullptr, nullptr);
+	if (result.win) 
+		result.win = false;
+		return false;
+	
+
+	//计算我方三连杀
+	result.reset();
+	cacheReset();
+	dfsKill(targetColor, targetColor,
+		level, THREE_COMBO, nullptr, nullptr);
+	if (result.win) 
+		return true;
+	return false;
+}
+
 bool canKillFour(Color targetColor, int level) {
 	currentLevel = level;
 	result.reset();
