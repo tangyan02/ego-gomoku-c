@@ -183,7 +183,7 @@ gameResult search(Color aiColor, Color** map)
 	searchStartTime = getSystemTime();
 	cacheLast.clear();
 	cache.clear();
-	for (int level = 4; level <= searchLevel; level += 2)
+	for (int level = 2; level <= searchLevel; level += 2)
 	{
 		long long t = getSystemTime();
 		nodeCount = 0;
@@ -290,9 +290,6 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	if (ps.count == 0) {
 		ps = getNeighbor();
 	}
-
-	if (level == currentLevel)
-		printPoints(ps);
 
 	//ÊäÓ®ÅÐ¶¨
 	for (int i = 0; i < ps.count; i++) {

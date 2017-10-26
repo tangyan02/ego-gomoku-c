@@ -18,6 +18,8 @@ static long long weightWhite[20][20];
 static long long hashCode = 0;
 static int neighborCount[20][20];
 
+static int left, right, top, bottom;
+
 Color ** getMap() {
 	return map;
 }
@@ -30,6 +32,14 @@ void addNeighborCount(int x, int y, bool isAdd) {
 }
 
 void updateNeighbor(int i, int j, bool isAdd, Color pointColor) {
+	if (j - 2 < left) left = j - 2;
+	if (j + 2 > right) right = j + 2;
+	if (i - 2 < top) top = i - 2;
+	if (i + 2 > bottom) bottom = i + 2;
+	if (left < 0) left = 0;
+	if (top < 0) top = 0;
+	if (right >= boardSize) right = boardSize - 1;
+	if (bottom >= boardSize) bottom = boardSize - 1;
 	for (int k = 0; k < 8; k++) {
 		int x = i + directX[k];
 		int y = j + directY[k];
@@ -62,6 +72,10 @@ void updateNeighbor(int i, int j, bool isAdd, Color pointColor) {
 
 void initGameMap(Color** value) {
 	map = value;
+	right = 0;
+	bottom = 0;
+	left = boardSize - 1;
+	top = boardSize - 1;
 	//初始化哈希权值
 	srand((unsigned)time(NULL));
 
@@ -142,11 +156,14 @@ points getPointLinesNeighbor(int px, int py) {
 
 points getNeighbor() {
 	points result;
-	for (int i = 0; i < boardSize; i++)
-		for (int j = 0; j < boardSize; j++)
+	for (int i = top; i <= bottom; i++)
+		for (int j = left; j <= right; j++)
 			if (neighborCount[i][j] > 0 && map[i][j] == NULL)
 				result.add(point(i, j));
 	//printMap(map);
+	if (result.count == 0) {
+		printf("wtf\n");
+	}
 	return result;
 }
 
