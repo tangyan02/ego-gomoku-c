@@ -87,6 +87,11 @@ void initGameMap(Color** value) {
 			}
 		}
 
+
+	for (int i = 0; i < boardSize; i++)
+		for (int j = 0; j < boardSize; j++) {
+			neighborCount[i][j] = 0;
+		}
 	//初始化地图和哈希码
 	for (int i = 0; i < boardSize; i++)
 		for (int j = 0; j < boardSize; j++) {
@@ -153,9 +158,6 @@ points getNeighbor() {
 		for (int j = left; j <= right; j++)
 			if (neighborCount[i][j] > 0 && map[i][j] == NULL)
 				result.add(point(i, j));
-	if (result.count == 0) {
-		printf("wtf\n");
-	}
 	return result;
 }
 
