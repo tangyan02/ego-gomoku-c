@@ -21,7 +21,7 @@ void testPlay() {
 	comboLevel = 0;
 	debugEnable = true;
 	Color ** map = readMap();
-	gameResult result = search(BLACK, map);
+	gameResult result = search(WHITE, map);
 	printMapWithStar(map, result.result);
 }
 
@@ -93,7 +93,7 @@ void testNeighbor() {
 
 int main()
 {
-	piskvork();
+	//piskvork();
 	//testCombo();
 	testPlay();
 	//testAnalyze();

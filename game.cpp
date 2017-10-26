@@ -183,7 +183,7 @@ gameResult search(Color aiColor, Color** map)
 	searchStartTime = getSystemTime();
 	cacheLast.clear();
 	cache.clear();
-	for (int level = 2; level <= searchLevel; level += 2)
+	for (int level = 4; level <= searchLevel; level += 2)
 	{
 		long long t = getSystemTime();
 		nodeCount = 0;
@@ -207,6 +207,9 @@ gameResult search(Color aiColor, Color** map)
 		}
 
 		if (!timeOutEnable) {
+			if (level > 2 && loseSet.count == ps.count) {
+				return gameResult;
+			}
 			gameResult.result = currentPointResult;
 			int speed = 0;
 			if ((getSystemTime() - t) > 0)
@@ -217,7 +220,7 @@ gameResult search(Color aiColor, Color** map)
 			gameResult.level = level;
 			gameResult.extend = currentExtend;
 			if (debugEnable) {
-				printf("level %d, extend %d, speed %d k, time %lld ms\n", level, currentExtend, speed, getSystemTime() - t);
+				printf("level %d, extend %d, value %d, speed %d k, time %lld ms\n", level, currentExtend, value, speed, getSystemTime() - t);
 				printMapWithStar(map, currentPointResult);
 			}
 			if (value == MAX_VALUE)
@@ -276,8 +279,8 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 
 		}
 		if (needExpend) {
-			level+=2;
-			extend+=2;
+			level += 2;
+			extend += 2;
 			currentExtend = extend > currentExtend ? extend : currentExtend;
 		}
 		else
@@ -287,6 +290,9 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	if (ps.count == 0) {
 		ps = getNeighbor();
 	}
+
+	if (level == currentLevel)
+		printPoints(ps);
 
 	// ‰”Æ≈–∂®
 	for (int i = 0; i < ps.count; i++) {

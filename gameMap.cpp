@@ -16,66 +16,48 @@ static long long weightBlack[20][20];
 static long long weightWhite[20][20];
 
 static long long hashCode = 0;
-
-static vector<points> history;
+static int neighborCount[20][20];
 
 Color ** getMap() {
 	return map;
 }
 
-void updateNeighbor(int i, int j, bool isAdd) {
-	if (!isAdd) {
-		history.pop_back();
-		return;
-	}
-	points ps;
-	pointHash hash = pointHash();
-	if (history.size() > 0) {
-		for (int k = 0; k < history.back().count; k++) {
-			if (history.back().list[k].x == i && history.back().list[k].y == j)
-				continue;
-			ps.add(history.back().list[k]);
-			hash.add(history.back().list[k]);
-		}
-	}
+void addNeighborCount(int x, int y, bool isAdd) {
+	if (isAdd)
+		neighborCount[x][y]++;
+	else
+		neighborCount[x][y]--;
+}
+
+void updateNeighbor(int i, int j, bool isAdd, Color pointColor) {
 	for (int k = 0; k < 8; k++) {
 		int x = i + directX[k];
 		int y = j + directY[k];
 		if (reachable(x, y)) {
 			Color color = map[x][y];
 			if (color == NULL) {
-				if (!hash.contains(x, y)) {
-					hash.add(x, y);
-					ps.add(point(x, y));
-				}
+				addNeighborCount(x, y, isAdd);
 			}
 			else {
-				if (color == map[i][j]) {
+				if (color == pointColor) {
 					int x1 = i + directX[k] * 3;
 					int y1 = j + directY[k] * 3;
 					int x2 = i - directX[k] * 2;
 					int y2 = j - directY[k] * 2;
 					if (reachable(x1, y1)) {
 						if (map[x1][y1] == NULL) {
-							if (!hash.contains(x1, y1)) {
-								hash.add(x1, y1);
-								ps.add(point(x1, y1));
-							}
+							addNeighborCount(x1, y1, isAdd);
 						}
 					}
 					if (reachable(x2, y2)) {
 						if (map[x2][y2] == NULL) {
-							if (!hash.contains(x2, y2)) {
-								hash.add(x2, y2);
-								ps.add(point(x2, y2));
-							}
+							addNeighborCount(x2, y2, isAdd);
 						}
 					}
 				}
 			}
 		}
 	}
-	history.push_back(ps);
 }
 
 void initGameMap(Color** value) {
@@ -91,8 +73,6 @@ void initGameMap(Color** value) {
 			}
 		}
 
-	history.clear();
-
 	//初始化地图和哈希码
 	for (int i = 0; i < boardSize; i++)
 		for (int j = 0; j < boardSize; j++) {
@@ -100,7 +80,7 @@ void initGameMap(Color** value) {
 			if (color != NULL) {
 				updateHashCode(i, j, color);
 				bool isAdd = color == NULL ? false : true;
-				updateNeighbor(i, j, isAdd);
+				updateNeighbor(i, j, true, color);
 			}
 		}
 
@@ -120,9 +100,10 @@ void setColor(int x, int y, Color color)
 	else
 		updateHashCode(x, y, map[x][y]);
 
-	map[x][y] = color;
 	bool isAdd = color == NULL ? false : true;
-	updateNeighbor(x, y, isAdd);
+	Color pointColor = isAdd ? color : map[x][y];
+	map[x][y] = color;
+	updateNeighbor(x, y, isAdd, pointColor);
 	updatePointKey(x, y);
 }
 
@@ -160,9 +141,13 @@ points getPointLinesNeighbor(int px, int py) {
 }
 
 points getNeighbor() {
-	if (history.size() == 0)
-		return points();
-	return history.back();
+	points result;
+	for (int i = 0; i < boardSize; i++)
+		for (int j = 0; j < boardSize; j++)
+			if (neighborCount[i][j] > 0 && map[i][j] == NULL)
+				result.add(point(i, j));
+	//printMap(map);
+	return result;
 }
 
 bool reachable(int x, int y)
