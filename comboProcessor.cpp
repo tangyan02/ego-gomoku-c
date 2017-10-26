@@ -23,38 +23,38 @@ void setColor(int px, int py, Color color, Color forwardColor, Color aiColor) {
 	setColor(px, py, color);
 }
 
-points getComboAttackPoints(analyzeData data, ComboType comboType) {
+points getComboAttackPoints(analyzeData *data, ComboType comboType) {
 	//如果有对方冲4，则防冲4
 	points result;
-	if (data.fourDefence.count > 0) {
-		result.add(data.fourDefence.list[0]);
+	if (data->fourDefence.count > 0) {
+		result.add(data->fourDefence.list[0]);
 		return result;
 	}
 	//如果有对方活3，冲四
-	if (data.threeDefence.count > 0) {
-		result.addMany(data.fourAttack);
+	if (data->threeDefence.count > 0) {
+		result.addMany(data->fourAttack);
 		return result;
 	}
 
-	result.addMany(data.fourAttack);
+	result.addMany(data->fourAttack);
 	if (comboType == THREE_COMBO) {
-		result.addMany(data.threeAttack);
+		result.addMany(data->threeAttack);
 	}
 	return result;
 }
 
-points getComboDefencePoints(analyzeData data, ComboType comboType) {
+points getComboDefencePoints(analyzeData *data, ComboType comboType) {
 	points result;
 	//如果有对方冲4，则防冲4
-	if (data.fourDefence.count > 0) {
-		result.add(data.fourDefence.list[0]);
+	if (data->fourDefence.count > 0) {
+		result.add(data->fourDefence.list[0]);
 		return result;
 	}
 	if (comboType == THREE_COMBO) {
 		//如果有对方活3，则防活3或者冲四
-		if (data.threeDefence.count > 0) {
-			result.addMany(data.threeDefence);
-			result.addMany(data.fourAttack);
+		if (data->threeDefence.count > 0) {
+			result.addMany(data->threeDefence);
+			result.addMany(data->fourAttack);
 			return result;
 		}
 	}
@@ -128,7 +128,7 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType, poi
 			recordCombo(true);
 			return true;
 		}
-		points ps = getComboAttackPoints(data, comboType);
+		points ps = getComboAttackPoints(&data, comboType);
 		for (int i = 0; i < ps.count; i++)
 		{
 			point p = ps.list[i];
@@ -152,7 +152,7 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType, poi
 			recordCombo(false);
 			return false;
 		}
-		points ps = getComboDefencePoints(data, comboType);
+		points ps = getComboDefencePoints(&data, comboType);
 		//如果没有能防的则结束
 		if (ps.count == 0) {
 			recordCombo(false);

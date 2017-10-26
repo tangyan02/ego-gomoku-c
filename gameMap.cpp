@@ -127,12 +127,6 @@ Color getColor(int x, int y)
 }
 
 points getPointLinesNeighbor(int px, int py) {
-	points neighbor = getNeighbor();
-	pointHash hash = pointHash();
-	for (int i = 0; i < neighbor.count; i++) {
-		point p = neighbor.list[i];
-		hash.add(p);
-	}
 	points result;
 	for (int i = 0; i < 8; i++) {
 		int x = px;
@@ -145,9 +139,8 @@ points getPointLinesNeighbor(int px, int py) {
 			}
 			if (map[x][y] != NULL)
 				continue;
-			point newPoint = point(x, y);
-			if (hash.contains(newPoint)) {
-				result.add(newPoint);
+			if (neighborCount[x][y] > 0 && map[x][y] == NULL) {
+				result.add(point(x, y));
 			}
 		}
 	}
@@ -160,7 +153,6 @@ points getNeighbor() {
 		for (int j = left; j <= right; j++)
 			if (neighborCount[i][j] > 0 && map[i][j] == NULL)
 				result.add(point(i, j));
-	//printMap(map);
 	if (result.count == 0) {
 		printf("wtf\n");
 	}

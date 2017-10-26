@@ -18,7 +18,7 @@ extern int comboLevel;
 
 void testPlay() {
 	//boardSize = 20;
-	comboLevel = 0;
+	comboLevel = 30;
 	debugEnable = true;
 	Color ** map = readMap();
 	gameResult result = search(WHITE, map);
