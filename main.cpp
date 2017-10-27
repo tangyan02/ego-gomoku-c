@@ -17,11 +17,11 @@ extern int boardSize;
 extern int comboLevel;
 
 void testPlay() {
-	//boardSize = 20;
-	comboLevel = 0;
+	boardSize = 20;
+	comboLevel = 10;
 	debugEnable = true;
 	Color ** map = readMap();
-	gameResult result = search(BLACK, map);
+	gameResult result = search(WHITE, map);
 	printMapWithStar(map, result.result);
 }
 

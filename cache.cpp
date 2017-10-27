@@ -14,8 +14,8 @@ struct comboNode {
 	int level;
 };
 
-static comboNode comboCacheThree[hashSize];
-static comboNode comboCacheFour[hashSize];
+static comboNode comboCacheThree[3][hashSize];
+static comboNode comboCacheFour[3][hashSize];
 
 int getKey(long long key) {
 	if (key < 0)
@@ -23,13 +23,13 @@ int getKey(long long key) {
 	return key%hashSize;
 }
 
-void addComboEntry(long long key, bool value, int level, ComboType type)
+void addComboEntry(long long key, bool value, int level, ComboType type, Color color)
 {
 	comboNode* node;
 	if (type == THREE_COMBO)
-		node = &comboCacheThree[getKey(key)];
+		node = &comboCacheThree[color][getKey(key)];
 	else
-		node = &comboCacheFour[getKey(key)];
+		node = &comboCacheFour[color][getKey(key)];
 	if (level < node->level && node->key == key && value == false)
 		return;
 	if (value)
@@ -41,16 +41,17 @@ void addComboEntry(long long key, bool value, int level, ComboType type)
 	comboCacheTotal++;
 }
 
-int getComboValue(long long key, int level, ComboType type)
+int getComboValue(long long key, int level, ComboType type, Color color)
 {
 	comboNode* node;
 	if (type == THREE_COMBO)
-		node = &comboCacheThree[getKey(key)];
+		node = &comboCacheThree[color][getKey(key)];
 	else
-		node = &comboCacheFour[getKey(key)];
+		node = &comboCacheFour[color][getKey(key)];
 	if (node->key == key) {
-		if (level > node->level && node->flag == COMBO_FALSE)
+		if (level > node->level) {
 			return COMBO_EMPTY;
+		}
 		comboCacheHit++;
 		return node->flag;
 	}
@@ -59,10 +60,5 @@ int getComboValue(long long key, int level, ComboType type)
 
 void cacheReset()
 {
-	for (int i = 0; i < hashSize; i++) {
-		comboCacheThree[i].flag = COMBO_EMPTY;
-		comboCacheThree[i].level = 0;
-		comboCacheFour[i].flag = COMBO_EMPTY;
-		comboCacheFour[i].level = 0;
-	}
+	
 }

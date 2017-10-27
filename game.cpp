@@ -215,6 +215,7 @@ gameResult search(Color aiColor, Color** map)
 
 		if (!timeOutEnable) {
 			if (level > 2 && loseSet.count == ps.count) {
+				gameResult.value = value;
 				return gameResult;
 			}
 			gameResult.result = currentPointResult;
@@ -226,6 +227,8 @@ gameResult search(Color aiColor, Color** map)
 			gameResult.value = value;
 			gameResult.level = level;
 			gameResult.extend = currentExtend;
+			gameResult.comboCacheHit = comboCacheHit;
+			gameResult.comboCacheTotal = comboCacheTotal;
 			if (debugEnable) {
 				printf("level %d, extend %d, value %d, speed %d k, time %lld ms\n", level, currentExtend, value, speed, getSystemTime() - t);
 				printMapWithStar(map, currentPointResult);
@@ -260,12 +263,20 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	if (color != aiColor)
 		value = -value;
 	if (value > alpha && value < beta) {
-		if (canKillThree(color, currentLevel)) {
+		comboResult result = canKillThree(color, currentLevel);
+		if (result.win) {
+			if (level == currentLevel && extend == 0) {
+				currentPointResult = result.p;
+			}
 			return MAX_VALUE;
 		}
 	}
 	else {
-		if (canKillFour(color, currentLevel)) {
+		comboResult result = canKillThree(color, currentLevel);
+		if (result.win) {
+			if (level == currentLevel && extend == 0) {
+				currentPointResult = result.p;
+			}
 			return MAX_VALUE;
 		}
 	}

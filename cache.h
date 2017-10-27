@@ -8,6 +8,6 @@
 #define COMBO_FALSE 0
 #define COMBO_EMPTY -1
 
-void addComboEntry(long long key, bool value, int level, ComboType type);
+void addComboEntry(long long key, bool value, int level, ComboType type, Color color);
 
-int getComboValue(long long key, int level, ComboType type);
+int getComboValue(long long key, int level, ComboType type, Color color);

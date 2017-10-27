@@ -9,7 +9,8 @@ public:
 	int level = 0;
 	int combo = 0;
 	int extend = 0;
-
+	int comboCacheHit = 0;
+	int comboCacheTotal = 0;
 	gameResult();
 	~gameResult();
 };
