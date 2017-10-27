@@ -256,6 +256,20 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	//获取扩展节点
 	points ps;
 
+	int value = getScoreValue();
+	if (color != aiColor)
+		value = -value;
+	if (value > alpha && value < beta) {
+		if (canKillThree(color, currentLevel)) {
+			return MAX_VALUE;
+		}
+	}
+	else {
+		if (canKillFour(color, currentLevel)) {
+			return MAX_VALUE;
+		}
+	}
+
 	//叶子分数计算
 	if (level == 0) {
 		int value = getScoreValue();
@@ -375,7 +389,8 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 				return value;
 			}
 			if (value == MIN_VALUE) {
-				loseSet.add(p);
+				if (!loseSet.contains(p))
+					loseSet.add(p);
 			}
 		}
 

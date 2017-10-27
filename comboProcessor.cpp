@@ -204,9 +204,9 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType, poi
 
 
 bool canKillThree(Color targetColor, int level) {
-	currentLevel = level;
-	startTime = 0;
-	limitTime = 10 * 1000;
+	if (level % 2 == 0) {
+		level++;
+	}
 	currentLevel = level;
 	//计算我方四连杀
 	result.reset();
@@ -234,10 +234,11 @@ bool canKillThree(Color targetColor, int level) {
 }
 
 bool canKillFour(Color targetColor, int level) {
+	if (level % 2 == 0) {
+		level++;
+	}
 	currentLevel = level;
 	result.reset();
-	startTime = 0;
-	limitTime = 10 * 1000;
 	return dfsKill(targetColor, targetColor,
 		level, FOUR_COMBO, nullptr, nullptr);
 }
