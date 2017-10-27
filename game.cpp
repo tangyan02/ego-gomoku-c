@@ -188,7 +188,6 @@ gameResult search(Color aiColor, Color** map)
 		long long t = getSystemTime();
 		nodeCount = 0;
 
-		cacheReset();
 		cacheLast = cache;
 		cache.clear();
 

@@ -6,10 +6,6 @@
 #include  "gameMap.h"
 #include  "cache.h"
 
-#define ComboType int
-#define THREE_COMBO 0
-#define FOUR_COMBO 1
-
 static int currentLevel;
 
 static long long startTime;
@@ -69,10 +65,6 @@ points getComboDefencePoints(analyzeData *data, ComboType comboType) {
 	return result;
 }
 
-void recordCombo(bool value) {
-	addComboEntry(getMapHashCode(), value);
-}
-
 bool dfsKill(Color color, Color targetColor, int level, ComboType comboType, point* father, point* grandFather) {
 	//超时判断
 	if (getSystemTime() - startTime > limitTime) {
@@ -81,11 +73,11 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType, poi
 	}
 	//查询缓存
 	long long hashCode = getMapHashCode();
-	int comboValue = getComboValue(hashCode);
+	int comboValue = getComboValue(hashCode, level, comboType);
 	if (comboValue != COMBO_EMPTY) {
 		if (comboValue == COMBO_TRUE)
 			return true;
-		else
+		if (comboValue == COMBO_FALSE)
 			return false;
 	}
 
@@ -157,7 +149,7 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType, poi
 				result.p = data.fiveAttack.list[0];
 				result.win = true;
 			}
-			recordCombo(true);
+			addComboEntry(hashCode, true, level, comboType);
 			return true;
 		}
 		points ps = getComboAttackPoints(&data, comboType);
@@ -172,22 +164,22 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType, poi
 				result.win = true;
 			}
 			if (value) {
-				recordCombo(true);
+				addComboEntry(hashCode, true, level, comboType);
 				return true;
 			}
 		}
-		recordCombo(false);
+		addComboEntry(hashCode, false, level, comboType);
 		return false;
 	}
 	else {
 		if (data.fiveAttack.count > 0) {
-			recordCombo(false);
+			addComboEntry(hashCode, false, level, comboType);
 			return false;
 		}
 		points ps = getComboDefencePoints(&data, comboType);
 		//如果没有能防的则结束
 		if (ps.count == 0) {
-			recordCombo(false);
+			addComboEntry(hashCode, false, level, comboType);
 			return false;
 		}
 		for (int i = 0; i < ps.count; i++)
@@ -197,11 +189,11 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType, poi
 			bool value = dfsKill(getOtherColor(color), targetColor, level - 1, comboType, &p, father);
 			setColor(p.x, p.y, NULL, color, targetColor);
 			if (!value) {
-				recordCombo(false);
+				addComboEntry(hashCode, false, level, comboType);
 				return false;
 			}
 		}
-		recordCombo(true);
+		addComboEntry(hashCode, true, level, comboType);
 		return true;
 	}
 }
@@ -222,7 +214,6 @@ bool canKillThree(Color targetColor, int level) {
 
 	//计算对手四连杀
 	result.reset();
-	cacheReset();
 	dfsKill(getOtherColor(targetColor), getOtherColor(targetColor),
 		level, FOUR_COMBO, nullptr, nullptr);
 	if (result.win)
@@ -232,7 +223,6 @@ bool canKillThree(Color targetColor, int level) {
 
 	//计算我方三连杀
 	result.reset();
-	cacheReset();
 	dfsKill(targetColor, targetColor,
 		level, THREE_COMBO, nullptr, nullptr);
 	if (result.win)
@@ -243,7 +233,6 @@ bool canKillThree(Color targetColor, int level) {
 bool canKillFour(Color targetColor, int level) {
 	currentLevel = level;
 	result.reset();
-	cacheReset();
 	startTime = 0;
 	limitTime = 10 * 1000;
 	return dfsKill(targetColor, targetColor,
@@ -260,7 +249,6 @@ comboResult canKill(Color targetColor, int level, long long startTimeValue, long
 	currentLevel = level;
 	//计算我方四连杀
 	result.reset();
-	cacheReset();
 	dfsKill(targetColor, targetColor,
 		level, FOUR_COMBO, nullptr, nullptr);
 	if (result.win) {
@@ -269,7 +257,6 @@ comboResult canKill(Color targetColor, int level, long long startTimeValue, long
 	}
 	//计算对手四连杀
 	result.reset();
-	cacheReset();
 	dfsKill(getOtherColor(targetColor), getOtherColor(targetColor),
 		level, FOUR_COMBO, nullptr, nullptr);
 	if (result.win) {
@@ -279,7 +266,6 @@ comboResult canKill(Color targetColor, int level, long long startTimeValue, long
 
 	//计算我方三连杀
 	result.reset();
-	cacheReset();
 	dfsKill(targetColor, targetColor,
 		level, THREE_COMBO, nullptr, nullptr);
 	if (result.win) {
