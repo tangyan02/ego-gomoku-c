@@ -18,6 +18,8 @@ static int directX[] = { 0, 1, 1, 1 };
 
 static int directY[] = { 1, 1, 0, -1 };
 
+static bool timeOutEnable;
+
 extern bool fourDefenceTable[MAX_TABLE_SIZE];
 extern bool threeDefenceTable[MAX_TABLE_SIZE][4][4];
 extern bool threeAttackTable[MAX_TABLE_SIZE];
@@ -67,9 +69,11 @@ points getComboDefencePoints(analyzeData *data, ComboType comboType) {
 
 bool dfsKill(Color color, Color targetColor, int level, ComboType comboType, point* father, point* grandFather) {
 	//超时判断
-	if (getSystemTime() - startTime > limitTime) {
-		result.timeOut = true;
-		return false;
+	if (timeOutEnable) {
+		if (getSystemTime() - startTime > limitTime) {
+			result.timeOut = true;
+			return false;
+		}
 	}
 	//查询缓存
 	long long hashCode = getMapHashCode();
@@ -206,7 +210,6 @@ bool canKillThree(Color targetColor, int level) {
 	currentLevel = level;
 	//计算我方四连杀
 	result.reset();
-	cacheReset();
 	dfsKill(targetColor, targetColor,
 		level, FOUR_COMBO, nullptr, nullptr);
 	if (result.win)
@@ -241,6 +244,7 @@ bool canKillFour(Color targetColor, int level) {
 
 comboResult canKill(Color targetColor, int level, long long startTimeValue, long long limitTimeValue)
 {
+	timeOutEnable = true;
 	if (level % 2 == 0) {
 		level++;
 	}

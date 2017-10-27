@@ -23,6 +23,10 @@ extern int comboTimeOut;
 
 extern bool debugEnable;
 
+extern int comboCacheHit;
+
+extern int comboCacheTotal;
+
 extern bool fiveAttackTable[MAX_TABLE_SIZE];
 extern bool fourDefenceTable[MAX_TABLE_SIZE];
 extern bool fourAttackTable[MAX_TABLE_SIZE];
@@ -152,6 +156,10 @@ gameResult search(Color aiColor, Color** map)
 	if (debugEnable) {
 		printf("loseset ");
 		printHash(loseSet);
+	}
+
+	if (debugEnable) {
+		printf("combo cache total %d hit %d\n", comboCacheTotal, comboCacheHit);
 	}
 
 	//检查三连击的胜利是否有效

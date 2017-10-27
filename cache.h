@@ -11,5 +11,3 @@
 void addComboEntry(long long key, bool value, int level, ComboType type);
 
 int getComboValue(long long key, int level, ComboType type);
-
-void cacheReset();
