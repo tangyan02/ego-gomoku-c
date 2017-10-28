@@ -87,10 +87,10 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType, poi
 	long long hashCode = getMapHashCode();
 	int comboValue = getComboValue(hashCode, level, comboType, targetColor);
 	if (comboValue != COMBO_EMPTY) {
-		if (comboValue == COMBO_TRUE)
-			return true;
-		if (comboValue == COMBO_FALSE)
-			return false;
+		//if (comboValue == COMBO_TRUE)
+		//	return true;
+		//if (comboValue == COMBO_FALSE)
+		//	return false;
 	}
 
 	if (level == 0) {
@@ -198,29 +198,10 @@ comboResult canKillThree(Color targetColor, int level) {
 		level++;
 	}
 	currentLevel = level;
-	//计算我方四连杀
-	result.reset();
-	dfsKill(targetColor, targetColor,
-		level, FOUR_COMBO, nullptr, nullptr);
-	if (result.win)
-		return result;
-
-	//计算对手四连杀
-	result.reset();
-	dfsKill(getOtherColor(targetColor), getOtherColor(targetColor),
-		level, FOUR_COMBO, nullptr, nullptr);
-	if (result.win)
-		result.win = false;
-	return result;
-
-
 	//计算我方三连杀
 	result.reset();
 	bool value = dfsKill(targetColor, targetColor,
 		level, THREE_COMBO, nullptr, nullptr);
-	if (value != result.win) {
-		printf("wtf]n");
-	}
 	return result;
 }
 
@@ -245,14 +226,14 @@ comboResult canKill(Color targetColor, int level, long long startTimeValue, long
 	limitTime = limitTimeValue;
 	currentLevel = level;
 
-	//计算我方四连杀
-	result.reset();
+	//计算对手四连杀，有可能缓存不兼容
+	/*result.reset();
 	dfsKill(targetColor, targetColor,
 		level, FOUR_COMBO, nullptr, nullptr);
 	if (result.win) {
 		result.fourWin = true;
 		return result;
-	}
+	}*/
 
 	//计算对手四连杀
 	result.reset();

@@ -184,8 +184,10 @@ gameResult search(Color aiColor, Color** map)
 	}
 
 	//如果必败，则朴素搜索
+	bool loseFlag = false;
 	if (ps.count == loseSet.count) {
 		loseSet.reset();
+		loseFlag = true;
 	}
 	//得分搜索
 	searchStartTime = getSystemTime();
@@ -236,11 +238,12 @@ gameResult search(Color aiColor, Color** map)
 			if (value == MAX_VALUE)
 				break;
 		}
-		if (getSystemTime() - searchStartTime > timeOut / 4) {
+		if (getSystemTime() - searchStartTime > timeOut / 3) {
 			timeOutEnable = true;
 		}
 	}
-
+	if (loseFlag)
+		gameResult.value = MIN_VALUE;
 	return gameResult;
 }
 
@@ -259,27 +262,13 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	//获取扩展节点
 	points ps;
 
-	int value = getScoreValue();
-	if (color != aiColor)
-		value = -value;
-	if (value > alpha && value < beta) {
-		comboResult result = canKillThree(color, currentLevel);
-		if (result.win) {
-			if (level == currentLevel && extend == 0) {
-				currentPointResult = result.p;
-			}
-			return MAX_VALUE;
-		}
-	}
-	else {
-		comboResult result = canKillThree(color, currentLevel);
-		if (result.win) {
-			if (level == currentLevel && extend == 0) {
-				currentPointResult = result.p;
-			}
-			return MAX_VALUE;
-		}
-	}
+	//comboResult result = canKillFour(color, currentLevel);
+	//if (result.win) {
+	//	if (level == currentLevel && extend == 0) {
+	//		currentPointResult = result.p;
+	//	}
+	//	return MAX_VALUE;
+	//}
 
 	//叶子分数计算
 	if (level == 0) {

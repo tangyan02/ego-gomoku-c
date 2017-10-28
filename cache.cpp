@@ -30,7 +30,7 @@ void addComboEntry(long long key, bool value, int level, ComboType type, Color c
 		node = &comboCacheThree[color][getKey(key)];
 	else
 		node = &comboCacheFour[color][getKey(key)];
-	if (level < node->level && node->key == key && value == false)
+	if (level < node->level && node->key == key)
 		return;
 	if (value)
 		node->flag = COMBO_TRUE;
