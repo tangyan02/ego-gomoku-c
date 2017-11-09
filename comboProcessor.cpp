@@ -227,13 +227,13 @@ comboResult canKill(Color targetColor, int level, long long startTimeValue, long
 	currentLevel = level;
 
 	//计算对手四连杀，有可能缓存不兼容
-	/*result.reset();
+	result.reset();
 	dfsKill(targetColor, targetColor,
 		level, FOUR_COMBO, nullptr, nullptr);
 	if (result.win) {
 		result.fourWin = true;
 		return result;
-	}*/
+	}
 
 	//计算对手四连杀
 	result.reset();
