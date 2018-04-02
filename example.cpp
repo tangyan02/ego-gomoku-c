@@ -4,7 +4,7 @@
 #include "game.h"
 #include "io.h"
 
-const char *infotext = "name=\"Random\", author=\"Petr Lastovicka\", version=\"3.2\", country=\"Czech Republic\", www=\"http://petr.lastovicka.sweb.cz\"";
+const char *infotext = "name=\"Ego\", author=\"TangYan\", version=\"6.0\", country=\"China\", email=\"tangyan1412@foxmail.com\"";
 
 #define MAX_BOARD 20
 static Color** map;
