@@ -17,18 +17,26 @@ void points::add(point p)
 	count++;
 }
 
-void points::addMany(points ps)
+void points::addMany(points *ps)
 {
-	for (int i = 0; i < ps.count; i++)
+	for (int i = 0; i < ps->count; i++)
 	{
-		//list[count] = ps.list[i];
-	    list.push_back(ps.list[i]);
+	    list.push_back(ps->list[i]);
 		count++;
 	}
 }
 
 void points::clear()
 {
-	list.clear();
-	count = 0;
+}
+
+bool points::contains(int x, int y)
+{
+	for (int i = 0; i < list.size(); i++)
+	{
+		if (list[i].x == x && list[i].y == y) {
+			return true;
+		}
+	}
+	return false;
 }

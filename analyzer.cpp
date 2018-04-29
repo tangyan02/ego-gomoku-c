@@ -311,11 +311,6 @@ void updatePointKey(int px, int py) {
 analyzeData getAnalyzeData(Color color, points *ps) {
 	Color** map = getMap();
 	analyzeData result;
-	pointHash fiveAttackHash;
-	pointHash fourAttackHash;
-	pointHash fourDefenceHash;
-	pointHash threeAttackHash;
-	pointHash threeDenfenceHash;
 
 	for (int i = 0; i < ps->count; i++) {
 		bool ok = false;
@@ -324,27 +319,23 @@ analyzeData getAnalyzeData(Color color, points *ps) {
 			int key = getMapLineKey(p.x, p.y, k, color);
 
 			if (fiveAttackTable[key]) {
-				if (!fiveAttackHash.contains(p)) {
+				if (!result.fiveAttack.contains(p.x, p.y)) {
 					result.fiveAttack.add(p);
-					fiveAttackHash.add(p);
 				}
 			}
 			if (fourAttackTable[key]) {
-				if (!fourAttackHash.contains(p)) {
+				if (!result.fourAttack.contains(p.x, p.y)) {
 					result.fourAttack.add(p);
-					fourAttackHash.add(p);
 				}
 			}
 			if (fourDefenceTable[key]) {
-				if (!fourDefenceHash.contains(p)) {
+				if (!result.fourDefence.contains(p.x, p.y)) {
 					result.fourDefence.add(p);
-					fourDefenceHash.add(p);
 				}
 			}
 			if (threeAttackTable[key]) {
-				if (!threeAttackHash.contains(p)) {
+				if (!result.threeAttack.contains(p.x, p.y)) {
 					result.threeAttack.add(p);
-					threeAttackHash.add(p);
 				}
 			}
 			point leftPoint = point(p.x - 5 * directX[k], p.y - 5 * directY[k]);
@@ -352,9 +343,8 @@ analyzeData getAnalyzeData(Color color, points *ps) {
 			int left = getPointTableColor(map, leftPoint.x, leftPoint.y, color);
 			int right = getPointTableColor(map, rightPoint.x, rightPoint.y, color);
 			if (threeDefenceTable[key][left][right])
-				if (!threeDenfenceHash.contains(p)) {
+				if (!result.threeDefence.contains(p.x, p.y)) {
 					result.threeDefence.add(p);
-					threeDenfenceHash.add(p);
 				}
 		}
 	}

@@ -38,13 +38,13 @@ points getComboAttackPoints(analyzeData *data, ComboType comboType) {
 	}
 	//如果有对方活3，冲四
 	if (data->threeDefence.count > 0) {
-		result.addMany(data->fourAttack);
+		result.addMany(&data->fourAttack);
 		return result;
 	}
 
-	result.addMany(data->fourAttack);
+	result.addMany(&data->fourAttack);
 	if (comboType == THREE_COMBO) {
-		result.addMany(data->threeAttack);
+		result.addMany(&data->threeAttack);
 	}
 	return result;
 }
@@ -59,7 +59,7 @@ points getComboDefencePoints(analyzeData *data, ComboType comboType) {
 	if (comboType == THREE_COMBO) {
 		//如果有对方活3，则防活3或者冲四
 		if (data->threeDefence.count > 0) {
-			result.addMany(data->threeDefence);
+			result.addMany(&data->threeDefence);
 			//result.addMany(data->fourAttack);
 			return result;
 		}
