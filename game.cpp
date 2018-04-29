@@ -292,7 +292,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		int value = getScoreValue();
 		if (color != aiColor)
 			value = -value;
-		bool needExpend = false;
+		/*bool needExpend = false;
 		if (value > alpha && value < beta && extend < currentLevel) {
 			ps = getNeighbor();
 			for (int i = 0; i < ps.count; i++) {
@@ -321,8 +321,8 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 			extend += 2;
 			currentExtend = extend > currentExtend ? extend : currentExtend;
 		}
-		else
-			return value;
+		else*/
+		return value;
 	}
 
 	if (ps.count == 0) {

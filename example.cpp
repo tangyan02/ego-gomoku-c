@@ -113,7 +113,7 @@ void brain_turn()
 	pipeOut("MESSAGE [%d,%d] value %d", p.x, p.y, result.value);
 	pipeOut("DEBUG level %d, extend %d, combo %d", result.level, result.extend, result.combo);
 	pipeOut("DEBUG nodes %d, speed %d k", result.node, result.speed);
-	pipeOut("DEBUG combo cache total %d ,combo cache hit %d", result.comboCacheTotal, result.comboCacheHit);
+	//pipeOut("DEBUG combo cache total %d ,combo cache hit %d", result.comboCacheTotal, result.comboCacheHit);
 	do_mymove(p.x, p.y);
 }
 

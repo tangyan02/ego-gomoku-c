@@ -89,18 +89,14 @@ bool dfsKill(Color color, Color targetColor, int level, ComboType comboType, poi
 			points fatherPoints = getPointLinesNeighbor(father->x, father->y);
 			for (int i = 0; i < fatherPoints.count; i++) {
 				point p = fatherPoints.list[i];
-				if (!basePoints.contains(p.x, p.y)) {
-					basePoints.add(p);
-				}
+				basePoints.add(p);
 			}
 		}
 		else {
 			points fatherPoints = getPointLinesNeighbor(father->x, father->y);
 			for (int i = 0; i < fatherPoints.count; i++) {
 				point p = fatherPoints.list[i];
-				if (!basePoints.contains(p.x, p.y)) {
-					basePoints.add(p);
-				}
+				basePoints.add(p);
 			}
 			points grandPoints = getPointLinesNeighbor(grandFather->x, grandFather->y);
 			for (int i = 0; i < grandPoints.count; i++) {
