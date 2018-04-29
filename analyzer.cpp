@@ -29,7 +29,7 @@ bool fourAttackTable[MAX_TABLE_SIZE];
 bool fourDefenceTable[MAX_TABLE_SIZE];
 bool threeAttackTable[MAX_TABLE_SIZE];
 bool twoAttackTable[MAX_TABLE_SIZE];
-bool threeDefenceTable[MAX_TABLE_SIZE][4][4];
+bool threeDefenceTable[MAX_TABLE_SIZE][4][4][4][4];
 
 static int directX[] = { 0, 1, 1, 1 };
 
@@ -54,6 +54,15 @@ void printKey(int key) {
 		printf("%d", key % 4);
 		key = key >> 2;
 	}
+	printf("\n");
+}
+
+void printLine(int line[]) {
+	for (int i = 0; i < 8; i++)
+		if (line[i] == 3)
+			return;
+	for (int i = 0; i < 8; i++)
+		printf("%d", line[i]);
 	printf("\n");
 }
 
@@ -139,50 +148,75 @@ void caculate(int line[]) {
 				}
 			}
 			for (int left = 0; left < 4; left++)
-				for (int right = 0; right < 4; right++) {
-					if (current == 0 && other == 3) {
-						if (headColor == NULL_COLOR && tailColor != NULL_COLOR) {
-							if (tailSideColor == NULL_COLOR) {
-								threeDefenceTable[key][left][right] = true;
+				for (int right = 0; right < 4; right++)
+					for (int leftLeft = 0; leftLeft < 4; leftLeft++)
+						for (int rightRight = 0; rightRight < 4; rightRight++) {
+							if (current == 0 && other == 3) {
+								if (headColor == NULL_COLOR && tailColor != NULL_COLOR) {
+									if (tailSideColor == NULL_COLOR) {
+										threeDefenceTable[key][left][right][leftLeft][rightRight] = true;
+									}
+								}
+								if (headColor != NULL_COLOR && tailColor == NULL_COLOR) {
+									if (headSideColor == NULL_COLOR) {
+										threeDefenceTable[key][left][right][leftLeft][rightRight] = true;
+									}
+								}
 							}
 						}
-						if (headColor != NULL_COLOR && tailColor == NULL_COLOR) {
-							if (headSideColor == NULL_COLOR) {
-								threeDefenceTable[key][left][right] = true;
-							}
-						}
-					}
-				}
 		}
 		else {
 			//两边的防3有特殊情况
 			for (int left = 0; left < 4; left++)
-				for (int right = 0; right < 4; right++) {
-					if (current == 0 && other == 3) {
-						if (i == 3) {
-							//OXXX-0000 XXXO-0000
-							if (headColor == NULL_COLOR) {
-								if (line[4] == NULL_COLOR || left == NULL_COLOR)
-									threeDefenceTable[key][left][right] = true;
+				for (int right = 0; right < 4; right++)
+					for (int leftLeft = 0; leftLeft < 4; leftLeft++)
+						for (int rightRight = 0; rightRight < 4; rightRight++) {
+							if (current == 0 && other == 3) {
+								if (i == 3) {
+									//OXXX-0000 
+									if (headColor == NULL_COLOR) {
+										if (line[4] == NULL_COLOR || left == NULL_COLOR) {
+											threeDefenceTable[key][left][right][leftLeft][rightRight] = true;
+										}
+									}
+									//XOXX-0000
+									else
+										if (left == NULL_COLOR) {
+											if (line[3] != NULL_COLOR) {
+												threeDefenceTable[key][left][right][leftLeft][rightRight] = true;
+												//printf("l:%d r:%d head:%d key:", left, right, headColor);
+												//printLine(line);
+											}
+											if (line[3] == NULL_COLOR && leftLeft != NULL_COLOR) {
+												threeDefenceTable[key][left][right][leftLeft][rightRight] = true;
+												//printf("l:%d r:%d ll:%d rr:%d key:", left, right, leftLeft, rightRight);
+												//printLine(line);
+											}
+										}
+								}
+								if (i == 7) {
+									//OOOO-XXXO
+									if (tailColor == NULL_COLOR) {
+										if (line[3] == NULL_COLOR || right == NULL_COLOR)
+											threeDefenceTable[key][left][right][leftLeft][rightRight] = true;
+									}
+									//OOOO-XOXX
+									else
+										if (right == NULL_COLOR) {
+											if (line[4] != NULL_COLOR) {
+												threeDefenceTable[key][left][right][leftLeft][rightRight] = true;
+												//printf("l:%d r:%d head:%d key:", left, right, headColor);
+												//printLine(line);
+											}
+											if (line[4] == NULL_COLOR && rightRight != NULL_COLOR) {
+												threeDefenceTable[key][left][right][leftLeft][rightRight] = true;
+												//printf("l:%d r:%d ll:%d rr:%d key:", left, right, leftLeft, rightRight);
+												//printLine(line);
+											}
+										}
+								}
 							}
-							//XOXX-0000
-							else
-								if (left == NULL_COLOR)
-									threeDefenceTable[key][left][right] = true;
 						}
-						if (i == 7) {
-							//OOOO-XXXO
-							if (tailColor == NULL_COLOR) {
-								if (line[3] == NULL_COLOR || right == NULL_COLOR)
-									threeDefenceTable[key][left][right] = true;
-							}
-							//OOOO-XOXX
-							else
-								if (right == NULL_COLOR )
-									threeDefenceTable[key][left][right] = true;
-						}
-					}
-				}
 		}
 	}
 }
@@ -223,6 +257,30 @@ int getPointTableColor(int x, int y, Color targetColor) {
 	if (map[x][y] == getOtherColor(targetColor))
 		return OTHER_COLOR;
 	return 0;
+}
+
+int getLineLeftColor(int x, int y, Color targetColor, int direct) {
+	return getPointTableColor(x - 5 * directX[direct], y - 5 * directY[direct], targetColor);
+}
+
+int getLineLeftLeftColor(int x, int y, Color targetColor, int direct) {
+	return getPointTableColor(x - 6 * directX[direct], y - 6 * directY[direct], targetColor);
+}
+
+int getLineRightColor(int x, int y, Color targetColor, int direct) {
+	return getPointTableColor(x + 5 * directX[direct], y + 5 * directY[direct], targetColor);
+}
+
+int getLineRightRightColor(int x, int y, Color targetColor, int direct) {
+	return getPointTableColor(x + 6 * directX[direct], y + 6 * directY[direct], targetColor);
+}
+
+bool getThreeDefenseTable(int key, int x, int y, int direct, Color color) {
+	int left = getLineLeftColor(x, y, color, direct);
+	int right = getLineRightColor(x, y, color, direct);
+	int leftLeft = getLineLeftLeftColor(x, y, color, direct);
+	int rightRight = getLineRightRightColor(x, y, color, direct);
+	return threeDefenceTable[key][left][right][leftLeft][rightRight];
 }
 
 int updateLineKey(int x, int y, int direct, int n, Color targetColor) {
@@ -338,11 +396,7 @@ analyzeData getAnalyzeData(Color color, points *ps) {
 					result.threeAttack.add(p);
 				}
 			}
-			point leftPoint = point(p.x - 5 * directX[k], p.y - 5 * directY[k]);
-			point rightPoint = point(p.x + 5 * directX[k], p.y + 5 * directY[k]);
-			int left = getPointTableColor(map, leftPoint.x, leftPoint.y, color);
-			int right = getPointTableColor(map, rightPoint.x, rightPoint.y, color);
-			if (threeDefenceTable[key][left][right])
+			if (getThreeDefenseTable(key, p.x, p.y, k, color))
 				if (!result.threeDefence.contains(p.x, p.y)) {
 					result.threeDefence.add(p);
 				}

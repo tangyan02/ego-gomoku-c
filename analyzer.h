@@ -16,3 +16,5 @@ void updatePointKey(int px, int py);
 void setLineKey(int px, int py, int direct, Color targetColor);
 
 analyzeData getAnalyzeData(Color color, points *ps);
+
+bool getThreeDefenseTable(int key, int x, int y, int direct, Color color);

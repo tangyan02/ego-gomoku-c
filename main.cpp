@@ -97,8 +97,8 @@ int main()
 {
 	//piskvork();
 	//testCombo();
-	//testPlay();
-	testAnalyze();
+	testPlay();
+	//testAnalyze();
 	getchar();
 	return 0;
 }

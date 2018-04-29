@@ -12,7 +12,7 @@ extern bool fourAttackTable[MAX_TABLE_SIZE];
 extern bool fourDefenceTable[MAX_TABLE_SIZE];
 extern bool threeAttackTable[MAX_TABLE_SIZE];
 extern bool twoAttackTable[MAX_TABLE_SIZE];
-extern bool threeDefenceTable[MAX_TABLE_SIZE][4][4];
+extern bool threeDefenceTable[MAX_TABLE_SIZE][4][4][4][4];
 
 static int fiveAttackScore = 100000;
 static int fourDefenceScore = 10000;
@@ -84,9 +84,7 @@ void sortPoints(points *neighbors, Color color) {
 				fourAttack.add(neighbors->list[i]);
 			}
 			//±£´æ·ÀÓù»îÈı
-			int left = getPointTableColor(neighbors->list[i].x - 5 * directX[k], neighbors->list[i].y - 5 * directY[k], color);
-			int right = getPointTableColor(neighbors->list[i].x + 5 * directX[k], neighbors->list[i].y + 5 * directY[k], color);
-			if (threeDefenceTable[key][left][right])
+			if (getThreeDefenseTable(key, neighbors->list[i].x, neighbors->list[i].y, k, color))
 				threeDefence.add(neighbors->list[i]);
 		}
 	}
