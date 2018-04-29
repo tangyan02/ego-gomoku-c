@@ -63,6 +63,9 @@
     <Text Include="analyze2.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="analyze3.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

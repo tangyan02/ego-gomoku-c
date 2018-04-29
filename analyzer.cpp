@@ -160,7 +160,7 @@ void caculate(int line[]) {
 				for (int right = 0; right < 4; right++) {
 					if (current == 0 && other == 3) {
 						if (i == 3) {
-							//OXXX-0000
+							//OXXX-0000 XXXO-0000
 							if (headColor == NULL_COLOR) {
 								if (line[4] == NULL_COLOR || left == NULL_COLOR)
 									threeDefenceTable[key][left][right] = true;
@@ -178,7 +178,7 @@ void caculate(int line[]) {
 							}
 							//OOOO-XOXX
 							else
-								if (right == NULL_COLOR)
+								if (right == NULL_COLOR )
 									threeDefenceTable[key][left][right] = true;
 						}
 					}

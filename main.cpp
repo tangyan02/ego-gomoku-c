@@ -57,10 +57,12 @@ void testCombo() {
 }
 
 void testAnalyze() {
-	Color ** map = readMap("analyze2.txt");
+	boardSize = 20;
+	Color ** map = readMap("analyze3.txt");
 	initGameMap(map);
-	Color color = BLACK;
+	Color color = WHITE;
 	initScore(color);
+	initAnalyze();
 	analyzeData data = getAnalyzeData(color, &getNeighbor());
 
 	printf("5 A\n");
@@ -93,10 +95,10 @@ void testNeighbor() {
 
 int main()
 {
-	piskvork();
+	//piskvork();
 	//testCombo();
-	testPlay();
-	//testAnalyze();
+	//testPlay();
+	testAnalyze();
 	getchar();
 	return 0;
 }
