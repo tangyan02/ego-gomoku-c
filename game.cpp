@@ -223,7 +223,6 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			if (value == MAX_VALUE)
 				break;
 		}
-		printMapWithStars(getMap(), loseSet);
 		if (getSystemTime() - searchStartTime > timeOut / 3) {
 			timeOutEnable = true;
 		}
@@ -418,7 +417,6 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 
 	point extremePoint = extremePoints.list[rand() % extremePoints.count];
 	if (level == currentLevel && extend == 0) {
-		printPoints(extremePoints);
 		currentPointResult = point(extremePoint.x, extremePoint.y);
 	}
 
