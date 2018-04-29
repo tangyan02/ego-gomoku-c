@@ -179,14 +179,15 @@ void caculate(int line[]) {
 											threeDefenceTable[key][left][right][leftLeft][rightRight] = true;
 										}
 									}
-									//XOXX-0000
 									else
 										if (left == NULL_COLOR) {
+											//XOXX-0000
 											if (line[3] != NULL_COLOR) {
 												threeDefenceTable[key][left][right][leftLeft][rightRight] = true;
 												//printf("l:%d r:%d head:%d key:", left, right, headColor);
 												//printLine(line);
 											}
+											//XXXO-0000
 											if (line[3] == NULL_COLOR && leftLeft != NULL_COLOR) {
 												threeDefenceTable[key][left][right][leftLeft][rightRight] = true;
 												//printf("l:%d r:%d ll:%d rr:%d key:", left, right, leftLeft, rightRight);
@@ -200,14 +201,15 @@ void caculate(int line[]) {
 										if (line[3] == NULL_COLOR || right == NULL_COLOR)
 											threeDefenceTable[key][left][right][leftLeft][rightRight] = true;
 									}
-									//OOOO-XOXX
 									else
 										if (right == NULL_COLOR) {
+											//OOOO-XOXX
 											if (line[4] != NULL_COLOR) {
 												threeDefenceTable[key][left][right][leftLeft][rightRight] = true;
 												//printf("l:%d r:%d head:%d key:", left, right, headColor);
 												//printLine(line);
 											}
+											//OOOO=OXXX
 											if (line[4] == NULL_COLOR && rightRight != NULL_COLOR) {
 												threeDefenceTable[key][left][right][leftLeft][rightRight] = true;
 												//printf("l:%d r:%d ll:%d rr:%d key:", left, right, leftLeft, rightRight);

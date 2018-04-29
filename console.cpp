@@ -59,6 +59,17 @@ void printMapWithStars(Color ** map, points ps)
 	}
 }
 
+void printMapWithStars(Color ** map, pointHash hash)
+{
+	points ps;
+	for(int i = 0;i<boardSize;i++)
+		for (int j = 0; j < boardSize; j++) {
+			if (hash.contains(i, j))
+				ps.add(point(i, j));
+		}
+	printMapWithStars(map, ps);
+}
+
 void printMapWithStar(Color ** map, point p)
 {
 	map[p.x][p.y] = STAR;

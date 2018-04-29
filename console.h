@@ -12,4 +12,6 @@ void printMap(Color **map);
 
 void printMapWithStars(Color **map, points ps);
 
+void printMapWithStars(Color **map, pointHash hash);
+
 void printMapWithStar(Color **map, point p);

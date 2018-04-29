@@ -58,9 +58,9 @@ void testCombo() {
 
 void testAnalyze() {
 	boardSize = 20;
-	Color ** map = readMap("analyze3.txt");
+	Color ** map = readMap("input.txt");
 	initGameMap(map);
-	Color color = WHITE;
+	Color color = BLACK;
 	initScore(color);
 	initAnalyze();
 	analyzeData data = getAnalyzeData(color, &getNeighbor());

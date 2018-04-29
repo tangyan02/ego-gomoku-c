@@ -125,6 +125,8 @@ bool tryComboSearchIteration(gameResult *gameResult, Color aiColor, points *neig
 		}
 		if (debugEnable) {
 			printf("combo level %d finish %lld ms\n", level, getSystemTime() - comboStart);
+			printf("loseset ");
+			printHash(loseSet);
 		}
 	}
 	if (debugEnable) {
@@ -221,6 +223,7 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			if (value == MAX_VALUE)
 				break;
 		}
+		printMapWithStars(getMap(), loseSet);
 		if (getSystemTime() - searchStartTime > timeOut / 3) {
 			timeOutEnable = true;
 		}
