@@ -277,12 +277,14 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	//获取扩展节点
 	points ps;
 
-	//comboResult result = canKillFour(color, currentLevel);
-	//if (result.win) {
-	//	if (level == currentLevel && extend == 0) {
-	//		currentPointResult = result.p;
+	//if (level == 0) {
+	//	comboResult result = canKillFour(color, currentLevel);
+	//	if (result.win) {
+	//		if (level == currentLevel && extend == 0) {
+	//			currentPointResult = result.p;
+	//		}
+	//		return MAX_VALUE;
 	//	}
-	//	return MAX_VALUE;
 	//}
 
 	//叶子分数计算

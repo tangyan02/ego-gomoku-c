@@ -1,8 +1,5 @@
 #pragma once
-
-#define ComboType int
-#define THREE_COMBO 0
-#define FOUR_COMBO 1
+#include "comboProcessor.h"
 
 #define COMBO_TRUE 1
 #define COMBO_FALSE 0

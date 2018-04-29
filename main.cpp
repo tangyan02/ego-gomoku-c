@@ -21,7 +21,7 @@ void testPlay() {
 	comboLevel = 30;
 	debugEnable = true;
 	Color ** map = readMap();
-	gameResult result = search(BLACK, map);
+	gameResult result = search(WHITE, map);
 	printMapWithStar(map, result.result);
 }
 
