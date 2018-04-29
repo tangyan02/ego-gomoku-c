@@ -62,29 +62,7 @@ long long getSystemTime() {
 	return 1000 * t.time + t.millitm;
 }
 
-gameResult search(Color aiColor, Color** map)
-{
-	gameResult gameResult;
-	timeOutEnable = false;
-	//初始化
-	initAnalyze();
-	initGameMap(map);
-	initScore(aiColor);
-
-	//初始分析
-	points ps = getNeighbor();
-	sortPoints(&ps, aiColor);
-
-	if (ps.count == 0) {
-		gameResult.result = point(boardSize / 2, boardSize / 2);
-		return gameResult;
-	}
-
-	if (ps.count == 1) {
-		gameResult.result = ps.list[0];
-		return gameResult;
-	}
-	//连击搜索
+bool tryComboSearchIteration(gameResult *gameResult, Color aiColor, points *neighbors) {
 	int node = 0;
 	int lastNodeCount = 0;
 	long long comboStart = getSystemTime();
@@ -98,9 +76,9 @@ gameResult search(Color aiColor, Color** map)
 			comboResult result = canKill(aiColor, level, comboStart, comboTimeOut);
 			if (result.win) {
 				if (result.fourWin) {
-					gameResult.value = MAX_VALUE;
-					gameResult.result = result.p;
-					return gameResult;
+					gameResult->value = MAX_VALUE;
+					gameResult->result = result.p;
+					return true;
 				}
 				else
 				{
@@ -113,16 +91,16 @@ gameResult search(Color aiColor, Color** map)
 			if (result.timeOut)
 				break;
 			node = result.node;
-			gameResult.combo = level;
+			gameResult->combo = level;
 		}
 
 
 		//对方连击
 		if (!otherComboFinish) {
 			int nodeCount = 0;
-			for (int i = 0; i < ps.count; i++)
+			for (int i = 0; i < neighbors->count; i++)
 			{
-				point p = ps.list[i];
+				point p = neighbors->list[i];
 				if (loseSet.contains(p))
 					continue;
 				setPoint(p.x, p.y, aiColor, NULL, aiColor);
@@ -143,7 +121,7 @@ gameResult search(Color aiColor, Color** map)
 			if (nodeCount == lastNodeCount)
 				otherComboFinish = true;
 			lastNodeCount = nodeCount;
-			gameResult.combo = level;
+			gameResult->combo = level;
 		}
 		if (debugEnable) {
 			printf("combo level %d finish %lld ms\n", level, getSystemTime() - comboStart);
@@ -166,30 +144,35 @@ gameResult search(Color aiColor, Color** map)
 	for (int i = 0; i < threeWins.count; i++) {
 		point p = threeWins.list[i];
 		if (!loseSet.contains(p)) {
-			gameResult.value = MAX_VALUE;
-			gameResult.result = p;
-			return gameResult;
+			gameResult->value = MAX_VALUE;
+			gameResult->result = p;
+			return true;
 		}
 	}
 
 	//如果只有一个节点不败，则执行该节点
-	if (ps.count - 1 == loseSet.count) {
-		for (int i = 0; i < ps.count; i++) {
-			point p = ps.list[i];
+	if (neighbors->count - 1 == loseSet.count) {
+		for (int i = 0; i < neighbors->count; i++) {
+			point p = neighbors->list[i];
 			if (!loseSet.contains(p)) {
-				gameResult.result = p;
-				return gameResult;
+				gameResult->result = p;
+				return true;
 			}
 		}
 	}
 
+	return false;
+}
+
+bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *gameResult, Color** map) {
 	//如果必败，则朴素搜索
 	bool loseFlag = false;
-	if (ps.count == loseSet.count) {
+	if (neighbors->count == loseSet.count) {
 		loseSet.reset();
 		loseFlag = true;
 	}
 	//得分搜索
+	timeOutEnable = false;
 	searchStartTime = getSystemTime();
 	cacheLast.clear();
 	cache.clear();
@@ -216,21 +199,21 @@ gameResult search(Color aiColor, Color** map)
 		}
 
 		if (!timeOutEnable) {
-			if (level > 2 && loseSet.count == ps.count) {
-				gameResult.value = value;
-				return gameResult;
+			if (level > 2 && loseSet.count == neighbors->count) {
+				gameResult->value = value;
+				return true;
 			}
-			gameResult.result = currentPointResult;
+			gameResult->result = currentPointResult;
 			int speed = 0;
 			if ((getSystemTime() - t) > 0)
 				speed = (int)(nodeCount / ((getSystemTime() - t) / 1000.00) / 1000);
-			gameResult.speed = speed;
-			gameResult.node = nodeCount;
-			gameResult.value = value;
-			gameResult.level = level;
-			gameResult.extend = currentExtend;
-			gameResult.comboCacheHit = comboCacheHit;
-			gameResult.comboCacheTotal = comboCacheTotal;
+			gameResult->speed = speed;
+			gameResult->node = nodeCount;
+			gameResult->value = value;
+			gameResult->level = level;
+			gameResult->extend = currentExtend;
+			gameResult->comboCacheHit = comboCacheHit;
+			gameResult->comboCacheTotal = comboCacheTotal;
 			if (debugEnable) {
 				printf("level %d, extend %d, value %d, speed %d k, time %lld ms\n", level, currentExtend, value, speed, getSystemTime() - t);
 				printMapWithStar(map, currentPointResult);
@@ -243,7 +226,39 @@ gameResult search(Color aiColor, Color** map)
 		}
 	}
 	if (loseFlag)
-		gameResult.value = MIN_VALUE;
+		gameResult->value = MIN_VALUE;
+	return true;
+}
+
+gameResult search(Color aiColor, Color** map)
+{
+	gameResult gameResult;
+	//初始化
+	initAnalyze();
+	initGameMap(map);
+	initScore(aiColor);
+
+	//初始分析
+	points neighbors = getNeighbor();
+	sortPoints(&neighbors, aiColor);
+
+	if (neighbors.count == 0) {
+		gameResult.result = point(boardSize / 2, boardSize / 2);
+		return gameResult;
+	}
+
+	if (neighbors.count == 1) {
+		gameResult.result = neighbors.list[0];
+		return gameResult;
+	}
+	//连击迭代搜索
+	bool comboResult = tryComboSearchIteration(&gameResult, aiColor, &neighbors);
+	if (comboResult) {
+		return gameResult;
+	}
+
+	//得分迭代搜索
+	tryScoreSearchIteration(&neighbors, aiColor, &gameResult, map);
 	return gameResult;
 }
 
