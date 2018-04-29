@@ -205,7 +205,7 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 				gameResult->value = value;
 				return true;
 			}
-			gameResult->result = currentPointResult;
+			gameResult->result = point(currentPointResult.x, currentPointResult.y);
 			int speed = 0;
 			if ((getSystemTime() - t) > 0)
 				speed = (int)(nodeCount / ((getSystemTime() - t) / 1000.00) / 1000);
@@ -217,7 +217,7 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			gameResult->comboCacheHit = comboCacheHit;
 			gameResult->comboCacheTotal = comboCacheTotal;
 			if (debugEnable) {
-				printf("level %d, extend %d, value %d, speed %d k, time %lld ms\n", level, currentExtend, value, speed, getSystemTime() - t);
+				printf("level %d, extend %d, value %d, speed %d k, x:%d y:%d time %lld ms\n", level, currentExtend, value, speed, gameResult->result.x, gameResult->result.y, getSystemTime() - t);
 				printMapWithStar(map, currentPointResult);
 			}
 			if (value == MAX_VALUE)
@@ -363,7 +363,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	int extreme = MIN_VALUE;
 	points extremePoints;
 	for (int i = 0; i < ps.count; i++) {
-		point p = ps.list[i];
+		point p = point(ps.list[i].x, ps.list[i].y);
 
 		setPoint(p.x, p.y, color, NULL, aiColor);
 		int value;
@@ -418,7 +418,8 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 
 	point extremePoint = extremePoints.list[rand() % extremePoints.count];
 	if (level == currentLevel && extend == 0) {
-		currentPointResult = extremePoint;
+		printPoints(extremePoints);
+		currentPointResult = point(extremePoint.x, extremePoint.y);
 	}
 
 	cache[hashCode] = extremePoint;

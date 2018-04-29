@@ -28,6 +28,8 @@ void points::addMany(points *ps)
 
 void points::clear()
 {
+	list.clear();
+	count = 0;
 }
 
 bool points::contains(int x, int y)
