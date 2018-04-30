@@ -209,8 +209,6 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			gameResult->value = value;
 			gameResult->level = level;
 			gameResult->extend = currentExtend;
-			gameResult->comboCacheHit = comboCacheHit;
-			gameResult->comboCacheTotal = comboCacheTotal;
 			if (debugEnable) {
 				printf("level %d, extend %d, value %d, speed %d k, x:%d y:%d time %lld ms\n", level, currentExtend, value, speed, gameResult->result.x, gameResult->result.y, getSystemTime() - t);
 				printMapWithStar(map, currentPointResult);
@@ -293,11 +291,8 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		return 0;
 	}
 	nodeCount++;
-	long long hashCode = getMapHashCode();
 
-	//获取扩展节点
-	points neighbors;
-
+	//延伸检查
 	if (expandCheck(alpha, beta, extend, color, aiColor, level)) {
 		level += 2;
 		extend += 2;
@@ -309,7 +304,8 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		return getScoreValue(color, aiColor);
 	}
 
-	neighbors = getNeighbor();
+	//获取扩展节点
+	points neighbors = getNeighbor();
 	if (canWinCheck(&neighbors, color)) {
 		return MAX_VALUE;
 	}
@@ -318,8 +314,8 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	sortPoints(&neighbors, color);
 
 	//调整最优节点顺序
-	if (cacheLast.find(hashCode) != cacheLast.end()) {
-		point p = cacheLast[hashCode];
+	if (cacheLast.find(getMapHashCode()) != cacheLast.end()) {
+		point p = cacheLast[getMapHashCode()];
 		for (int i = 0; i < neighbors.count; i++)
 			if (neighbors.list[i].x == p.x && neighbors.list[i].y == p.y) {
 				for (int j = i; j > 0; j--) {
@@ -365,7 +361,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 			if (value > alpha) {
 				alpha = value;
 				if (value > beta) {
-					cache[hashCode] = p;
+					cache[getMapHashCode()] = p;
 					return value;
 				}
 			}
@@ -392,7 +388,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		currentPointResult = point(extremePoint.x, extremePoint.y);
 	}
 
-	cache[hashCode] = extremePoint;
+	cache[getMapHashCode()] = extremePoint;
 	return extreme;
 }
 
