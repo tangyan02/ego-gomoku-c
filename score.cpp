@@ -77,8 +77,10 @@ void updateScore(int px, int py, Color color, Color forwardColor, Color aiColor)
 	}
 }
 
-int getScoreValue()
+int getScoreValue(Color color, Color aiColor)
 {
+	if (color != aiColor)
+		return -value;
 	return value;
 }
 

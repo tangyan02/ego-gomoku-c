@@ -21,7 +21,6 @@ static int directY[] = { 1, 1, 0, -1 };
 static bool timeOutEnable;
 
 extern bool fourDefenceTable[MAX_TABLE_SIZE];
-extern bool threeDefenceTable[MAX_TABLE_SIZE][4][4];
 extern bool threeAttackTable[MAX_TABLE_SIZE];
 
 void setColor(int px, int py, Color color, Color forwardColor, Color aiColor) {

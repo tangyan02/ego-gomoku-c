@@ -28,11 +28,6 @@ extern int comboCacheHit;
 extern int comboCacheTotal;
 
 extern bool fiveAttackTable[MAX_TABLE_SIZE];
-extern bool fourDefenceTable[MAX_TABLE_SIZE];
-extern bool fourAttackTable[MAX_TABLE_SIZE];
-extern bool fourDefenceTable[MAX_TABLE_SIZE];
-extern bool threeAttackTable[MAX_TABLE_SIZE];
-extern bool threeDefenceTable[MAX_TABLE_SIZE][4][4];
 
 static int directX[] = { 0, 1, 1, 1 };
 
@@ -264,23 +259,11 @@ gameResult search(Color aiColor, Color** map)
 	return gameResult;
 }
 
-void checkNeighborsAndSet(points *neighbors) {
-	if (neighbors->count == 0) {
-		*neighbors = getNeighbor();
-	}
-}
-
-bool expandCheck(int value, int alpha, int beta, int extend, points* neighbors, Color color) {
-	checkNeighborsAndSet(neighbors);
-	if (value > alpha && value < beta && extend < currentLevel) {
-		for (int i = 0; i < neighbors->count; i++) {
-			point p = neighbors->list[i];
-			for (int k = 0; k < 4; k++) {
-				int key = getMapLineKey(p.x, p.y, k, color);
-				if (fourAttackTable[key]) {
-					return true;
-				}
-			}
+bool expandCheck(int alpha, int beta, int extend, Color color, Color aiColor, int level) {
+	if (level == 0 || level == 1) {
+		int value = getScoreValue(color, aiColor);
+		if (value > alpha && value < beta && extend < currentLevel) {
+			return true;
 		}
 	}
 	return false;
@@ -315,22 +298,18 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	//获取扩展节点
 	points neighbors;
 
+	if (expandCheck(alpha, beta, extend, color, aiColor, level)) {
+		level += 2;
+		extend += 2;
+		currentExtend = extend > currentExtend ? extend : currentExtend;
+	}
 
 	//叶子分数计算
 	if (level == 0) {
-		int value = getScoreValue();
-		if (color != aiColor)
-			value = -value;
-		if (expandCheck(value, alpha, beta, extend, &neighbors, color)) {
-			level += 2;
-			extend += 2;
-			currentExtend = extend > currentExtend ? extend : currentExtend;
-		}
-		else
-			return value;
+		return getScoreValue(color, aiColor);
 	}
 
-	checkNeighborsAndSet(&neighbors);
+	neighbors = getNeighbor();
 	if (canWinCheck(&neighbors, color)) {
 		return MAX_VALUE;
 	}
