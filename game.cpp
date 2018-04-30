@@ -264,6 +264,42 @@ gameResult search(Color aiColor, Color** map)
 	return gameResult;
 }
 
+void checkNeighborsAndSet(points *neighbors) {
+	if (neighbors->count == 0) {
+		*neighbors = getNeighbor();
+	}
+}
+
+bool expandCheck(int value, int alpha, int beta, int extend, points* neighbors, Color color) {
+	checkNeighborsAndSet(neighbors);
+	if (value > alpha && value < beta && extend < currentLevel) {
+		for (int i = 0; i < neighbors->count; i++) {
+			point p = neighbors->list[i];
+			for (int k = 0; k < 4; k++) {
+				int key = getMapLineKey(p.x, p.y, k, color);
+				if (fourAttackTable[key]) {
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+bool canWinCheck(points *neighbors, Color color) {
+	//输赢判定
+	for (int i = 0; i < neighbors->count; i++) {
+		point p = neighbors->list[i];
+		for (int k = 0; k < 4; k++) {
+			int key = getMapLineKey(p.x, p.y, k, color);
+			if (fiveAttackTable[key]) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 /* 零窗口测试法
 */
 int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) {
@@ -277,83 +313,40 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	long long hashCode = getMapHashCode();
 
 	//获取扩展节点
-	points ps;
+	points neighbors;
 
-	//if (level == 0) {
-	//	comboResult result = canKillFour(color, currentLevel);
-	//	if (result.win) {
-	//		if (level == currentLevel && extend == 0) {
-	//			currentPointResult = result.p;
-	//		}
-	//		return MAX_VALUE;
-	//	}
-	//}
 
 	//叶子分数计算
 	if (level == 0) {
 		int value = getScoreValue();
 		if (color != aiColor)
 			value = -value;
-		/*bool needExpend = false;
-		if (value > alpha && value < beta && extend < currentLevel) {
-			ps = getNeighbor();
-			for (int i = 0; i < ps.count; i++) {
-				if (needExpend)
-					break;
-				point p = ps.list[i];
-				for (int k = 0; k < 4; k++) {
-					int key = getMapLineKey(p.x, p.y, k, color);
-					point leftPoint = point(p.x - 5 * directX[k], p.y - 5 * directY[k]);
-					point rightPoint = point(p.x + 5 * directX[k], p.y + 5 * directY[k]);
-					int left = getPointTableColor(leftPoint.x, leftPoint.y, color);
-					int right = getPointTableColor(rightPoint.x, rightPoint.y, color);
-					if (fiveAttackTable[key]) {
-						return MAX_VALUE;
-					}
-					if (fourDefenceTable[key] || threeDefenceTable[key][left][right] || fourAttackTable[key] || threeAttackTable[key]) {
-						needExpend = true;
-						break;
-					}
-				}
-			}
-
-		}
-		if (needExpend) {
+		if (expandCheck(value, alpha, beta, extend, &neighbors, color)) {
 			level += 2;
 			extend += 2;
 			currentExtend = extend > currentExtend ? extend : currentExtend;
 		}
-		else*/
-		return value;
+		else
+			return value;
 	}
 
-	if (ps.count == 0) {
-		ps = getNeighbor();
-	}
-
-	//输赢判定
-	for (int i = 0; i < ps.count; i++) {
-		point p = ps.list[i];
-		for (int k = 0; k < 4; k++) {
-			int key = getMapLineKey(p.x, p.y, k, color);
-			if (fiveAttackTable[key]) {
-				return MAX_VALUE;
-			}
-		}
+	checkNeighborsAndSet(&neighbors);
+	if (canWinCheck(&neighbors, color)) {
+		return MAX_VALUE;
 	}
 
 	//排序
-	sortPoints(&ps, color);
+	sortPoints(&neighbors, color);
 
 	//调整最优节点顺序
 	if (cacheLast.find(hashCode) != cacheLast.end()) {
 		point p = cacheLast[hashCode];
-		for (int i = 0; i < ps.count; i++)
-			if (ps.list[i].x == p.x && ps.list[i].y == p.y) {
+		for (int i = 0; i < neighbors.count; i++)
+			if (neighbors.list[i].x == p.x && neighbors.list[i].y == p.y) {
 				for (int j = i; j > 0; j--) {
-					ps.list[j] = ps.list[j - 1];
+					neighbors.list[j] = neighbors.list[j - 1];
 				}
-				ps.list[0] = p;
+				neighbors.list[0] = p;
 				break;
 			}
 	}
@@ -361,8 +354,8 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	//遍历扩展节点
 	int extreme = MIN_VALUE;
 	points extremePoints;
-	for (int i = 0; i < ps.count; i++) {
-		point p = point(ps.list[i].x, ps.list[i].y);
+	for (int i = 0; i < neighbors.count; i++) {
+		point p = point(neighbors.list[i].x, neighbors.list[i].y);
 
 		setPoint(p.x, p.y, color, NULL, aiColor);
 		int value;
