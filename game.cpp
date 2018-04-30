@@ -258,7 +258,7 @@ gameResult search(Color aiColor, Color** map)
 }
 
 bool expandCheck(int alpha, int beta, int extend, Color color, Color aiColor, int level) {
-	if (level == 0 || level == 1) {
+	if (level <= 1) {
 		int value = getScoreValue(color, aiColor);
 		if (value > alpha && value < beta && extend < currentLevel) {
 			return true;
@@ -369,7 +369,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 
 		if (level == currentLevel && extend == 0) {
 			if (debugEnable)
-				printf("(%d, %d) value: %d count: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - searchStartTime);
+				printf("(%d, %d) value: %d nodes: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - searchStartTime);
 
 			if (value == MAX_VALUE) {
 				currentPointResult = p;
