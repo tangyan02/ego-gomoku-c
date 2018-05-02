@@ -281,6 +281,20 @@ bool canWinCheck(points *neighbors, Color color) {
 	return false;
 }
 
+void moveHistoryBestToFirst(points * neighbors) {
+	if (cacheLast.find(getMapHashCode()) != cacheLast.end()) {
+		point p = cacheLast[getMapHashCode()];
+		for (int i = 0; i < neighbors->count; i++)
+			if (neighbors->list[i].x == p.x && neighbors->list[i].y == p.y) {
+				for (int j = i; j > 0; j--) {
+					neighbors->list[j] = neighbors->list[j - 1];
+				}
+				neighbors->list[0] = p;
+				break;
+			}
+	}
+}
+
 /* 零窗口测试法
 */
 int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) {
@@ -314,17 +328,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	sortPoints(&neighbors, color);
 
 	//调整最优节点顺序
-	if (cacheLast.find(getMapHashCode()) != cacheLast.end()) {
-		point p = cacheLast[getMapHashCode()];
-		for (int i = 0; i < neighbors.count; i++)
-			if (neighbors.list[i].x == p.x && neighbors.list[i].y == p.y) {
-				for (int j = i; j > 0; j--) {
-					neighbors.list[j] = neighbors.list[j - 1];
-				}
-				neighbors.list[0] = p;
-				break;
-			}
-	}
+	moveHistoryBestToFirst(&neighbors);
 
 	//遍历扩展节点
 	int extreme = MIN_VALUE;
@@ -380,7 +384,6 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 					loseSet.add(p);
 			}
 		}
-
 	}
 
 	point extremePoint = extremePoints.list[rand() % extremePoints.count];
