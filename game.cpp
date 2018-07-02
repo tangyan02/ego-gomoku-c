@@ -258,12 +258,12 @@ gameResult search(Color aiColor, Color** map)
 }
 
 bool expandCheck(int alpha, int beta, int extend, Color color, Color aiColor, int level) {
-	if (level <= 1) {
+	/*if (level <= 1) {
 		int value = getScoreValue(color, aiColor);
 		if (value > alpha && value < beta && extend < currentLevel) {
 			return true;
 		}
-	}
+	}*/
 	return false;
 }
 

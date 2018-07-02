@@ -31,7 +31,7 @@ void addNeighborCount(int x, int y, bool isAdd) {
 		neighborCount[x][y]--;
 }
 
-void updateNeighbor(int i, int j, bool isAdd, Color pointColor) {
+void updateSide(int i, int j) {
 	if (j - 2 < left) left = j - 2;
 	if (j + 2 > right) right = j + 2;
 	if (i - 2 < top) top = i - 2;
@@ -40,34 +40,19 @@ void updateNeighbor(int i, int j, bool isAdd, Color pointColor) {
 	if (top < 0) top = 0;
 	if (right >= boardSize) right = boardSize - 1;
 	if (bottom >= boardSize) bottom = boardSize - 1;
-	for (int k = 0; k < 8; k++) {
-		int x = i + directX[k];
-		int y = j + directY[k];
-		if (reachable(x, y)) {
-			Color color = map[x][y];
-			if (color == NULL) {
-				addNeighborCount(x, y, isAdd);
+}
+
+void updateNeighbor(int i, int j, bool isAdd, Color pointColor) {
+	updateSide(i, j);
+	for (int x = i - 2; x <= i + 2; x++)
+		for (int y = j - 2; y <= j + 2; y++)
+			if (reachable(x, y)) {
+				Color color = map[x][y];
+				if (i == x && j == y)
+					continue;
+				if(color == NULL)
+					addNeighborCount(x, y, isAdd);
 			}
-			else {
-				if (color == pointColor) {
-					int x1 = i + directX[k] * 3;
-					int y1 = j + directY[k] * 3;
-					int x2 = i - directX[k] * 2;
-					int y2 = j - directY[k] * 2;
-					if (reachable(x1, y1)) {
-						if (map[x1][y1] == NULL) {
-							addNeighborCount(x1, y1, isAdd);
-						}
-					}
-					if (reachable(x2, y2)) {
-						if (map[x2][y2] == NULL) {
-							addNeighborCount(x2, y2, isAdd);
-						}
-					}
-				}
-			}
-		}
-	}
 }
 
 void initGameMap(Color** value) {
