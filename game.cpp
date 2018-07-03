@@ -257,16 +257,6 @@ gameResult search(Color aiColor, Color** map)
 	return gameResult;
 }
 
-bool expandCheck(int alpha, int beta, int extend, Color color, Color aiColor, int level) {
-	/*if (level <= 1) {
-		int value = getScoreValue(color, aiColor);
-		if (value > alpha && value < beta && extend < currentLevel) {
-			return true;
-		}
-	}*/
-	return false;
-}
-
 bool canWinCheck(points *neighbors, Color color) {
 	//输赢判定
 	for (int i = 0; i < neighbors->count; i++) {
@@ -305,13 +295,6 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		return 0;
 	}
 	nodeCount++;
-
-	//延伸检查
-	if (expandCheck(alpha, beta, extend, color, aiColor, level)) {
-		level += 2;
-		extend += 2;
-		currentExtend = extend > currentExtend ? extend : currentExtend;
-	}
 
 	//叶子分数计算
 	if (level == 0) {
