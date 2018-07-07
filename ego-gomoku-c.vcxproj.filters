@@ -128,6 +128,12 @@
     <ClInclude Include="winChecker.h">
       <Filter>头文件\helper</Filter>
     </ClInclude>
+    <ClInclude Include="pattern.h">
+      <Filter>头文件\core</Filter>
+    </ClInclude>
+    <ClInclude Include="patternRecorder.h">
+      <Filter>头文件\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -192,6 +198,12 @@
     </ClCompile>
     <ClCompile Include="winChecker.cpp">
       <Filter>源文件\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="pattern.cpp">
+      <Filter>源文件\core</Filter>
+    </ClCompile>
+    <ClCompile Include="patternRecorder.cpp">
+      <Filter>源文件\core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

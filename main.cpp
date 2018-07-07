@@ -9,6 +9,7 @@
 #include "levelProcessor.h"
 #include "comboProcessor.h"
 #include "pisqpipe.h"
+#include "pattern.h"
 
 extern bool debugEnable;
 
@@ -37,68 +38,11 @@ void removeStar(Color** map) {
 	}
 }
 
-void testCombo() {
-	boardSize = 20;
-	long long t = getSystemTime();
-	Color ** map = readMap();
-	//Color ** map = readMap("failCombo.txt");
-	Color color = BLACK;
-	initGameMap(map);
-	initScore(color);
-	int level = 17;
-	comboResult result = canKill(color, level, getSystemTime(), 9999999999);
-	if (result.win) {
-		printMapWithStar(map, result.p);
-		printf("four win = %d \n", result.fourWin);
-	}
-	else
-		printf("NO\n");
-	printf("%lld ms\n", getSystemTime() - t);
-}
-
-void testAnalyze() {
-	boardSize = 20;
-	Color ** map = readMap("input.txt");
-	initGameMap(map);
-	Color color = BLACK;
-	initScore(color);
-	initAnalyze();
-	analyzeData data = getAnalyzeData(color, &getNeighbor());
-
-	printf("5 A\n");
-	printMapWithStars(map, data.fiveAttack);
-
-	printf("4 A\n");
-	printMapWithStars(map, data.fourAttack);
-
-	printf("4 D\n");
-	printMapWithStars(map, data.fourDefence);
-
-	printf("3 A\n");
-	printMapWithStars(map, data.threeAttack);
-
-	printf("3 D\n");
-	printMapWithStars(map, data.threeDefence);
-
-}
-
-void testNeighbor() {
-	Color ** map = readMap("analyze.txt");
-	initGameMap(map);
-	points ps = getNeighbor();
-	for (int i = 0; i < ps.count; i++) {
-		point p = ps.list[i];
-		map[p.x][p.y] = STAR;
-	}
-	printMap(map);
-}
-
 int main()
 {
-	piskvork();
-	//testCombo();
-	testPlay();
-	//testAnalyze();
+	//piskvork();
+	//testPlay();
+	testPattern();
 	getchar();
 	return 0;
 }

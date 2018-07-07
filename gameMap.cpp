@@ -4,6 +4,7 @@
 #include "analyzer.h"
 #include "vector"
 #include <time.h>  
+#include "patternRecorder.h"
 
 int **map;
 

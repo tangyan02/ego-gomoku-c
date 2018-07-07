@@ -2,6 +2,7 @@
 #include "levelProcessor.h"
 #include "gameMap.h"
 #include "analyzer.h"
+#include "patternRecorder.h"
 
 extern int boardSize;
 

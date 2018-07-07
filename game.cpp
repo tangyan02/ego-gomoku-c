@@ -10,6 +10,7 @@
 #include "unordered_map"
 #include "cache.h"
 #include "comboProcessor.h"
+#include "patternRecorder.h"
 
 extern int boardSize;
 

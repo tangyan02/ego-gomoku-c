@@ -117,8 +117,9 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <RuntimeLibrary />
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -170,6 +171,8 @@
     <ClInclude Include="gameMap.h" />
     <ClInclude Include="io.h" />
     <ClInclude Include="levelProcessor.h" />
+    <ClInclude Include="pattern.h" />
+    <ClInclude Include="patternRecorder.h" />
     <ClInclude Include="pisqpipe.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="pointHash.h" />
@@ -193,6 +196,8 @@
     <ClCompile Include="levelProcessor.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="pattern.cpp" />
+    <ClCompile Include="patternRecorder.cpp" />
     <ClCompile Include="pisqpipe.cpp" />
     <ClCompile Include="point.cpp" />
     <ClCompile Include="pointHash.cpp" />
