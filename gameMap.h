@@ -5,9 +5,11 @@
 #define OTHER_COLOR 2
 #define INVALID_COLOR 3
 
-void setColor(int x, int y, Color color);
-
 Color getColor(int x, int y);
+
+void move(int x, int y, Color color, Color aiColor);
+
+void undoMove(int x, int y, Color color, Color aiColor);
 
 points getNeighbor();
 

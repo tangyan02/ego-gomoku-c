@@ -4,12 +4,10 @@
 #include "io.h"
 #include "game.h"
 #include "score.h"
-#include "analyzeData.h"
-#include "analyzer.h"
 #include "levelProcessor.h"
-#include "comboProcessor.h"
 #include "pisqpipe.h"
 #include "pattern.h"
+#include "patternRecorder.h"
 
 extern bool debugEnable;
 
@@ -42,7 +40,8 @@ int main()
 {
 	//piskvork();
 	//testPlay();
-	testPattern();
+	//testPattern();
+	testPatternRecorder();
 	getchar();
 	return 0;
 }

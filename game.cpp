@@ -4,12 +4,9 @@
 #include "gameMap.h"
 #include "winChecker.h"
 #include "levelProcessor.h"
-#include "analyzer.h"
 #include "console.h"
 #include <sys/timeb.h>
 #include "unordered_map"
-#include "cache.h"
-#include "comboProcessor.h"
 #include "patternRecorder.h"
 
 extern int boardSize;
@@ -20,15 +17,7 @@ extern int comboLevel;
 
 extern int timeOut;
 
-extern int comboTimeOut;
-
 extern bool debugEnable;
-
-extern int comboCacheHit;
-
-extern int comboCacheTotal;
-
-extern bool fiveAttackTable[MAX_TABLE_SIZE];
 
 static int directX[] = { 0, 1, 1, 1 };
 
@@ -42,8 +31,6 @@ static bool timeOutEnable = false;
 
 static int currentLevel;
 
-static int currentExtend;
-
 static point currentPointResult;
 
 static pointHash loseSet;
@@ -56,110 +43,6 @@ long long getSystemTime() {
 	struct timeb t;
 	ftime(&t);
 	return 1000 * t.time + t.millitm;
-}
-
-bool tryComboSearchIteration(gameResult *gameResult, Color aiColor, points *neighbors) {
-	int node = 0;
-	int lastNodeCount = 0;
-	long long comboStart = getSystemTime();
-	points threeWins;
-	bool comboTimeLimit = false;
-	bool comboFinish = false;
-	bool otherComboFinish = false;
-	loseSet.reset();
-	for (int level = 3; level <= comboLevel; level += 2) {
-		if (!comboFinish) {
-			comboResult result = canKill(aiColor, level, comboStart, comboTimeOut);
-			if (result.win) {
-				if (result.fourWin) {
-					gameResult->value = MAX_VALUE;
-					gameResult->result = result.p;
-					return true;
-				}
-				else
-				{
-					threeWins.add(result.p);
-				}
-			}
-			//如果搜的叶子数量相同则，说明已经搜到底
-			if (node == result.node)
-				comboFinish = true;
-			if (result.timeOut)
-				break;
-			node = result.node;
-			gameResult->combo = level;
-		}
-
-
-		//对方连击
-		if (!otherComboFinish) {
-			int nodeCount = 0;
-			for (int i = 0; i < neighbors->count; i++)
-			{
-				point p = neighbors->list[i];
-				if (loseSet.contains(p))
-					continue;
-				setPoint(p.x, p.y, aiColor, NULL, aiColor);
-				comboResult result = canKill(getOtherColor(aiColor), level, comboStart, comboTimeOut);
-				setPoint(p.x, p.y, NULL, aiColor, aiColor);
-				if (result.win) {
-					loseSet.add(p);
-				}
-				nodeCount += result.node;
-				if (result.timeOut) {
-					comboTimeLimit = true;
-					break;
-				}
-			}
-			if (comboTimeLimit)
-				break;
-			//如果搜的叶子数量相同则，说明已经搜到底
-			if (nodeCount == lastNodeCount)
-				otherComboFinish = true;
-			lastNodeCount = nodeCount;
-			gameResult->combo = level;
-		}
-		if (debugEnable) {
-			printf("combo level %d finish %lld ms\n", level, getSystemTime() - comboStart);
-			printf("loseset ");
-			printHash(loseSet);
-		}
-	}
-	if (debugEnable) {
-		printf("three wins ");
-		printPoints(threeWins);
-	}
-	if (debugEnable) {
-		printf("loseset ");
-		printHash(loseSet);
-	}
-
-	if (debugEnable) {
-		printf("combo cache total %d hit %d\n", comboCacheTotal, comboCacheHit);
-	}
-
-	//检查三连击的胜利是否有效
-	for (int i = 0; i < threeWins.count; i++) {
-		point p = threeWins.list[i];
-		if (!loseSet.contains(p)) {
-			gameResult->value = MAX_VALUE;
-			gameResult->result = p;
-			return true;
-		}
-	}
-
-	//如果只有一个节点不败，则执行该节点
-	if (neighbors->count - 1 == loseSet.count) {
-		for (int i = 0; i < neighbors->count; i++) {
-			point p = neighbors->list[i];
-			if (!loseSet.contains(p)) {
-				gameResult->result = p;
-				return true;
-			}
-		}
-	}
-
-	return false;
 }
 
 bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *gameResult, Color** map) {
@@ -182,8 +65,6 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 		cacheLast = cache;
 		cache.clear();
 
-		currentLevel = level;
-		currentExtend = 0;
 		Color color = aiColor;
 		int alpha = MIN_VALUE;
 		int beta = MAX_VALUE;
@@ -209,9 +90,8 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			gameResult->node = nodeCount;
 			gameResult->value = value;
 			gameResult->level = level;
-			gameResult->extend = currentExtend;
 			if (debugEnable) {
-				printf("level %d, extend %d, value %d, speed %d k, x:%d y:%d time %lld ms\n", level, currentExtend, value, speed, gameResult->result.x, gameResult->result.y, getSystemTime() - t);
+				printf("level %d, value %d, speed %d k, x:%d y:%d time %lld ms\n", level, value, speed, gameResult->result.x, gameResult->result.y, getSystemTime() - t);
 				printMapWithStar(map, currentPointResult);
 			}
 			if (value == MAX_VALUE)
@@ -230,7 +110,6 @@ gameResult search(Color aiColor, Color** map)
 {
 	gameResult gameResult;
 	//初始化
-	initAnalyze();
 	initGameMap(map);
 	initScore(aiColor);
 
@@ -247,11 +126,6 @@ gameResult search(Color aiColor, Color** map)
 		gameResult.result = neighbors.list[0];
 		return gameResult;
 	}
-	//连击迭代搜索
-	bool comboResult = tryComboSearchIteration(&gameResult, aiColor, &neighbors);
-	if (comboResult) {
-		return gameResult;
-	}
 
 	//得分迭代搜索
 	tryScoreSearchIteration(&neighbors, aiColor, &gameResult, map);
@@ -260,14 +134,9 @@ gameResult search(Color aiColor, Color** map)
 
 bool canWinCheck(points *neighbors, Color color) {
 	//输赢判定
-	for (int i = 0; i < neighbors->count; i++) {
-		point p = neighbors->list[i];
-		for (int k = 0; k < 4; k++) {
-			int key = getMapLineKey(p.x, p.y, k, color);
-			if (fiveAttackTable[key]) {
-				return true;
-			}
-		}
+	Color result = win(getMap());
+	if (result == color) {
+		return true;
 	}
 	return false;
 }
@@ -320,7 +189,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	for (int i = 0; i < neighbors.count; i++) {
 		point p = point(neighbors.list[i].x, neighbors.list[i].y);
 
-		setPoint(p.x, p.y, color, NULL, aiColor);
+		move(p.x, p.y, color, aiColor);
 		int value;
 		//先查必败表
 		if (level == currentLevel && extend == 0 && loseSet.contains(p)) {
@@ -337,7 +206,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 				}
 			}
 		}
-		setPoint(p.x, p.y, NULL, color, aiColor);
+		undoMove(p.x, p.y, color, aiColor);
 
 		if (value >= extreme) {
 			if (value > extreme) {
@@ -377,9 +246,4 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 
 	cache[getMapHashCode()] = extremePoint;
 	return extreme;
-}
-
-void setPoint(int px, int py, Color color, Color forwardColor, Color aiColor) {
-	updateScore(px, py, color, forwardColor, aiColor);
-	setColor(px, py, color);
 }

@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "gameMap.h"
 #include "stdlib.h"
-#include "analyzer.h"
 #include "vector"
 #include <time.h>  
 #include "patternRecorder.h"
+#include "score.h"
 
 int **map;
 
@@ -51,7 +51,7 @@ void updateNeighbor(int i, int j, bool isAdd, Color pointColor) {
 				Color color = map[x][y];
 				if (i == x && j == y)
 					continue;
-				if(color == NULL)
+				if (color == NULL)
 					addNeighborCount(x, y, isAdd);
 			}
 }
@@ -89,27 +89,27 @@ void initGameMap(Color** value) {
 			}
 		}
 
-	for (int i = 0; i < boardSize; i++)
+	/*for (int i = 0; i < boardSize; i++)
 		for (int j = 0; j < boardSize; j++) {
 			for (int k = 0; k < 4; k++) {
 				setLineKey(i, j, k, BLACK);
 				setLineKey(i, j, k, WHITE);
 			}
-		}
+		}*/
 }
 
-void setColor(int x, int y, Color color)
-{
-	if (color != NULL)
-		updateHashCode(x, y, color);
-	else
-		updateHashCode(x, y, map[x][y]);
-
-	bool isAdd = color == NULL ? false : true;
-	Color pointColor = isAdd ? color : map[x][y];
+void move(int x, int y, Color color, Color aiColor) {
+	updateScore(x, y, color, NULL_COLOR, aiColor);
+	updateHashCode(x, y, color);
 	map[x][y] = color;
-	updateNeighbor(x, y, isAdd, pointColor);
-	updatePointKey(x, y);
+	updateNeighbor(x, y, true, color);
+}
+
+void undoMove(int x, int y, Color color, Color aiColor) {
+	updateScore(x, y, color, color, aiColor);
+	updateHashCode(x, y, color);
+	map[x][y] = NULL_COLOR;
+	updateNeighbor(x, y, false, color);
 }
 
 Color getColor(int x, int y)
