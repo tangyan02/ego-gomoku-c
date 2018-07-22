@@ -4,7 +4,7 @@
 #include "game.h"
 #include "io.h"
 
-const char *infotext = "name=\"Ego\", author=\"TangYan\", version=\"6.0\", country=\"China\", email=\"tangyan1412@foxmail.com\"";
+const char *infotext = "name=\"Ego\", author=\"TangYan\", version=\"7.0\", country=\"China\", email=\"tangyan1412@foxmail.com\"";
 
 #define MAX_BOARD 20
 static Color** map;
@@ -100,8 +100,9 @@ void brain_turn()
 		}
 	}
 	pipeOut("MESSAGE time limit %d", thisTimeOut);
-	timeOut = thisTimeOut / 3 * 2;
-	comboTimeOut = thisTimeOut - timeOut;
+	timeOut = thisTimeOut;
+	//timeOut = thisTimeOut / 3 * 2;
+	//comboTimeOut = thisTimeOut - timeOut;
 	gameResult result = search(BLACK, map);
 	point p = result.result;
 	if (result.value == MAX_VALUE) {
@@ -113,7 +114,6 @@ void brain_turn()
 	pipeOut("MESSAGE [%d,%d] value %d", p.x, p.y, result.value);
 	pipeOut("DEBUG level %d, extend %d, combo %d", result.level, result.extend, result.combo);
 	pipeOut("DEBUG nodes %d, speed %d k", result.node, result.speed);
-	//pipeOut("DEBUG combo cache total %d ,combo cache hit %d", result.comboCacheTotal, result.comboCacheHit);
 	do_mymove(p.x, p.y);
 }
 

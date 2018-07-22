@@ -44,6 +44,33 @@ void sort(points *neighbors, int score[]) {
 }
 
 void selectAndSortPoints(points *neighbors, Color color) {
+	//连长五
+	if (color == WHITE) {
+		if (whitePatternCountInNull[PATTERN_LINE_FIVE] > 0)
+		{
+			for (int i = 0; i < neighbors->count; i++)
+				for (int k = 0; k < 4; k++) {
+					if (whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_LINE_FIVE) {
+						neighbors->list[0] = neighbors->list[i];
+						neighbors->count = 1;
+						return;
+					}
+				}
+		}
+	}
+	if (color == BLACK) {
+		if (blackPatternCountInNull[PATTERN_LINE_FIVE] > 0)
+		{
+			for (int i = 0; i < neighbors->count; i++)
+				for (int k = 0; k < 4; k++) {
+					if (blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_LINE_FIVE) {
+						neighbors->list[0] = neighbors->list[i];
+						neighbors->count = 1;
+						return;
+					}
+				}
+		}
+	}
 	//堵冲四
 	if (color == WHITE) {
 		if (blackPatternCountInNull[PATTERN_LINE_FIVE] > 0)

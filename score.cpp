@@ -7,7 +7,7 @@ static int value;
 extern int blackPatternCount[8];
 extern int whitePatternCount[8];
 
-int score[10] = { 0,100000,100000,100,100,50,50,20, 2, 1 };
+int score[10] = { 0, 100000, 10000, 150, 150, 50, 50, 20, 8, 4 };
 
 int getScoreValue(Color color, Color aiColor) {
 	int result = 0;

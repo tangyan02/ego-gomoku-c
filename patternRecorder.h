@@ -11,3 +11,5 @@ void addLinePatternCount(int x, int y);
 void removeLinePatternCount(int x, int y);
 
 void printPatternAnalyze();
+
+void clearPatternRecord();

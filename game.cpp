@@ -111,11 +111,12 @@ gameResult search(Color aiColor, Color** map)
 	gameResult gameResult;
 	//初始化
 	initPattern();
+	clearPatternRecord();
 	initGameMap(map);
 
 	//初始分析
 	points neighbors = getNeighbor();
-	//sortPoints(&neighbors, aiColor);
+	selectAndSortPoints(&neighbors, aiColor);
 
 	if (neighbors.count == 0) {
 		gameResult.result = point(boardSize / 2, boardSize / 2);
@@ -158,7 +159,6 @@ void moveHistoryBestToFirst(points * neighbors) {
 /* 零窗口测试法
 */
 int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) {
-	//printf("level %d \n", level);
 	if (getSystemTime() - searchStartTime > timeOut) {
 		timeOutEnable = true;
 	}
@@ -209,7 +209,6 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 			}
 		}
 		undoMove(p.x, p.y, color, aiColor);
-		//printf("value: %d\n", value);
 		if (value >= extreme) {
 			if (value > extreme) {
 				extremePoints.clear();

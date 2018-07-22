@@ -23,6 +23,22 @@ extern Color** map;
 
 extern int boardSize;
 
+
+void clearPatternRecord() {
+	for (int i = 0; i < 10; i++) {
+		blackPatternCount[i] = 0;
+		whitePatternCount[i] = 0;
+		blackPatternCountInNull[i] = 0;
+		whitePatternCountInNull[i] = 0;
+	}
+	for (int i = 0; i < boardSize; i++)
+		for (int j = 0; j < boardSize; j++)
+			for (int k = 0; k < 4; k++) {
+				blackPattern[20][20][4] = PATTERN_NULL;
+				whitePattern[20][20][4] = PATTERN_NULL;
+			}
+}
+
 int getPatternState(int x, int y, Color selfColor) {
 	if (!reachable(x, y)) {
 		return STATE_OTHER;
@@ -34,8 +50,7 @@ int getPatternState(int x, int y, Color selfColor) {
 	return color == selfColor ? STATE_SELF : STATE_OTHER;
 }
 
-int buildLineAndGetKey(int x, int y, int direct, Color selfColor) {
-	int line[8];
+int buildLineAndGetKey(int line[], int x, int y, int direct, Color selfColor) {
 	int p = 0;
 
 	int px = x - 4 * directX[direct];
@@ -58,11 +73,6 @@ int buildLineAndGetKey(int x, int y, int direct, Color selfColor) {
 	return getLineKey(line);
 }
 
-int getPointPattern(int x, int y, int direct, Color selfColor) {
-	int key = buildLineAndGetKey(x, y, direct, selfColor);
-	return patternLib[key];
-}
-
 void addPointDirectPatternCount(int x, int y, int direct) {
 	if (map[x][y] == BLACK) {
 		blackPatternCount[blackPattern[x][y][direct]]++;
@@ -76,7 +86,7 @@ void addPointDirectPatternCount(int x, int y, int direct) {
 	}
 }
 
-void removePointDirectPatternCount(int x, int y, int direct){
+void removePointDirectPatternCount(int x, int y, int direct) {
 	if (map[x][y] == BLACK) {
 		blackPatternCount[blackPattern[x][y][direct]]--;
 	}
@@ -89,13 +99,17 @@ void removePointDirectPatternCount(int x, int y, int direct){
 	}
 }
 
-void doInLinePoints(int x, int y, std::function<void(int, int, int)> fun) {
+void updatePointPattern(int x, int y) {
+	int line[8];
 	for (int direct = 0; direct < 4; direct++) {
 		int px = x - directX[direct] * 4;
 		int py = y - directY[direct] * 4;
 		for (int p = 0; p <= 8; p++) {
 			if (reachable(px, py)) {
-				fun(px, py, direct);
+				int blackKey = buildLineAndGetKey(line, px, py, direct, BLACK);
+				int whiteKey = buildLineAndGetKey(line, px, py, direct, WHITE);
+				blackPattern[px][py][direct] = patternLib[blackKey];
+				whitePattern[px][py][direct] = patternLib[whiteKey];
 			}
 			px += directX[direct];
 			py += directY[direct];
@@ -103,21 +117,32 @@ void doInLinePoints(int x, int y, std::function<void(int, int, int)> fun) {
 	}
 }
 
-void updatePointPattern(int x, int y) {
-	doInLinePoints(x, y,
-		[](int px, int py, int direct) {
-		blackPattern[px][py][direct] = getPointPattern(px, py, direct, BLACK);
-		whitePattern[px][py][direct] = getPointPattern(px, py, direct, WHITE);
-	}
-	);
-}
-
 void removeLinePatternCount(int x, int y) {
-	doInLinePoints(x, y, removePointDirectPatternCount);
+	for (int direct = 0; direct < 4; direct++) {
+		int px = x - directX[direct] * 4;
+		int py = y - directY[direct] * 4;
+		for (int p = 0; p <= 8; p++) {
+			if (reachable(px, py)) {
+				removePointDirectPatternCount(px, py, direct);
+			}
+			px += directX[direct];
+			py += directY[direct];
+		}
+	}
 }
 
 void addLinePatternCount(int x, int y) {
-	doInLinePoints(x, y, addPointDirectPatternCount);
+	for (int direct = 0; direct < 4; direct++) {
+		int px = x - directX[direct] * 4;
+		int py = y - directY[direct] * 4;
+		for (int p = 0; p <= 8; p++) {
+			if (reachable(px, py)) {
+				addPointDirectPatternCount(px, py, direct);
+			}
+			px += directX[direct];
+			py += directY[direct];
+		}
+	}
 }
 
 void printPatternAnalyze() {
