@@ -75,11 +75,11 @@ void initPattern() {
 	});
 
 	//计算长5以外的情形
-	int targetPatterns[] = { PATTERN_ACTIVE_FOUR, PATTERN_SLEEPY_FOUR, PATTERN_ACTIVE_THREE, 
-		PATTERN_SLEEPY_THREE, PATTERN_ACTIVE_TWO, PATTERN_SLEEPY_TWO };
+	int targetPatterns[] = { PATTERN_ACTIVE_FOUR, PATTERN_SLEEPY_FOUR, PATTERN_ACTIVE_THREE,
+		PATTERN_SLEEPY_THREE, PATTERN_ACTIVE_TWO, PATTERN_SLEEPY_TWO, PATTERN_ACTIVE_ONE, PATTERN_SLEEPY_ONE };
 	int comparedPatterns[] = { PATTERN_LINE_FIVE, PATTERN_LINE_FIVE, PATTERN_ACTIVE_FOUR, 
-		PATTERN_SLEEPY_FOUR, PATTERN_ACTIVE_THREE, PATTERN_SLEEPY_THREE };
-	for (int i = 0; i < 6; i++) {
+		PATTERN_SLEEPY_FOUR, PATTERN_ACTIVE_THREE, PATTERN_SLEEPY_THREE, PATTERN_ACTIVE_TWO, PATTERN_SLEEPY_TWO };
+	for (int i = 0; i < 8; i++) {
 		int targetPattern = targetPatterns[i];
 		int comparedPattern = comparedPatterns[i];
 		caculateLine(8, line,
@@ -125,11 +125,11 @@ static void printPatterns() {
 	int line[8];
 	//输出查看
 	char* patternName[] = { "长5", "活4", " 眠4", "活3",
-		"眠3", "活2", "眠2" };
+		"眠3", "活2", "眠2", "活1", "眠1" };
 	int patternCodes[] = { PATTERN_LINE_FIVE,PATTERN_ACTIVE_FOUR, PATTERN_SLEEPY_FOUR, PATTERN_ACTIVE_THREE,
-		PATTERN_SLEEPY_THREE, PATTERN_ACTIVE_TWO, PATTERN_SLEEPY_TWO };
+		PATTERN_SLEEPY_THREE, PATTERN_ACTIVE_TWO, PATTERN_SLEEPY_TWO, PATTERN_ACTIVE_ONE, PATTERN_SLEEPY_ONE };
 
-	for (int i = 0; i < 7; i++) {
+	for (int i = 0; i < 9; i++) {
 		int patternCode = patternCodes[i];
 		printf("%s\n", patternName[i]);
 		caculateLine(8, line,

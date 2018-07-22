@@ -13,11 +13,8 @@ extern bool debugEnable;
 
 extern int boardSize;
 
-extern int comboLevel;
-
 void testPlay() {
 	boardSize = 20;
-	comboLevel = 30;
 	debugEnable = true;
 	Color ** map = readMap();
 	gameResult result = search(WHITE, map);
@@ -39,9 +36,9 @@ void removeStar(Color** map) {
 int main()
 {
 	//piskvork();
-	//testPlay();
+	testPlay();
 	//testPattern();
-	testPatternRecorder();
+	//testPatternRecorder();
 	getchar();
 	return 0;
 }

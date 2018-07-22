@@ -21,3 +21,5 @@
 #include "points.h"
 #include "pointHash.h"
 #include "gameResult.h"
+#include "patternRecorder.h"
+#include "pattern.h"

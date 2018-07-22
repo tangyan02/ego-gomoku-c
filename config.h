@@ -6,7 +6,7 @@
 #define WHITE 2
 #define STAR 3
 
-#define MAX_VALUE 100000
-#define MIN_VALUE -100000
+#define MAX_VALUE 10000000
+#define MIN_VALUE -10000000
 
 Color getOtherColor(Color color);

@@ -1,4 +1,4 @@
 #pragma once
 #include "points.h"
 
-void sortPoints(points *neighbors, Color color);
+void selectAndSortPoints(points *neighbors, Color color);

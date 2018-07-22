@@ -69,6 +69,9 @@
     <Text Include="bugInput.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="patternRecorder.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -118,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="patternRecorder.h">
       <Filter>头文件\core</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

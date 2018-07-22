@@ -4,7 +4,6 @@
 #include "vector"
 #include <time.h>  
 #include "patternRecorder.h"
-#include "score.h"
 
 int **map;
 
@@ -89,27 +88,32 @@ void initGameMap(Color** value) {
 			}
 		}
 
-	/*for (int i = 0; i < boardSize; i++)
+	for (int i = 0; i < boardSize; i++)
 		for (int j = 0; j < boardSize; j++) {
+			updatePointPattern(i, j);
 			for (int k = 0; k < 4; k++) {
-				setLineKey(i, j, k, BLACK);
-				setLineKey(i, j, k, WHITE);
+				addPointDirectPatternCount(i, j, k);
 			}
-		}*/
+		}
+	
 }
 
 void move(int x, int y, Color color, Color aiColor) {
-	updateScore(x, y, color, NULL_COLOR, aiColor);
+	removeLinePatternCount(x, y);
 	updateHashCode(x, y, color);
 	map[x][y] = color;
 	updateNeighbor(x, y, true, color);
+	updatePointPattern(x, y);
+	addLinePatternCount(x, y);
 }
 
 void undoMove(int x, int y, Color color, Color aiColor) {
-	updateScore(x, y, color, color, aiColor);
+	removeLinePatternCount(x, y);
 	updateHashCode(x, y, color);
 	map[x][y] = NULL_COLOR;
 	updateNeighbor(x, y, false, color);
+	updatePointPattern(x, y);
+	addLinePatternCount(x, y);
 }
 
 Color getColor(int x, int y)
@@ -153,7 +157,6 @@ bool reachable(int x, int y)
 		return false;
 	return true;
 }
-
 
 long long getMapHashCode()
 {

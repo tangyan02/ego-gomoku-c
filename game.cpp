@@ -7,7 +7,6 @@
 #include "console.h"
 #include <sys/timeb.h>
 #include "unordered_map"
-#include "patternRecorder.h"
 
 extern int boardSize;
 
@@ -61,6 +60,7 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 	{
 		long long t = getSystemTime();
 		nodeCount = 0;
+		currentLevel = level;
 
 		cacheLast = cache;
 		cache.clear();
@@ -110,12 +110,12 @@ gameResult search(Color aiColor, Color** map)
 {
 	gameResult gameResult;
 	//初始化
+	initPattern();
 	initGameMap(map);
-	initScore(aiColor);
 
 	//初始分析
 	points neighbors = getNeighbor();
-	sortPoints(&neighbors, aiColor);
+	//sortPoints(&neighbors, aiColor);
 
 	if (neighbors.count == 0) {
 		gameResult.result = point(boardSize / 2, boardSize / 2);
@@ -158,6 +158,7 @@ void moveHistoryBestToFirst(points * neighbors) {
 /* 零窗口测试法
 */
 int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) {
+	//printf("level %d \n", level);
 	if (getSystemTime() - searchStartTime > timeOut) {
 		timeOutEnable = true;
 	}
@@ -178,7 +179,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	}
 
 	//排序
-	sortPoints(&neighbors, color);
+	selectAndSortPoints(&neighbors, color);
 
 	//调整最优节点顺序
 	moveHistoryBestToFirst(&neighbors);
@@ -196,8 +197,9 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 			value = MIN_VALUE;
 		}
 		else {
-			if (i == 0)
+			if (i == 0) {
 				value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha, extend);
+			}
 			else {
 				//零窗口测试
 				value = -dfs(level - 1, getOtherColor(color), aiColor, -alpha - 1, -alpha, extend);
@@ -207,7 +209,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 			}
 		}
 		undoMove(p.x, p.y, color, aiColor);
-
+		//printf("value: %d\n", value);
 		if (value >= extreme) {
 			if (value > extreme) {
 				extremePoints.clear();

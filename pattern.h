@@ -14,6 +14,8 @@
 #define PATTERN_SLEEPY_THREE 5
 #define PATTERN_ACTIVE_TWO 6
 #define PATTERN_SLEEPY_TWO 7
+#define PATTERN_ACTIVE_ONE 8
+#define PATTERN_SLEEPY_ONE 9
 
 void initPattern();
 
