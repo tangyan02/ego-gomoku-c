@@ -34,8 +34,8 @@ void clearPatternRecord() {
 	for (int i = 0; i < boardSize; i++)
 		for (int j = 0; j < boardSize; j++)
 			for (int k = 0; k < 4; k++) {
-				blackPattern[20][20][4] = PATTERN_NULL;
-				whitePattern[20][20][4] = PATTERN_NULL;
+				blackPattern[i][j][k] = PATTERN_NULL;
+				whitePattern[i][j][k] = PATTERN_NULL;
 			}
 }
 
@@ -161,6 +161,29 @@ void printPatternAnalyze() {
 	for (int i = 0; i < 8; i++) {
 		printf("blackPatternCount[%d]=%d\n", i, blackPatternCount[i]);
 		printf("whitePatternCount[%d]=%d\n", i, whitePatternCount[i]);
+	}
+}
+
+void printPatternAnalyzeInMessage() {
+	printMapInMessage(getMap());
+	for (int i = 0; i < 20; i++)
+		for (int j = 0; j < 20; j++) {
+			for (int k = 0; k < 4; k++) {
+				if (whitePattern[i][j][k] != PATTERN_NULL) {
+					printf("MESSAGE whitePattern[%d][%d][%d]=%d\n", i, j, k, whitePattern[i][j][k]);
+				}
+				if (blackPattern[i][j][k] != PATTERN_NULL) {
+					printf("MESSAGE blackPattern[%d][%d][%d]=%d\n", i, j, k, blackPattern[i][j][k]);
+				}
+			}
+		}
+	for (int i = 0; i < 8; i++) {
+		printf("MESSAGE blackPatternCount[%d]=%d\n", i, blackPatternCount[i]);
+		printf("MESSAGE whitePatternCount[%d]=%d\n", i, whitePatternCount[i]);
+	}
+	for (int i = 0; i < 8; i++) {
+		printf("MESSAGE blackPatternCountInNull[%d]=%d\n", i, blackPatternCountInNull[i]);
+		printf("MESSAGE whitePatternCountInNull[%d]=%d\n", i, whitePatternCountInNull[i]);
 	}
 }
 

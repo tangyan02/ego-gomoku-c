@@ -36,16 +36,16 @@ void removeStar(Color** map) {
 void bugTest() {
 	boardSize = 20;
 	debugEnable = true;
-	Color ** map = readMap("exit01.txt");
+	Color ** map = readMap("input006.txt");
 	gameResult result = search(WHITE, map);
 	printMapWithStar(map, result.result);
 }
 
 int main()
 {
-	//piskvork();
-	//bugTest();
-	testPlay();
+	piskvork();
+	bugTest();
+	//testPlay();
 	//testPattern();
 	//testPatternRecorder();
 	getchar();

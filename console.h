@@ -8,6 +8,8 @@ void printPoints(points ps);
 
 void printHash(pointHash hash);
 
+void printMapInMessage(Color ** map);
+
 void printMap(Color **map);
 
 void printMapWithStars(Color **map, points ps);

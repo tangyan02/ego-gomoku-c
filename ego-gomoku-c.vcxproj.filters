@@ -72,6 +72,24 @@
     <Text Include="fourDefence.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="input001.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="input002.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="input003.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="input004.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="input005.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="input006.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

@@ -2,8 +2,8 @@
 #include "score.h"
 #include "gamemap.h"
 
-extern int blackPatternCount[8];
-extern int whitePatternCount[8];
+extern int blackPatternCount[10];
+extern int whitePatternCount[10];
 
 extern int blackPattern[20][20][4];
 extern int whitePattern[20][20][4];
@@ -12,7 +12,7 @@ extern int boardSize;
 
 extern Color** map;
 
-int score[10] = { 0, 100000, 10000, 90, 120, 60, 90, 45, 22, 22 };
+int score[10] = { 0, 100000, 10000, 80, 100, 40, 50, 20, 25, 10 };
 
 int getScoreValue(Color color, Color aiColor) {
 	int result = 0;

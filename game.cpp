@@ -113,6 +113,7 @@ gameResult search(Color aiColor, Color** map)
 	initPattern();
 	clearPatternRecord();
 	initGameMap(map);
+	loseSet.reset();
 
 	//初始分析
 	points neighbors = getNeighbor();
@@ -130,6 +131,7 @@ gameResult search(Color aiColor, Color** map)
 
 	//得分迭代搜索
 	tryScoreSearchIteration(&neighbors, aiColor, &gameResult, map);
+
 	return gameResult;
 }
 

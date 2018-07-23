@@ -7,6 +7,8 @@ static int directY[] = { 1, 1, 0, -1 };
 
 int patternLib[PATTERN_SIZE] = { PATTERN_NULL };
 
+static bool inited = false;
+
 int getLineKey(int line[]) {
 	int key = 0;
 	for (int i = 0; i < 8; i++) {
@@ -56,6 +58,9 @@ static void abstructCalculate(int line[], int targetPattern, int comparedPattern
 }
 
 void initPattern() {
+	if (inited) {
+		return;
+	}
 	int line[8];
 	//¼ÆËã³¤5
 	caculateLine(8, line,
@@ -87,6 +92,8 @@ void initPattern() {
 			abstructCalculate(line, targetPattern, comparedPattern);
 		});
 	}
+
+	inited = true;
 }
 
 /* 

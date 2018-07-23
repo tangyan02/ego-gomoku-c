@@ -104,12 +104,24 @@ void selectAndSortPoints(points *neighbors, Color color) {
 			points ps;
 			for (int i = 0; i < neighbors->count; i++)
 				for (int k = 0; k < 4; k++) {
-					if (blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
-						blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR ||
-						whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
-						whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR
-						) {
-						ps.add(neighbors->list[i]);
+					//连续的活3
+					if (blackPatternCountInNull[PATTERN_ACTIVE_FOUR] > 1) {
+						if (blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
+							whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
+							whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR
+							) {
+							ps.add(neighbors->list[i]);
+						}
+					}
+					//断的活3
+					if (blackPatternCountInNull[PATTERN_ACTIVE_FOUR] == 1) {
+						if (blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
+							blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR ||
+							whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
+							whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR
+							) {
+							ps.add(neighbors->list[i]);
+						}
 					}
 				}
 			neighbors->clear();
@@ -126,12 +138,24 @@ void selectAndSortPoints(points *neighbors, Color color) {
 			points ps;
 			for (int i = 0; i < neighbors->count; i++)
 				for (int k = 0; k < 4; k++) {
-					if (whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
-						whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR ||
-						blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
-						blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR
-						) {
-						ps.add(neighbors->list[i]);
+					//连续的活3
+					if (whitePatternCountInNull[PATTERN_ACTIVE_FOUR] > 1) {
+						if (whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
+							blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
+							blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR
+							) {
+							ps.add(neighbors->list[i]);
+						}
+					}
+					//断的活3
+					if (whitePatternCountInNull[PATTERN_ACTIVE_FOUR] == 1) {
+						if (whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
+							whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR ||
+							blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
+							blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR
+							) {
+							ps.add(neighbors->list[i]);
+						}
 					}
 				}
 			neighbors->clear();

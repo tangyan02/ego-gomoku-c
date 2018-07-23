@@ -13,3 +13,5 @@ void removeLinePatternCount(int x, int y);
 void printPatternAnalyze();
 
 void clearPatternRecord();
+
+void printPatternAnalyzeInMessage();

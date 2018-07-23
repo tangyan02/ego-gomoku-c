@@ -155,6 +155,12 @@
     <Text Include="fourDefence.txt" />
     <Text Include="input.txt" />
     <Text Include="bugInput.txt" />
+    <Text Include="input001.txt" />
+    <Text Include="input002.txt" />
+    <Text Include="input003.txt" />
+    <Text Include="input004.txt" />
+    <Text Include="input005.txt" />
+    <Text Include="input006.txt" />
     <Text Include="License" />
     <Text Include="patternRecorder.txt" />
     <Text Include="ReadMe.txt" />
