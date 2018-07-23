@@ -105,6 +105,7 @@ void selectAndSortPoints(points *neighbors, Color color) {
 			for (int i = 0; i < neighbors->count; i++)
 				for (int k = 0; k < 4; k++) {
 					if (blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
+						blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR ||
 						whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
 						whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR
 						) {
@@ -126,6 +127,7 @@ void selectAndSortPoints(points *neighbors, Color color) {
 			for (int i = 0; i < neighbors->count; i++)
 				for (int k = 0; k < 4; k++) {
 					if (whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
+						whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR ||
 						blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
 						blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR
 						) {

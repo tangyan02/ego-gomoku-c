@@ -46,9 +46,6 @@
     <Text Include="analyze.txt">
       <Filter>资源文件</Filter>
     </Text>
-    <Text Include="expand.txt">
-      <Filter>资源文件</Filter>
-    </Text>
     <Text Include="combo.txt">
       <Filter>资源文件</Filter>
     </Text>
@@ -73,9 +70,6 @@
       <Filter>资源文件</Filter>
     </Text>
     <Text Include="fourDefence.txt">
-      <Filter>资源文件</Filter>
-    </Text>
-    <Text Include="exit01.txt">
       <Filter>资源文件</Filter>
     </Text>
   </ItemGroup>

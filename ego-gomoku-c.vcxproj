@@ -151,8 +151,6 @@
     <Text Include="analyze3.txt" />
     <Text Include="combo.txt" />
     <Text Include="combo2.txt" />
-    <Text Include="exit01.txt" />
-    <Text Include="expand.txt" />
     <Text Include="failCombo.txt" />
     <Text Include="fourDefence.txt" />
     <Text Include="input.txt" />
