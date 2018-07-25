@@ -5,7 +5,7 @@
 
 extern int boardSize;
 
-static int score[128];
+static int score[512];
 
 static int directX[] = { 0, 1, 1, 1 };
 
@@ -18,6 +18,8 @@ extern int blackPatternCountInNull[10];
 extern int whitePatternCountInNull[10];
 
 int levelScore[10] = { 0, 100000,10000,100,100,50,50,20,2,1 };
+
+extern Color ** map;
 
 int getScore(int x, int y, Color color) {
 	int value = 0;
@@ -104,23 +106,26 @@ void selectAndSortPoints(points *neighbors, Color color) {
 			points ps;
 			for (int i = 0; i < neighbors->count; i++)
 				for (int k = 0; k < 4; k++) {
-					//连续的活3
-					if (blackPatternCountInNull[PATTERN_ACTIVE_FOUR] > 1) {
-						if (blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
-							whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
-							whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR
-							) {
-							ps.add(neighbors->list[i]);
-						}
-					}
-					//断的活3
-					if (blackPatternCountInNull[PATTERN_ACTIVE_FOUR] == 1) {
-						if (blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
-							blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR ||
-							whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
-							whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR
-							) {
-							ps.add(neighbors->list[i]);
+					//冲四
+					if (whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
+						whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR
+						)
+						ps.add(neighbors->list[i]);
+					//防3
+					if (blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR) {
+						ps.add(neighbors->list[i]);
+						//断3防御
+						if (blackPatternCountInNull[PATTERN_ACTIVE_FOUR] == 1) {
+							int px = neighbors->list[i].x - 4 * directX[k];
+							int py = neighbors->list[i].y - 4 * directY[k];
+							for (int j = 0; j < 9; j++) {
+								if (blackPattern[px][py][k] == PATTERN_SLEEPY_FOUR) {
+									if (reachable(px, py) && map[px][py] == NULL)
+										ps.add(point(px, py));
+								}
+								px += directX[k];
+								py += directY[k];
+							}
 						}
 					}
 				}
@@ -138,23 +143,26 @@ void selectAndSortPoints(points *neighbors, Color color) {
 			points ps;
 			for (int i = 0; i < neighbors->count; i++)
 				for (int k = 0; k < 4; k++) {
-					//连续的活3
-					if (whitePatternCountInNull[PATTERN_ACTIVE_FOUR] > 1) {
-						if (whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
-							blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
-							blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR
-							) {
-							ps.add(neighbors->list[i]);
-						}
-					}
-					//断的活3
-					if (whitePatternCountInNull[PATTERN_ACTIVE_FOUR] == 1) {
-						if (whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
-							whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR ||
-							blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
-							blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR
-							) {
-							ps.add(neighbors->list[i]);
+					//冲四
+					if (blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
+						blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR
+						)
+						ps.add(neighbors->list[i]);
+					//防3
+					if (whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR) {
+						ps.add(neighbors->list[i]);
+						//断3防御
+						if (whitePatternCountInNull[PATTERN_ACTIVE_FOUR] == 1) {
+							int px = neighbors->list[i].x - 4 * directX[k];
+							int py = neighbors->list[i].y - 4 * directY[k];
+							for (int j = 0; j < 9; j++) {
+								if (whitePattern[px][py][k] == PATTERN_SLEEPY_FOUR) {
+									if (reachable(px, py) && map[px][py] == NULL)
+										ps.add(point(px, py));
+								}
+								px += directX[k];
+								py += directY[k];
+							}
 						}
 					}
 				}

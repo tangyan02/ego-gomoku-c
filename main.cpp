@@ -13,6 +13,8 @@ extern bool debugEnable;
 
 extern int boardSize;
 
+extern int searchLevel;
+
 void testPlay() {
 	boardSize = 20;
 	debugEnable = true;
@@ -36,7 +38,8 @@ void removeStar(Color** map) {
 void bugTest() {
 	boardSize = 20;
 	debugEnable = true;
-	Color ** map = readMap("input006.txt");
+	//searchLevel = 2;
+	Color ** map = readMap("input007.txt");
 	gameResult result = search(WHITE, map);
 	printMapWithStar(map, result.result);
 }

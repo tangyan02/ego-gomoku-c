@@ -26,6 +26,7 @@ void brain_init()
 	boardSize = width;
 	map = getEmptyMap();
 	seed = start_time;
+	initPattern();
 	pipeOut("OK");
 }
 

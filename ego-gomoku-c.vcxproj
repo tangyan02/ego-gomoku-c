@@ -161,6 +161,7 @@
     <Text Include="input004.txt" />
     <Text Include="input005.txt" />
     <Text Include="input006.txt" />
+    <Text Include="input007.txt" />
     <Text Include="License" />
     <Text Include="patternRecorder.txt" />
     <Text Include="ReadMe.txt" />
