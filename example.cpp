@@ -112,9 +112,8 @@ void brain_turn()
 	if (result.value == MIN_VALUE) {
 		pipeOut("MESSAGE ¡ø¡ø¡ø");
 	}
-	pipeOut("MESSAGE [%d,%d] value %d", p.x, p.y, result.value);
-	pipeOut("DEBUG level %d, extend %d, combo %d", result.level, result.extend, result.combo);
-	pipeOut("DEBUG nodes %d, speed %d k", result.node, result.speed);
+	pipeOut("MESSAGE ¡ð¡ñ level %d (%d,%d) value %d speed %d k ¡ñ¡ð",result.level, p.x, p.y, result.value, result.speed);
+	//pipeOut("DEBUG extend %d, combo %d nodes %d", result.extend, result.combo, result.node);
 	do_mymove(p.x, p.y);
 }
 
