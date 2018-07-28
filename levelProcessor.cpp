@@ -32,17 +32,26 @@ int getScore(int x, int y, Color color) {
 	return value;
 }
 
-void sort(points *neighbors, int score[]) {
-	for (int i = 0; i < neighbors->count; i++)
-		for (int j = i; j < neighbors->count; j++)
-			if (score[i] < score[j]) {
-				int t = score[i];
-				score[i] = score[j];
-				score[j] = t;
-				point p = neighbors->list[i];
-				neighbors->list[i] = neighbors->list[j];
-				neighbors->list[j] = p;
-			}
+void qsort(points *neighbors, int score[], int l, int r) {
+	int x = l;
+	int y = r;
+	int mid = score[(x + y) / 2];
+	while (x < y) {
+		while (score[x] > mid) x++;
+		while (score[y] < mid) y--;
+		if (x <= y) {
+			int t = score[x];
+			score[x] = score[y];
+			score[y] = t;
+			point p = neighbors->list[x];
+			neighbors->list[x] = neighbors->list[y];
+			neighbors->list[y] = p;
+			x++;
+			y--;
+		}
+	}
+	if (x < r) qsort(neighbors, score, x, r);
+	if (l < y) qsort(neighbors, score, l, y);
 }
 
 bool checkOnePattern(points *neighbors, int *patternCountInNull, int patter[][20][4], int pattern) {
@@ -132,6 +141,6 @@ void selectAndSortPoints(points *neighbors, Color color) {
 	for (int i = 0; i < neighbors->count; i++) {
 		score[i] = getScore(neighbors->list[i].x, neighbors->list[i].y, color);
 	}
-	sort(neighbors, score);
+	qsort(neighbors, score, 0, neighbors->count - 1);
 }
 
