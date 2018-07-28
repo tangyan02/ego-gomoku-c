@@ -17,12 +17,16 @@ int whitePatternCountInNull[10];
 int blackPattern[20][20][4];
 int whitePattern[20][20][4];
 
+int blackLineKey[20][20][4];
+int whiteLineKey[20][20][4];
+
+int keyFullWithBlank[8];
+
 extern int patternLib[PATTERN_SIZE];
 
 extern Color** map;
 
 extern int boardSize;
-
 
 void clearPatternRecord() {
 	for (int i = 0; i < 10; i++) {
@@ -99,6 +103,55 @@ void removePointDirectPatternCount(int x, int y, int direct) {
 	}
 }
 
+int getInsertedKey(int key, int offset, int state) {
+	key = key & keyFullWithBlank[offset];
+	key = (key | (state << ((7 - offset) * 2)));
+	return key;
+}
+
+void updateLineKey(int x, int y) {
+	int stateWhite = getPatternState(x, y, WHITE);
+	int stateBlack = getPatternState(x, y, BLACK);
+	int line[8];
+
+	for (int direct = 0; direct < 4; direct++) {
+		int px = x - directX[direct] * 4;
+		int py = y - directY[direct] * 4;
+		for (int p = 7; p >= 4; p--) {
+			if (reachable(px, py)) {
+				blackLineKey[px][py][direct] = getInsertedKey(blackLineKey[px][py][direct], p, stateBlack);
+				whiteLineKey[px][py][direct] = getInsertedKey(whiteLineKey[px][py][direct], p, stateWhite);
+			}
+			px += directX[direct];
+			py += directY[direct];
+		}
+		for (int p = 3; p >= 0; p--) {
+			px += directX[direct];
+			py += directY[direct];
+			if (reachable(px, py)) {
+				blackLineKey[px][py][direct] = getInsertedKey(blackLineKey[px][py][direct], p, stateBlack);
+				whiteLineKey[px][py][direct] = getInsertedKey(whiteLineKey[px][py][direct], p, stateWhite);
+			}
+		}
+	}
+}
+
+void initPointLineKey(int x, int y) {
+	int line[8];
+	for (int direct = 0; direct < 4; direct++) {
+		int px = x - directX[direct] * 4;
+		int py = y - directY[direct] * 4;
+		for (int p = 0; p <= 8; p++) {
+			if (reachable(px, py)) {
+				blackLineKey[px][py][direct] = buildLineAndGetKey(line, px, py, direct, BLACK);
+				whiteLineKey[px][py][direct] = buildLineAndGetKey(line, px, py, direct, WHITE);
+			}
+			px += directX[direct];
+			py += directY[direct];
+		}
+	}
+}
+
 void updatePointPattern(int x, int y) {
 	int line[8];
 	for (int direct = 0; direct < 4; direct++) {
@@ -106,8 +159,8 @@ void updatePointPattern(int x, int y) {
 		int py = y - directY[direct] * 4;
 		for (int p = 0; p <= 8; p++) {
 			if (reachable(px, py)) {
-				int blackKey = buildLineAndGetKey(line, px, py, direct, BLACK);
-				int whiteKey = buildLineAndGetKey(line, px, py, direct, WHITE);
+				int blackKey = blackLineKey[px][py][direct];
+				int whiteKey = whiteLineKey[px][py][direct];
 				blackPattern[px][py][direct] = patternLib[blackKey];
 				whitePattern[px][py][direct] = patternLib[whiteKey];
 			}
@@ -131,7 +184,7 @@ void removeLinePatternCount(int x, int y) {
 	}
 }
 
-void addLinePatternCount(int x, int y) {
+void updateLinePatternCount(int x, int y) {
 	for (int direct = 0; direct < 4; direct++) {
 		int px = x - directX[direct] * 4;
 		int py = y - directY[direct] * 4;
@@ -143,6 +196,47 @@ void addLinePatternCount(int x, int y) {
 			py += directY[direct];
 		}
 	}
+}
+
+void initFullWithBlankKey() {
+	int line[8] = { 3 ,3,3,3,3,3,3,3 };
+	for (int i = 0; i < 8; i++) {
+		line[i] = 0;
+		keyFullWithBlank[i] = getLineKey(line);
+		line[i] = 3;
+	}
+}
+
+void initPatternRecord() {
+	initFullWithBlankKey();
+	for (int i = 0; i < boardSize; i++)
+		for (int j = 0; j < boardSize; j++) {
+			initPointLineKey(i, j);
+		}
+
+	for (int i = 0; i < boardSize; i++)
+		for (int j = 0; j < boardSize; j++) {
+			updatePointPattern(i, j);
+		}
+
+	for (int i = 0; i < boardSize; i++)
+		for (int j = 0; j < boardSize; j++) {
+			for (int k = 0; k < 4; k++) {
+				addPointDirectPatternCount(i, j, k);
+			}
+		}
+}
+
+/***************************** ²âÊÔ´úÂë·Ö¸ô ***************************************/
+
+static void printKey(int key) {
+	for (int i = 0; i < 8; i++) {
+		if (i == 4)
+			printf("v");
+		printf("%d", key % 4);
+		key = key >> 2;
+	}
+	printf("\n");
 }
 
 void printPatternAnalyze() {
@@ -158,7 +252,7 @@ void printPatternAnalyze() {
 				}
 			}
 		}
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 10; i++) {
 		printf("blackPatternCount[%d]=%d\n", i, blackPatternCount[i]);
 		printf("whitePatternCount[%d]=%d\n", i, whitePatternCount[i]);
 	}
@@ -177,20 +271,17 @@ void printPatternAnalyzeInMessage() {
 				}
 			}
 		}
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 10; i++) {
 		printf("MESSAGE blackPatternCount[%d]=%d\n", i, blackPatternCount[i]);
 		printf("MESSAGE whitePatternCount[%d]=%d\n", i, whitePatternCount[i]);
 	}
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 10; i++) {
 		printf("MESSAGE blackPatternCountInNull[%d]=%d\n", i, blackPatternCountInNull[i]);
 		printf("MESSAGE whitePatternCountInNull[%d]=%d\n", i, whitePatternCountInNull[i]);
 	}
 }
 
-
-/***************************** ²âÊÔ´úÂë·Ö¸ô ***************************************/
-
-void testPatternRecorder() {
+void testSimpleMove() {
 	boardSize = 20;
 	initPattern();
 	map = readMap("patternRecorder.txt");
@@ -198,8 +289,32 @@ void testPatternRecorder() {
 
 	move(1, 1, BLACK, WHITE);
 	move(1, 3, BLACK, WHITE);
+	//undoMove(1, 3, BLACK, WHITE);
 	move(0, 1, WHITE, WHITE);
 	undoMove(0, 1, WHITE, WHITE);
 	printPatternAnalyze();
+}
 
+void testInsertKey() {
+	initFullWithBlankKey();
+	int line[8] = { 3,0,0,1,0,0,1,2 };
+	int key = getLineKey(line);
+	int k = 2;
+	printf("key = %d\n", key);
+	int insertedKey = getInsertedKey(key, k, 1);
+
+	line[k] = 1;
+	int newKey = getLineKey(line);
+	printf("newKey = %d insertedKey = %d\n", newKey, insertedKey);
+	printKey(key);
+	printKey(newKey);
+	printKey(insertedKey);
+	if (newKey == insertedKey) 
+		printf("testSucceed\n");
+    else
+		printf("testFail\n");
+}
+
+void testPatternRecorder() {
+	testSimpleMove();
 }

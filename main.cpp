@@ -46,9 +46,9 @@ void bugTest() {
 
 int main()
 {
-	piskvork();
-	bugTest();
-	//testPlay();
+	//piskvork();
+	//bugTest();
+	testPlay();
 	//testPattern();
 	//testPatternRecorder();
 	getchar();

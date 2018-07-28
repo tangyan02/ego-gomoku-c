@@ -88,14 +88,7 @@ void initGameMap(Color** value) {
 			}
 		}
 
-	for (int i = 0; i < boardSize; i++)
-		for (int j = 0; j < boardSize; j++) {
-			updatePointPattern(i, j);
-			for (int k = 0; k < 4; k++) {
-				addPointDirectPatternCount(i, j, k);
-			}
-		}
-	
+	initPatternRecord();	
 }
 
 void move(int x, int y, Color color, Color aiColor) {
@@ -103,8 +96,9 @@ void move(int x, int y, Color color, Color aiColor) {
 	updateHashCode(x, y, color);
 	map[x][y] = color;
 	updateNeighbor(x, y, true, color);
+	updateLineKey(x, y);
 	updatePointPattern(x, y);
-	addLinePatternCount(x, y);
+	updateLinePatternCount(x, y);
 }
 
 void undoMove(int x, int y, Color color, Color aiColor) {
@@ -112,8 +106,9 @@ void undoMove(int x, int y, Color color, Color aiColor) {
 	updateHashCode(x, y, color);
 	map[x][y] = NULL_COLOR;
 	updateNeighbor(x, y, false, color);
+	updateLineKey(x, y);
 	updatePointPattern(x, y);
-	addLinePatternCount(x, y);
+	updateLinePatternCount(x, y);
 }
 
 Color getColor(int x, int y)
