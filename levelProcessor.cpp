@@ -45,133 +45,87 @@ void sort(points *neighbors, int score[]) {
 			}
 }
 
+bool checkOnePattern(points *neighbors, int *patternCountInNull, int patter[][20][4], int pattern) {
+	if (patternCountInNull[pattern] > 0)
+	{
+		for (int i = 0; i < neighbors->count; i++)
+			for (int k = 0; k < 4; k++) {
+				if (patter[neighbors->list[i].x][neighbors->list[i].y][k] == pattern) {
+					neighbors->list[0] = neighbors->list[i];
+					neighbors->count = 1;
+					return true;
+				}
+			}
+	}
+	return false;
+}
+
+bool checkActiveThree(points *neighbors, int *patternCountInNull, int selfPatter[][20][4], int otherPatter[][20][4]) {
+	if (patternCountInNull[PATTERN_ACTIVE_FOUR] > 0)
+	{
+		points ps;
+		for (int i = 0; i < neighbors->count; i++)
+			for (int k = 0; k < 4; k++) {
+				//≥ÂÀƒ
+				if (selfPatter[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
+					selfPatter[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR
+					)
+					ps.add(neighbors->list[i]);
+				//∑¿3
+				if (otherPatter[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR) {
+					ps.add(neighbors->list[i]);
+					//∂œ3∑¿”˘
+					if (patternCountInNull[PATTERN_ACTIVE_FOUR] == 1) {
+						int px = neighbors->list[i].x - 4 * directX[k];
+						int py = neighbors->list[i].y - 4 * directY[k];
+						for (int j = 0; j < 9; j++) {
+							if (otherPatter[px][py][k] == PATTERN_SLEEPY_FOUR) {
+								if (reachable(px, py) && map[px][py] == NULL)
+									ps.add(point(px, py));
+							}
+							px += directX[k];
+							py += directY[k];
+						}
+					}
+				}
+			}
+		neighbors->clear();
+		for (int i = 0; i < ps.count; i++) {
+			neighbors->add(ps.list[i]);
+		}
+		return true;
+	}
+	return false;
+}
+
 void selectAndSortPoints(points *neighbors, Color color) {
 	//¡¨≥§ŒÂ
 	if (color == WHITE) {
-		if (whitePatternCountInNull[PATTERN_LINE_FIVE] > 0)
-		{
-			for (int i = 0; i < neighbors->count; i++)
-				for (int k = 0; k < 4; k++) {
-					if (whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_LINE_FIVE) {
-						neighbors->list[0] = neighbors->list[i];
-						neighbors->count = 1;
-						return;
-					}
-				}
-		}
+		if (checkOnePattern(neighbors, whitePatternCountInNull, whitePattern, PATTERN_LINE_FIVE))
+			return;
 	}
 	if (color == BLACK) {
-		if (blackPatternCountInNull[PATTERN_LINE_FIVE] > 0)
-		{
-			for (int i = 0; i < neighbors->count; i++)
-				for (int k = 0; k < 4; k++) {
-					if (blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_LINE_FIVE) {
-						neighbors->list[0] = neighbors->list[i];
-						neighbors->count = 1;
-						return;
-					}
-				}
-		}
+		if (checkOnePattern(neighbors, blackPatternCountInNull, blackPattern, PATTERN_LINE_FIVE))
+			return;
 	}
 	//∂¬≥ÂÀƒ
 	if (color == WHITE) {
-		if (blackPatternCountInNull[PATTERN_LINE_FIVE] > 0)
-		{
-			for (int i = 0; i < neighbors->count; i++)
-				for (int k = 0; k < 4; k++) {
-					if (blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_LINE_FIVE) {
-						neighbors->list[0] = neighbors->list[i];
-						neighbors->count = 1;
-						return;
-					}
-				}
-		}
+		if (checkOnePattern(neighbors, blackPatternCountInNull, blackPattern, PATTERN_LINE_FIVE))
+			return;
 	}
 	if (color == BLACK) {
-		if (whitePatternCountInNull[PATTERN_LINE_FIVE] > 0) {
-			for (int i = 0; i < neighbors->count; i++)
-				for (int k = 0; k < 4; k++) {
-					if (whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_LINE_FIVE) {
-						neighbors->list[0] = neighbors->list[i];
-						neighbors->count = 1;
-						return;
-					}
-				}
-		}
+		if (checkOnePattern(neighbors, whitePatternCountInNull, whitePattern, PATTERN_LINE_FIVE))
+			return;
 	}
 	//∂‘∏∂ªÓ»˝
 	if (color == WHITE) {
-		if (blackPatternCountInNull[PATTERN_ACTIVE_FOUR] > 0)
-		{
-			points ps;
-			for (int i = 0; i < neighbors->count; i++)
-				for (int k = 0; k < 4; k++) {
-					//≥ÂÀƒ
-					if (whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
-						whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR
-						)
-						ps.add(neighbors->list[i]);
-					//∑¿3
-					if (blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR) {
-						ps.add(neighbors->list[i]);
-						//∂œ3∑¿”˘
-						if (blackPatternCountInNull[PATTERN_ACTIVE_FOUR] == 1) {
-							int px = neighbors->list[i].x - 4 * directX[k];
-							int py = neighbors->list[i].y - 4 * directY[k];
-							for (int j = 0; j < 9; j++) {
-								if (blackPattern[px][py][k] == PATTERN_SLEEPY_FOUR) {
-									if (reachable(px, py) && map[px][py] == NULL)
-										ps.add(point(px, py));
-								}
-								px += directX[k];
-								py += directY[k];
-							}
-						}
-					}
-				}
-			neighbors->clear();
-			for (int i = 0; i < ps.count; i++) {
-				neighbors->add(ps.list[i]);
-			}
+		if (checkActiveThree(neighbors, blackPatternCountInNull, whitePattern, blackPattern))
 			return;
-		}
 	}
 
 	if (color == BLACK) {
-		if (whitePatternCountInNull[PATTERN_ACTIVE_FOUR] > 0)
-		{
-			points ps;
-			for (int i = 0; i < neighbors->count; i++)
-				for (int k = 0; k < 4; k++) {
-					//≥ÂÀƒ
-					if (blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
-						blackPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR
-						)
-						ps.add(neighbors->list[i]);
-					//∑¿3
-					if (whitePattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR) {
-						ps.add(neighbors->list[i]);
-						//∂œ3∑¿”˘
-						if (whitePatternCountInNull[PATTERN_ACTIVE_FOUR] == 1) {
-							int px = neighbors->list[i].x - 4 * directX[k];
-							int py = neighbors->list[i].y - 4 * directY[k];
-							for (int j = 0; j < 9; j++) {
-								if (whitePattern[px][py][k] == PATTERN_SLEEPY_FOUR) {
-									if (reachable(px, py) && map[px][py] == NULL)
-										ps.add(point(px, py));
-								}
-								px += directX[k];
-								py += directY[k];
-							}
-						}
-					}
-				}
-			neighbors->clear();
-			for (int i = 0; i < ps.count; i++) {
-				neighbors->add(ps.list[i]);
-			}
+		if (checkActiveThree(neighbors, whitePatternCountInNull, blackPattern, whitePattern))
 			return;
-		}
 	}
 
 	//≈≈–Ú
