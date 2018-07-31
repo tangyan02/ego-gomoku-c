@@ -12,8 +12,8 @@ points::~points()
 
 void points::add(point p)
 {
-	list.push_back(p);
-	//list[count] = p;
+	//list.push_back(p);
+	list[count] = p;
 	count++;
 }
 
@@ -21,20 +21,18 @@ void points::addMany(points *ps)
 {
 	for (int i = 0; i < ps->count; i++)
 	{
-		list.push_back(point(ps->list[i].x, ps->list[i].y));
-		count++;
+		add(point(ps->list[i].x, ps->list[i].y));
 	}
 }
 
 void points::clear()
 {
-	list.clear();
 	count = 0;
 }
 
 bool points::contains(int x, int y)
 {
-	for (int i = 0; i < list.size(); i++)
+	for (int i = 0; i < count; i++)
 	{
 		if (list[i].x == x && list[i].y == y) {
 			return true;

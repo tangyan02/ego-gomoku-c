@@ -2,6 +2,7 @@
 #include "levelProcessor.h"
 #include "gameMap.h"
 #include "patternRecorder.h"
+#include "PointsFactory.h"
 
 extern int boardSize;
 
@@ -72,17 +73,17 @@ bool checkOnePattern(points *neighbors, int *patternCountInNull, int patter[][20
 bool checkActiveThree(points *neighbors, int *patternCountInNull, int selfPatter[][20][4], int otherPatter[][20][4]) {
 	if (patternCountInNull[PATTERN_ACTIVE_FOUR] > 0)
 	{
-		points ps;
+		points* ps = PointsFactory::createTempPoints();
 		for (int i = 0; i < neighbors->count; i++)
 			for (int k = 0; k < 4; k++) {
 				//³åËÄ
 				if (selfPatter[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
 					selfPatter[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR
 					)
-					ps.add(neighbors->list[i]);
+					ps->add(neighbors->list[i]);
 				//·À3
 				if (otherPatter[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR) {
-					ps.add(neighbors->list[i]);
+					ps->add(neighbors->list[i]);
 					//¶Ï3·ÀÓù
 					if (patternCountInNull[PATTERN_ACTIVE_FOUR] == 1) {
 						int px = neighbors->list[i].x - 4 * directX[k];
@@ -90,7 +91,7 @@ bool checkActiveThree(points *neighbors, int *patternCountInNull, int selfPatter
 						for (int j = 0; j < 9; j++) {
 							if (otherPatter[px][py][k] == PATTERN_SLEEPY_FOUR) {
 								if (reachable(px, py) && map[px][py] == NULL)
-									ps.add(point(px, py));
+									ps->add(point(px, py));
 							}
 							px += directX[k];
 							py += directY[k];
@@ -99,8 +100,8 @@ bool checkActiveThree(points *neighbors, int *patternCountInNull, int selfPatter
 				}
 			}
 		neighbors->clear();
-		for (int i = 0; i < ps.count; i++) {
-			neighbors->add(ps.list[i]);
+		for (int i = 0; i < ps->count; i++) {
+			neighbors->add(ps->list[i]);
 		}
 		return true;
 	}

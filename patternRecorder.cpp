@@ -112,7 +112,6 @@ int getInsertedKey(int key, int offset, int state) {
 void updateLineKey(int x, int y) {
 	int stateWhite = getPatternState(x, y, WHITE);
 	int stateBlack = getPatternState(x, y, BLACK);
-	int line[8];
 
 	for (int direct = 0; direct < 4; direct++) {
 		int px = x - directX[direct] * 4;
@@ -153,7 +152,6 @@ void initPointLineKey(int x, int y) {
 }
 
 void updatePointPattern(int x, int y) {
-	int line[8];
 	for (int direct = 0; direct < 4; direct++) {
 		int px = x - directX[direct] * 4;
 		int py = y - directY[direct] * 4;

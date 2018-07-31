@@ -4,6 +4,7 @@
 #include "vector"
 #include <time.h>  
 #include "patternRecorder.h"
+#include "PointsFactory.h"
 
 int **map;
 
@@ -137,12 +138,12 @@ points getPointLinesNeighbor(int px, int py) {
 	return result;
 }
 
-points getNeighbor() {
-	points result;
+points* getNeighbor(int level) {
+	points* result = PointsFactory::createPointNeighborPoints(level);
 	for (int i = top; i <= bottom; i++)
 		for (int j = left; j <= right; j++)
 			if (neighborCount[i][j] > 0 && map[i][j] == NULL)
-				result.add(point(i, j));
+				result->add(point(i, j));
 	return result;
 }
 

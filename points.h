@@ -6,7 +6,8 @@ using namespace std;
 class points
 {
 public:
-	vector<point> list;
+	//vector<point> list;
+	point list[256];
 	int count = 0;
 
 	points();

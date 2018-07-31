@@ -146,6 +146,9 @@
     <ClInclude Include="resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="PointsFactory.h">
+      <Filter>头文件\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -200,6 +203,9 @@
       <Filter>源文件\core</Filter>
     </ClCompile>
     <ClCompile Include="patternRecorder.cpp">
+      <Filter>源文件\core</Filter>
+    </ClCompile>
+    <ClCompile Include="PointsFactory.cpp">
       <Filter>源文件\core</Filter>
     </ClCompile>
   </ItemGroup>

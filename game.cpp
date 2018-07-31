@@ -116,21 +116,21 @@ gameResult search(Color aiColor, Color** map)
 	loseSet.reset();
 
 	//初始分析
-	points neighbors = getNeighbor();
-	selectAndSortPoints(&neighbors, aiColor);
+	points* neighbors = getNeighbor(0);
+	selectAndSortPoints(neighbors, aiColor);
 
-	if (neighbors.count == 0) {
+	if (neighbors->count == 0) {
 		gameResult.result = point(boardSize / 2, boardSize / 2);
 		return gameResult;
 	}
 
-	if (neighbors.count == 1) {
-		gameResult.result = neighbors.list[0];
+	if (neighbors->count == 1) {
+		gameResult.result = neighbors->list[0];
 		return gameResult;
 	}
 
 	//得分迭代搜索
-	tryScoreSearchIteration(&neighbors, aiColor, &gameResult, map);
+	tryScoreSearchIteration(neighbors, aiColor, &gameResult, map);
 
 	return gameResult;
 }
@@ -175,22 +175,22 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	}
 
 	//获取扩展节点
-	points neighbors = getNeighbor();
-	if (canWinCheck(&neighbors, color)) {
+	points* neighbors = getNeighbor(level);
+	if (canWinCheck(neighbors, color)) {
 		return MAX_VALUE;
 	}
 
 	//排序
-	selectAndSortPoints(&neighbors, color);
+	selectAndSortPoints(neighbors, color);
 
 	//调整最优节点顺序
-	moveHistoryBestToFirst(&neighbors);
+	moveHistoryBestToFirst(neighbors);
 
 	//遍历扩展节点
 	int extreme = MIN_VALUE;
 	points extremePoints;
-	for (int i = 0; i < neighbors.count; i++) {
-		point p = point(neighbors.list[i].x, neighbors.list[i].y);
+	for (int i = 0; i < neighbors->count; i++) {
+		point p = point(neighbors->list[i].x, neighbors->list[i].y);
 
 		move(p.x, p.y, color, aiColor);
 		int value;
