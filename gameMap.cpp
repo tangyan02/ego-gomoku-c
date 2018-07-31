@@ -48,10 +48,9 @@ void updateNeighbor(int i, int j, bool isAdd, Color pointColor) {
 	for (int x = i - 2; x <= i + 2; x++)
 		for (int y = j - 2; y <= j + 2; y++)
 			if (reachable(x, y)) {
-				Color color = map[x][y];
 				if (i == x && j == y)
 					continue;
-				if (color == NULL)
+				if (map[x][y] == NULL)
 					addNeighborCount(x, y, isAdd);
 			}
 }
