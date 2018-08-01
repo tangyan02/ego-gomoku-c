@@ -4,7 +4,9 @@
 
 points PointsFactory::neighborPoints[30];
 
-points PointsFactory::tempPoints;
+points PointsFactory::levelProcessorTempPoints;
+
+points PointsFactory::dfsTempPoints[30];
 
 points * PointsFactory::createPointNeighborPoints(int level)
 {
@@ -12,9 +14,15 @@ points * PointsFactory::createPointNeighborPoints(int level)
 	return &neighborPoints[level];
 }
 
-points * PointsFactory::createTempPoints()
+points * PointsFactory::createLevelProcessorTempPoints()
 {
-	tempPoints.clear();
-	return &tempPoints;
+	levelProcessorTempPoints.clear();
+	return &levelProcessorTempPoints;
+}
+
+points * PointsFactory::createDfsTempPoints(int level)
+{
+	dfsTempPoints[level].clear();
+	return &dfsTempPoints[level];
 }
 	

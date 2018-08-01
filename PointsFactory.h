@@ -4,14 +4,23 @@
 
 class PointsFactory
 {
+
+private:
+
+	static points neighborPoints[30];
+
+	static points levelProcessorTempPoints;
+
+	static points dfsTempPoints[30];
+
 public:
 	
 	static points* createPointNeighborPoints(int level);
 
-	static points* createTempPoints();
+	static points* createLevelProcessorTempPoints();
 
-	static points neighborPoints[30];
+	static points* createDfsTempPoints(int level);
 
-	static points tempPoints;
+	
 };
 

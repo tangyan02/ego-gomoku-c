@@ -73,7 +73,7 @@ bool checkOnePattern(points *neighbors, int *patternCountInNull, int patter[][20
 bool checkActiveThree(points *neighbors, int *patternCountInNull, int selfPatter[][20][4], int otherPatter[][20][4]) {
 	if (patternCountInNull[PATTERN_ACTIVE_FOUR] > 0)
 	{
-		points* ps = PointsFactory::createTempPoints();
+		points* ps = PointsFactory::createLevelProcessorTempPoints();
 		for (int i = 0; i < neighbors->count; i++)
 			for (int k = 0; k < 4; k++) {
 				//³åËÄ

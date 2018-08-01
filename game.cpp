@@ -7,6 +7,7 @@
 #include "console.h"
 #include <sys/timeb.h>
 #include "unordered_map"
+#include "PointsFactory.h"
 
 extern int boardSize;
 
@@ -188,7 +189,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 
 	//遍历扩展节点
 	int extreme = MIN_VALUE;
-	points extremePoints;
+	points* extremePoints = PointsFactory::createDfsTempPoints(level);
 	for (int i = 0; i < neighbors->count; i++) {
 		point p = point(neighbors->list[i].x, neighbors->list[i].y);
 
@@ -213,10 +214,10 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		undoMove(p.x, p.y, color, aiColor);
 		if (value >= extreme) {
 			if (value > extreme) {
-				extremePoints.clear();
+				extremePoints->clear();
 			}
 			extreme = value;
-			extremePoints.add(p);
+			extremePoints->add(p);
 
 			if (value > alpha) {
 				alpha = value;
@@ -242,7 +243,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		}
 	}
 
-	point extremePoint = extremePoints.list[rand() % extremePoints.count];
+	point extremePoint = extremePoints->list[rand() % extremePoints->count];
 	if (level == currentLevel && extend == 0) {
 		currentPointResult = point(extremePoint.x, extremePoint.y);
 	}

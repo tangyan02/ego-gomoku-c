@@ -44,11 +44,21 @@ void bugTest() {
 	printMapWithStar(map, result.result);
 }
 
+void caseTest() {
+	boardSize = 20;
+	debugEnable = true;
+	//searchLevel = 2;
+	Color ** map = readMap("input008.txt");
+	gameResult result = search(BLACK, map);
+	printMapWithStar(map, result.result);
+}
+
 int main()
 {
 	//piskvork();
 	//bugTest();
-	testPlay();
+	caseTest();
+	//testPlay();
 	//testPattern();
 	//testPatternRecorder();
 	getchar();

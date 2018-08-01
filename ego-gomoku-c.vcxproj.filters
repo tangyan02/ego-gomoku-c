@@ -93,6 +93,9 @@
     <Text Include="input007.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="input008.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
