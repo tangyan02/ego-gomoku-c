@@ -3,6 +3,7 @@
 #include "gameMap.h"
 #include "patternRecorder.h"
 #include "PointsFactory.h"
+#include "analyzer.h"
 
 extern int boardSize;
 
@@ -55,88 +56,16 @@ void qsort(points *neighbors, int score[], int l, int r) {
 	if (l < y) qsort(neighbors, score, l, y);
 }
 
-bool checkOnePattern(points *neighbors, int *patternCountInNull, int patter[][20][4], int pattern) {
-	if (patternCountInNull[pattern] > 0)
-	{
-		for (int i = 0; i < neighbors->count; i++)
-			for (int k = 0; k < 4; k++) {
-				if (patter[neighbors->list[i].x][neighbors->list[i].y][k] == pattern) {
-					neighbors->list[0] = neighbors->list[i];
-					neighbors->count = 1;
-					return true;
-				}
-			}
-	}
-	return false;
-}
-
-bool checkActiveThree(points *neighbors, int *patternCountInNull, int selfPatter[][20][4], int otherPatter[][20][4]) {
-	if (patternCountInNull[PATTERN_ACTIVE_FOUR] > 0)
-	{
-		points* ps = PointsFactory::createLevelProcessorTempPoints();
-		for (int i = 0; i < neighbors->count; i++)
-			for (int k = 0; k < 4; k++) {
-				//冲四
-				if (selfPatter[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
-					selfPatter[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR
-					)
-					ps->add(neighbors->list[i]);
-				//防3
-				if (otherPatter[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR) {
-					ps->add(neighbors->list[i]);
-					//断3防御
-					if (patternCountInNull[PATTERN_ACTIVE_FOUR] == 1) {
-						int px = neighbors->list[i].x - 4 * directX[k];
-						int py = neighbors->list[i].y - 4 * directY[k];
-						for (int j = 0; j < 9; j++) {
-							if (otherPatter[px][py][k] == PATTERN_SLEEPY_FOUR) {
-								if (reachable(px, py) && map[px][py] == NULL)
-									ps->add(point(px, py));
-							}
-							px += directX[k];
-							py += directY[k];
-						}
-					}
-				}
-			}
-		neighbors->clear();
-		for (int i = 0; i < ps->count; i++) {
-			neighbors->add(ps->list[i]);
-		}
-		return true;
-	}
-	return false;
-}
-
 void selectAndSortPoints(points *neighbors, Color color) {
 	//连长五
-	if (color == WHITE) {
-		if (checkOnePattern(neighbors, whitePatternCountInNull, whitePattern, PATTERN_LINE_FIVE))
-			return;
-	}
-	if (color == BLACK) {
-		if (checkOnePattern(neighbors, blackPatternCountInNull, blackPattern, PATTERN_LINE_FIVE))
-			return;
-	}
+	if (checkAndSetInFiveAttack(color, neighbors))
+		return;
 	//堵冲四
-	if (color == WHITE) {
-		if (checkOnePattern(neighbors, blackPatternCountInNull, blackPattern, PATTERN_LINE_FIVE))
-			return;
-	}
-	if (color == BLACK) {
-		if (checkOnePattern(neighbors, whitePatternCountInNull, whitePattern, PATTERN_LINE_FIVE))
-			return;
-	}
+	if (checkAndSetInFourDefence(color, neighbors))
+		return;
 	//对付活三
-	if (color == WHITE) {
-		if (checkActiveThree(neighbors, blackPatternCountInNull, whitePattern, blackPattern))
-			return;
-	}
-
-	if (color == BLACK) {
-		if (checkActiveThree(neighbors, whitePatternCountInNull, blackPattern, whitePattern))
-			return;
-	}
+	if (checkAndSetInThreeActive(color, neighbors))
+		return;
 
 	//排序
 	for (int i = 0; i < neighbors->count; i++) {
