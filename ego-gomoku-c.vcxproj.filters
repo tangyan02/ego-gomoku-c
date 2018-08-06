@@ -155,6 +155,9 @@
     <ClInclude Include="comboProcessor.h">
       <Filter>头文件\core</Filter>
     </ClInclude>
+    <ClInclude Include="analyzer.h">
+      <Filter>头文件\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -202,9 +205,6 @@
     <ClCompile Include="pisqpipe.cpp">
       <Filter>源文件\gomocup</Filter>
     </ClCompile>
-    <ClCompile Include="winChecker.cpp">
-      <Filter>源文件\helper</Filter>
-    </ClCompile>
     <ClCompile Include="pattern.cpp">
       <Filter>源文件\core</Filter>
     </ClCompile>
@@ -215,6 +215,9 @@
       <Filter>源文件\core</Filter>
     </ClCompile>
     <ClCompile Include="comboProcessor.cpp">
+      <Filter>源文件\core</Filter>
+    </ClCompile>
+    <ClCompile Include="analyzer.cpp">
       <Filter>源文件\core</Filter>
     </ClCompile>
   </ItemGroup>

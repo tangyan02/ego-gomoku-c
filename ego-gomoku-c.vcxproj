@@ -169,6 +169,7 @@
     <Text Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="analyzer.h" />
     <ClInclude Include="comboProcessor.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="console.h" />
@@ -190,6 +191,7 @@
     <ClInclude Include="winChecker.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="analyzer.cpp" />
     <ClCompile Include="comboProcessor.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="console.cpp" />
@@ -214,7 +216,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="winChecker.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
