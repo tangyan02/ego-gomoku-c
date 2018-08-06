@@ -7,15 +7,15 @@ class PointsFactory
 
 private:
 
-	static points neighborPoints[30];
+	static points neighborPoints[30][30];
 
 	static points levelProcessorTempPoints;
 
 	static points dfsTempPoints[30];
 
 public:
-	
-	static points* createPointNeighborPoints(int level);
+
+	static points* createPointNeighborPoints(int level, int extend);
 
 	static points* createLevelProcessorTempPoints();
 

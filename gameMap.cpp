@@ -45,14 +45,42 @@ void updateSide(int i, int j) {
 
 void updateNeighbor(int i, int j, bool isAdd, Color pointColor) {
 	updateSide(i, j);
-	for (int x = i - 2; x <= i + 2; x++)
+	/*for (int x = i - 2; x <= i + 2; x++)
 		for (int y = j - 2; y <= j + 2; y++)
 			if (reachable(x, y)) {
 				if (i == x && j == y)
 					continue;
 				if (map[x][y] == NULL)
 					addNeighborCount(x, y, isAdd);
+			}*/
+	for (int k = 0; k < 8; k++) {
+		int x = i + directX[k];
+		int y = j + directY[k];
+		if (reachable(x, y)) {
+			Color color = map[x][y];
+			if (color == NULL) {
+				addNeighborCount(x, y, isAdd);
 			}
+			else {
+				if (color == pointColor) {
+					int x1 = i + directX[k] * 3;
+					int y1 = j + directY[k] * 3;
+					int x2 = i - directX[k] * 2;
+					int y2 = j - directY[k] * 2;
+					if (reachable(x1, y1)) {
+						if (map[x1][y1] == NULL) {
+							addNeighborCount(x1, y1, isAdd);
+						}
+					}
+					if (reachable(x2, y2)) {
+						if (map[x2][y2] == NULL) {
+							addNeighborCount(x2, y2, isAdd);
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 void initGameMap(Color** value) {
@@ -137,13 +165,11 @@ points getPointLinesNeighbor(int px, int py) {
 	return result;
 }
 
-points* getNeighbor(int level) {
-	points* result = PointsFactory::createPointNeighborPoints(level);
+void fillNeighbor(points* ps) {
 	for (int i = top; i <= bottom; i++)
 		for (int j = left; j <= right; j++)
 			if (neighborCount[i][j] > 0 && map[i][j] == NULL)
-				result->add(point(i, j));
-	return result;
+				ps->add(point(i, j));
 }
 
 bool reachable(int x, int y)

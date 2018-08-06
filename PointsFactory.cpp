@@ -2,16 +2,16 @@
 #include "PointsFactory.h"
 
 
-points PointsFactory::neighborPoints[30];
+points PointsFactory::neighborPoints[30][30];
 
 points PointsFactory::levelProcessorTempPoints;
 
 points PointsFactory::dfsTempPoints[30];
 
-points * PointsFactory::createPointNeighborPoints(int level)
+points * PointsFactory::createPointNeighborPoints(int level, int extend)
 {
-	neighborPoints[level].clear();
-	return &neighborPoints[level];
+	neighborPoints[level][extend].clear();
+	return &neighborPoints[level][extend];
 }
 
 points * PointsFactory::createLevelProcessorTempPoints()

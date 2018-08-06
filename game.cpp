@@ -117,7 +117,8 @@ gameResult search(Color aiColor, Color** map)
 	loseSet.reset();
 
 	//初始分析
-	points* neighbors = getNeighbor(0);
+	points* neighbors = PointsFactory::createPointNeighborPoints(0, 0);
+	fillNeighbor(neighbors);
 	selectAndSortPoints(neighbors, aiColor);
 
 	if (neighbors->count == 0) {
@@ -170,13 +171,24 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	}
 	nodeCount++;
 
+	if (level == 0 || level == 1) {
+		if (extend < currentLevel) {
+			int value = getScoreValue(color, aiColor);
+			if (value > alpha && value < beta) {
+				level += 2;
+				extend += 2;
+			}
+		}
+	}
+
 	//叶子分数计算
 	if (level == 0) {
 		return getScoreValue(color, aiColor);
 	}
 
 	//获取扩展节点
-	points* neighbors = getNeighbor(level);
+	points* neighbors = PointsFactory::createPointNeighborPoints(level, extend);
+	fillNeighbor(neighbors);
 	if (canWinCheck(neighbors, color)) {
 		return MAX_VALUE;
 	}

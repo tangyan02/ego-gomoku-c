@@ -169,6 +169,7 @@
     <Text Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="comboProcessor.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="console.h" />
     <ClInclude Include="game.h" />
@@ -189,6 +190,7 @@
     <ClInclude Include="winChecker.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="comboProcessor.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="console.cpp" />
     <ClCompile Include="example.cpp" />

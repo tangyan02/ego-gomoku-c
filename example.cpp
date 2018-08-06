@@ -112,7 +112,7 @@ void brain_turn()
 	if (result.value == MIN_VALUE) {
 		pipeOut("MESSAGE ¡ø¡ø¡ø");
 	}
-	pipeOut("MESSAGE ¡ð¡ñ level %d (%d,%d) value %d speed %d k ¡ñ¡ð",result.level, p.x, p.y, result.value, result.speed);
+	pipeOut("MESSAGE ¡ð¡ñ level %d value %d (%d,%d) speed %d k (%d) ¡ñ¡ð",result.level, result.value, p.x, p.y, result.speed, result.node);
 	//pipeOut("DEBUG extend %d, combo %d nodes %d", result.extend, result.combo, result.node);
 	do_mymove(p.x, p.y);
 }

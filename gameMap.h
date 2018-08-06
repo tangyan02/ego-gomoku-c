@@ -11,7 +11,7 @@ void move(int x, int y, Color color, Color aiColor);
 
 void undoMove(int x, int y, Color color, Color aiColor);
 
-points* getNeighbor(int level);
+void fillNeighbor(points* ps);
 
 points getPointLinesNeighbor(int px, int py);
 
