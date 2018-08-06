@@ -7,9 +7,9 @@
 
 Color getColor(int x, int y);
 
-void move(int x, int y, Color color, Color aiColor);
+void move(int x, int y, Color color);
 
-void undoMove(int x, int y, Color color, Color aiColor);
+void undoMove(int x, int y, Color color);
 
 void fillNeighbor(points* ps);
 

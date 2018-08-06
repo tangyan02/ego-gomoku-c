@@ -119,7 +119,7 @@ void initGameMap(Color** value) {
 	initPatternRecord();	
 }
 
-void move(int x, int y, Color color, Color aiColor) {
+void move(int x, int y, Color color) {
 	removeLinePatternCount(x, y);
 	updateHashCode(x, y, color);
 	map[x][y] = color;
@@ -129,7 +129,7 @@ void move(int x, int y, Color color, Color aiColor) {
 	updateLinePatternCount(x, y);
 }
 
-void undoMove(int x, int y, Color color, Color aiColor) {
+void undoMove(int x, int y, Color color) {
 	removeLinePatternCount(x, y);
 	updateHashCode(x, y, color);
 	map[x][y] = NULL_COLOR;

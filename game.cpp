@@ -198,7 +198,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	for (int i = 0; i < neighbors->count; i++) {
 		point p = point(neighbors->list[i].x, neighbors->list[i].y);
 
-		move(p.x, p.y, color, aiColor);
+		move(p.x, p.y, color);
 		int value;
 		//先查必败表
 		if (level == currentLevel && extend == 0 && loseSet.contains(p)) {
@@ -216,7 +216,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 				}
 			}
 		}
-		undoMove(p.x, p.y, color, aiColor);
+		undoMove(p.x, p.y, color);
 		if (value >= extreme) {
 			if (value > extreme) {
 				extremePoints->clear();

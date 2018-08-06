@@ -285,11 +285,11 @@ void testSimpleMove() {
 	map = readMap("patternRecorder.txt");
 	initGameMap(map);
 
-	move(1, 1, BLACK, WHITE);
-	move(1, 3, BLACK, WHITE);
+	move(1, 1, BLACK);
+	move(1, 3, BLACK);
 	//undoMove(1, 3, BLACK, WHITE);
-	move(0, 1, WHITE, WHITE);
-	undoMove(0, 1, WHITE, WHITE);
+	move(0, 1, WHITE);
+	undoMove(0, 1, WHITE);
 	printPatternAnalyze();
 }
 
