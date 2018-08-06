@@ -85,7 +85,7 @@ bool checkActiveThree(points *neighbors, int *patternCountInNull, int selfPatter
 }
 
 
-bool checkAndSetInFiveAttack(Color color, points *neighbors) {
+bool TryFiveAttack(Color color, points *neighbors) {
 	if (color == WHITE) {
 		return checkOnePattern(neighbors, whitePatternCountInNull, whitePattern, PATTERN_LINE_FIVE);
 			
@@ -96,7 +96,7 @@ bool checkAndSetInFiveAttack(Color color, points *neighbors) {
 	return false;
 }
 
-bool checkAndSetInFourDefence(Color color, points *neighbors) {
+bool tryFourDefence(Color color, points *neighbors) {
 	if (color == WHITE) {
 		return checkOnePattern(neighbors, blackPatternCountInNull, blackPattern, PATTERN_LINE_FIVE);
 	}
@@ -106,7 +106,7 @@ bool checkAndSetInFourDefence(Color color, points *neighbors) {
 	return false;
 }
 
-bool checkAndSetInThreeActive(Color color, points *neighbors) {
+bool tryThreeDefence(Color color, points *neighbors) {
 	if (color == WHITE) {
 		return checkActiveThree(neighbors, blackPatternCountInNull, whitePattern, blackPattern);
 	}

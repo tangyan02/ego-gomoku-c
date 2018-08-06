@@ -58,13 +58,13 @@ void qsort(points *neighbors, int score[], int l, int r) {
 
 void selectAndSortPoints(points *neighbors, Color color) {
 	//连长五
-	if (checkAndSetInFiveAttack(color, neighbors))
+	if (TryFiveAttack(color, neighbors))
 		return;
 	//堵冲四
-	if (checkAndSetInFourDefence(color, neighbors))
+	if (tryFourDefence(color, neighbors))
 		return;
 	//对付活三
-	if (checkAndSetInThreeActive(color, neighbors))
+	if (tryThreeDefence(color, neighbors))
 		return;
 
 	//排序
