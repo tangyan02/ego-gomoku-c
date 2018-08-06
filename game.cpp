@@ -8,6 +8,7 @@
 #include <sys/timeb.h>
 #include "unordered_map"
 #include "PointsFactory.h"
+#include "patternRecorder.h"
 
 extern int boardSize;
 
@@ -38,6 +39,9 @@ static pointHash loseSet;
 static unordered_map<long long, point> cache;
 
 static unordered_map<long long, point> cacheLast;
+
+extern int blackPatternCountInNull[10];
+extern int whitePatternCountInNull[10];
 
 long long getSystemTime() {
 	struct timeb t;
@@ -137,11 +141,16 @@ gameResult search(Color aiColor, Color** map)
 	return gameResult;
 }
 
-bool canWinCheck(points *neighbors, Color color) {
-	//输赢判定
-	Color result = win(getMap());
-	if (result == color) {
-		return true;
+bool canWinCheck(Color color) {
+	if (color == BLACK) {
+		if (blackPatternCountInNull[PATTERN_LINE_FIVE] > 0) {
+			return true;
+		}
+	}
+	if (color == WHITE) {
+		if (whitePatternCountInNull[PATTERN_LINE_FIVE] > 0) {
+			return true;
+		}
 	}
 	return false;
 }
@@ -189,7 +198,8 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	//获取扩展节点
 	points* neighbors = PointsFactory::createPointNeighborPoints(level, extend);
 	fillNeighbor(neighbors);
-	if (canWinCheck(neighbors, color)) {
+
+	if (canWinCheck(color)) {
 		return MAX_VALUE;
 	}
 
