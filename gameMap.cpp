@@ -144,8 +144,7 @@ Color getColor(int x, int y)
 	return map[x][y];
 }
 
-points getPointLinesNeighbor(int px, int py) {
-	points result;
+void fillPointLinesNeighbor(int px, int py, points* ps) {
 	for (int i = 0; i < 8; i++) {
 		int x = px;
 		int y = py;
@@ -158,11 +157,12 @@ points getPointLinesNeighbor(int px, int py) {
 			if (map[x][y] != NULL)
 				continue;
 			if (neighborCount[x][y] > 0 && map[x][y] == NULL) {
-				result.add(point(x, y));
+				if (!ps->contains(x, y)) {
+					ps->add(point(x, y));
+				}
 			}
 		}
 	}
-	return result;
 }
 
 void fillNeighbor(points* ps) {

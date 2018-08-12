@@ -13,6 +13,8 @@ private:
 
 	static points dfsTempPoints[30];
 
+	static points comboNeighborPoints[30];
+
 public:
 
 	static points* createPointNeighborPoints(int level, int extend);
@@ -21,6 +23,7 @@ public:
 
 	static points* createDfsTempPoints(int level);
 
+	static points* createComboNeighborPoints(int level);
 	
 };
 

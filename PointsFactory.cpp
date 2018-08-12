@@ -8,10 +8,18 @@ points PointsFactory::levelProcessorTempPoints;
 
 points PointsFactory::dfsTempPoints[30];
 
+points PointsFactory::comboNeighborPoints[30];
+
 points * PointsFactory::createPointNeighborPoints(int level, int extend)
 {
 	neighborPoints[level][extend].clear();
 	return &neighborPoints[level][extend];
+}
+
+points * PointsFactory::createComboNeighborPoints(int level)
+{
+	comboNeighborPoints[level].clear();
+	return &comboNeighborPoints[level];
 }
 
 points * PointsFactory::createLevelProcessorTempPoints()
