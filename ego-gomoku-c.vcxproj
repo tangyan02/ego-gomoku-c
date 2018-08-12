@@ -151,6 +151,9 @@
     <Text Include="analyze3.txt" />
     <Text Include="combo.txt" />
     <Text Include="combo2.txt" />
+    <Text Include="combo3.txt" />
+    <Text Include="combo4.txt" />
+    <Text Include="combo5.txt" />
     <Text Include="failCombo.txt" />
     <Text Include="fourDefence.txt" />
     <Text Include="input.txt" />
@@ -171,6 +174,7 @@
   <ItemGroup>
     <ClInclude Include="analyzer.h" />
     <ClInclude Include="comboProcessor.h" />
+    <ClInclude Include="comboResult.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="console.h" />
     <ClInclude Include="game.h" />
@@ -193,6 +197,7 @@
   <ItemGroup>
     <ClCompile Include="analyzer.cpp" />
     <ClCompile Include="comboProcessor.cpp" />
+    <ClCompile Include="comboResult.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="console.cpp" />
     <ClCompile Include="example.cpp" />

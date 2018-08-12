@@ -8,6 +8,7 @@
 #include "pisqpipe.h"
 #include "pattern.h"
 #include "patternRecorder.h"
+#include "comboProcessor.h"
 
 extern bool debugEnable;
 
@@ -56,8 +57,9 @@ void caseTest() {
 int main()
 {
 	//piskvork();
+	testCombo();
 	//bugTest();
-	caseTest();
+	//caseTest();
 	//testPlay();
 	//testPattern();
 	//testPatternRecorder();

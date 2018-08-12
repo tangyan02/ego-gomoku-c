@@ -84,8 +84,7 @@ bool checkActiveThree(points *neighbors, int *patternCountInNull, int selfPatter
 	return false;
 }
 
-
-bool TryFiveAttack(Color color, points *neighbors) {
+bool tryFiveAttack(Color color, points *neighbors) {
 	if (color == WHITE) {
 		return checkOnePattern(neighbors, whitePatternCountInNull, whitePattern, PATTERN_LINE_FIVE);
 			
@@ -114,4 +113,29 @@ bool tryThreeDefence(Color color, points *neighbors) {
 		return checkActiveThree(neighbors, whitePatternCountInNull, blackPattern, whitePattern);
 	}
 	return false;
+}
+
+
+point findOnePattern(points *neighbors, int *patternCountInNull, int patter[][20][4], int pattern) {
+	if (patternCountInNull[pattern] > 0)
+	{
+		for (int i = 0; i < neighbors->count; i++)
+			for (int k = 0; k < 4; k++) {
+				if (patter[neighbors->list[i].x][neighbors->list[i].y][k] == pattern) {
+					return neighbors->list[i];
+				}
+			}
+	}
+	return point();
+}
+
+point getFiveAttack(points *neighbors, Color color) {
+	if (color == WHITE) {
+		return findOnePattern(neighbors, whitePatternCountInNull, whitePattern, PATTERN_LINE_FIVE);
+
+	}
+	if (color == BLACK) {
+		return findOnePattern(neighbors, blackPatternCountInNull, blackPattern, PATTERN_LINE_FIVE);
+	}
+	return point();
 }

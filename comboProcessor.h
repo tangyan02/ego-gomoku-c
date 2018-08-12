@@ -2,5 +2,9 @@
 
 #include "config.h"
 #include "point.h"
+#include "comboResult.h"
 
-point* kill(Color color, int level);
+comboResult kill(Color color, int level);
+
+
+void testCombo();

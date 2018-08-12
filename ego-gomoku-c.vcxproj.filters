@@ -96,6 +96,15 @@
     <Text Include="input008.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="combo3.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="combo4.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="combo5.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -158,6 +167,9 @@
     <ClInclude Include="analyzer.h">
       <Filter>头文件\core</Filter>
     </ClInclude>
+    <ClInclude Include="comboResult.h">
+      <Filter>头文件\entity</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -219,6 +231,9 @@
     </ClCompile>
     <ClCompile Include="analyzer.cpp">
       <Filter>源文件\core</Filter>
+    </ClCompile>
+    <ClCompile Include="comboResult.cpp">
+      <Filter>源文件\entity</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
