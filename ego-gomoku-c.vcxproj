@@ -158,7 +158,6 @@
     <Text Include="failCombo.txt" />
     <Text Include="fourDefence.txt" />
     <Text Include="input.txt" />
-    <Text Include="bugInput.txt" />
     <Text Include="input001.txt" />
     <Text Include="input002.txt" />
     <Text Include="input003.txt" />

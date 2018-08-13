@@ -67,6 +67,30 @@ bool checkFourAttack(points *neighbors, int *patternCountInNull, int patter[][20
 }
 
 
+bool checkThreeOrFourAttack(points *neighbors, int *patternCountInNull, int patter[][20][4]) {
+	if (patternCountInNull[PATTERN_ACTIVE_FOUR] > 0 || patternCountInNull[PATTERN_SLEEPY_FOUR] > 0 || patternCountInNull[PATTERN_ACTIVE_THREE] > 0)
+	{
+		points* ps = PointsFactory::createLevelProcessorTempPoints();
+		for (int i = 0; i < neighbors->count; i++)
+			for (int k = 0; k < 4; k++) {
+				if (patter[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
+					patter[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR ||
+					patter[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_THREE
+					) {
+					ps->add(neighbors->list[i]);
+				}
+			}
+		neighbors->clear();
+		for (int i = 0; i < ps->count; i++) {
+			neighbors->add(ps->list[i]);
+		}
+		return true;
+	}
+	return false;
+}
+
+
+
 bool checkActiveThreeDefence(points *neighbors, int *otherPatternCountInNull, int selfPatter[][20][4], int otherPatter[][20][4]) {
 	if (otherPatternCountInNull[PATTERN_ACTIVE_FOUR] > 0)
 	{
@@ -126,6 +150,17 @@ bool tryFourAttack(Color color, points *neighbors) {
 	return false;
 }
 
+bool tryThreeOrFourAttack(Color color, points *neighbors) {
+	if (color == WHITE) {
+		return checkThreeOrFourAttack(neighbors, whitePatternCountInNull, whitePattern);
+	}
+	if (color == BLACK) {
+		return checkThreeOrFourAttack(neighbors, blackPatternCountInNull, blackPattern);
+	}
+	return false;
+}
+
+
 bool tryFourDefence(Color color, points *neighbors) {
 	if (color == WHITE) {
 		return checkOnePattern(neighbors, blackPatternCountInNull, blackPattern, PATTERN_LINE_FIVE);
@@ -171,22 +206,40 @@ point getFiveAttack(points *neighbors, Color color) {
 	return point();
 }
 
-bool hasComboAttack(Color color) {
-	if (color == BLACK) {
-		if (blackPatternCountInNull[PATTERN_LINE_FIVE] > 0 ||
-			blackPatternCountInNull[PATTERN_ACTIVE_FOUR] > 0 ||
-			blackPatternCountInNull[PATTERN_SLEEPY_FOUR] > 0 ||
-			blackPatternCountInNull[PATTERN_ACTIVE_THREE] > 0
-			)
-			return true;
+bool hasComboAttack(Color color, int comboType) {
+	if (comboType == COMBO_THREE) {
+		if (color == BLACK) {
+			if (blackPatternCountInNull[PATTERN_LINE_FIVE] > 0 ||
+				blackPatternCountInNull[PATTERN_ACTIVE_FOUR] > 0 ||
+				blackPatternCountInNull[PATTERN_SLEEPY_FOUR] > 0 ||
+				blackPatternCountInNull[PATTERN_ACTIVE_THREE] > 0
+				)
+				return true;
+		}
+		if (color == WHITE) {
+			if (whitePatternCountInNull[PATTERN_LINE_FIVE] > 0 ||
+				whitePatternCountInNull[PATTERN_ACTIVE_FOUR] > 0 ||
+				whitePatternCountInNull[PATTERN_SLEEPY_FOUR] > 0 ||
+				whitePatternCountInNull[PATTERN_ACTIVE_THREE] > 0
+				)
+				return true;
+		}
 	}
-	if (color == WHITE) {
-		if (whitePatternCountInNull[PATTERN_LINE_FIVE] > 0 ||
-			whitePatternCountInNull[PATTERN_ACTIVE_FOUR] > 0 ||
-			whitePatternCountInNull[PATTERN_SLEEPY_FOUR] > 0 ||
-			whitePatternCountInNull[PATTERN_ACTIVE_THREE] > 0
-			)
-			return true;
+	if (comboType == COMBO_FOUR) {
+		if (color == BLACK) {
+			if (blackPatternCountInNull[PATTERN_LINE_FIVE] > 0 ||
+				blackPatternCountInNull[PATTERN_ACTIVE_FOUR] > 0 ||
+				blackPatternCountInNull[PATTERN_SLEEPY_FOUR] > 0
+				)
+				return true;
+		}
+		if (color == WHITE) {
+			if (whitePatternCountInNull[PATTERN_LINE_FIVE] > 0 ||
+				whitePatternCountInNull[PATTERN_ACTIVE_FOUR] > 0 ||
+				whitePatternCountInNull[PATTERN_SLEEPY_FOUR] > 0
+				)
+				return true;
+		}
 	}
 	return false;
 }

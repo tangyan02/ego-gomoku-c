@@ -63,9 +63,6 @@
     <Text Include="analyze3.txt">
       <Filter>资源文件</Filter>
     </Text>
-    <Text Include="bugInput.txt">
-      <Filter>资源文件</Filter>
-    </Text>
     <Text Include="patternRecorder.txt">
       <Filter>资源文件</Filter>
     </Text>

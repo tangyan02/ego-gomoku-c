@@ -16,6 +16,10 @@ static comboResult processorResult;
 
 static int currentLevel;
 
+static int deepLevel;
+
+static long long currentTargetTime;
+
 bool returnWinValue(int level, point p) {
 	if (level == currentLevel) {
 		processorResult.p = p;
@@ -23,23 +27,46 @@ bool returnWinValue(int level, point p) {
 	return true;
 }
 
-void selectAttack(points* neighbor, Color color) {
-	if (tryFourAttack(color, neighbor)) {
-		return;
+void selectAttack(points* neighbor, Color color, int comboType) {
+	if (comboType == COMBO_FOUR) {
+		if (tryFourAttack(color, neighbor)) {
+			return;
+		}
+	}
+	if (comboType == COMBO_THREE) {
+		if (tryThreeOrFourAttack(color, neighbor)) {
+			return;
+		}
+	}
+
+	neighbor->clear();
+}
+
+void selectDefence(points* neighbor, Color color, int comboType) {
+	if (comboType == COMBO_FOUR) {
+		if (tryFourDefence(color, neighbor)) {
+			return;
+		}
+	}
+	if (comboType == COMBO_THREE) {
+		if (tryFourDefence(color, neighbor)) {
+			return;
+		}
+		if (tryThreeDefence(color, neighbor))
+			return;
 	}
 	neighbor->clear();
 }
 
-void selectDefence(points* neighbor, Color color) {
-	if (tryFourDefence(color, neighbor)) {
-		return;
+static bool killDfs(int level, Color color, Color aiColor, point lastPoint, point lastLastPoint, int comboType) {
+	if (getSystemTime() > currentTargetTime) {
+		return false;
 	}
-	neighbor->clear();
-}
 
-static bool killDfs(int level, Color color, Color aiColor,point lastPoint, point lastLastPoint) {
+	deepLevel = level < deepLevel ? level : deepLevel;
+
 	if (color == aiColor) {
-		if (!hasComboAttack(color)) {
+		if (!hasComboAttack(color, comboType)) {
 			return false;
 		}
 	}
@@ -61,9 +88,9 @@ static bool killDfs(int level, Color color, Color aiColor,point lastPoint, point
 	}
 
 	if (color == aiColor)
-		selectAttack(ps, color);
+		selectAttack(ps, color, comboType);
 	else
-		selectDefence(ps, color);
+		selectDefence(ps, color, comboType);
 
 	if (canWinCheck(color)) {
 		if (color == aiColor) {
@@ -83,7 +110,7 @@ static bool killDfs(int level, Color color, Color aiColor,point lastPoint, point
 		int x = ps->list[i].x;
 		int y = ps->list[i].y;
 		move(x, y, color);
-		bool value = killDfs(level - 1, getOtherColor(color), aiColor, point(x, y), lastPoint);
+		bool value = killDfs(level - 1, getOtherColor(color), aiColor, point(x, y), lastPoint, comboType);
 		undoMove(x, y, color);
 
 		if (color == aiColor) {
@@ -105,10 +132,29 @@ static bool killDfs(int level, Color color, Color aiColor,point lastPoint, point
 		return true;
 }
 
-comboResult kill(Color color, int level)
+comboResult kill(Color color, int level, long long targetTime)
 {
+	currentTargetTime = targetTime;
+
+	deepLevel = level;
 	currentLevel = level;
-	processorResult.canWin = killDfs(level, color, color, point(), point());
+	processorResult.canWin = killDfs(level, getOtherColor(color), getOtherColor(color), point(), point(), COMBO_FOUR);
+	if (deepLevel == 0 || processorResult.canWin) {
+		processorResult.isDeep = true;
+		processorResult.canWin = false;
+		return processorResult;
+	}
+
+	deepLevel = level;
+	currentLevel = level;
+	processorResult.isDeep = false;
+	processorResult.canWin = killDfs(level, color, color, point(), point(), COMBO_THREE);
+	if (deepLevel == 0) {
+		processorResult.isDeep = true;
+	}
+	if (getSystemTime() > currentTargetTime) {
+		processorResult.canWin = false;
+	}
 	return processorResult;
 }
 
@@ -120,15 +166,28 @@ comboResult kill(Color color, int level)
 extern int boardSize;
 extern int ** map;
 
-void testCombo() {
+static void init() {
 	initPattern();
-	map = readMap("comboVCF.txt");
+	map = readMap("combo2.txt");
 	initGameMap(map);
 	printMap(map);
+}
 
-	for (int i = 1; i <= 15; i+=2) {
+static void testSelectAttack() {
+	points* ps = PointsFactory::createComboNeighborPoints(0);
+	fillNeighbor(ps);
+	selectAttack(ps, BLACK, COMBO_THREE);
+	printMapWithStars(map, *ps);
+}
+
+void testKill() {
+	long long targerTime = getSystemTime() + 1000;
+	for (int i = 1; i <= 30; i += 2) {
 		printf("level %d\n", i);
-		comboResult result = kill(BLACK, i);
+		if (getSystemTime() > targerTime) {
+			break;
+		}
+		comboResult result = kill(WHITE, i, targerTime);
 		if (result.canWin) {
 			printf("WIN\n");
 			printMapWithStar(map, result.p);
@@ -138,5 +197,13 @@ void testCombo() {
 		{
 			printf("NULL\n");
 		}
+		if (!result.isDeep) {
+			break;
+		}
 	}
+}
+
+void testCombo() {
+	init();
+	testKill();
 }
