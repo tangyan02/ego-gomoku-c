@@ -16,6 +16,8 @@ extern int boardSize;
 
 extern int searchLevel;
 
+extern int comboTimeOut;
+
 void testPlay() {
 	boardSize = 20;
 	debugEnable = true;
@@ -48,16 +50,16 @@ void bugTest() {
 void caseTest() {
 	boardSize = 20;
 	debugEnable = true;
-	//searchLevel = 2;
+	comboTimeOut = 3000;
 	Color ** map = readMap("input008.txt");
-	gameResult result = search(BLACK, map);
+	gameResult result = search(WHITE, map);
 	printMapWithStar(map, result.result);
 }
 
 int main()
 {
-	//piskvork();
-	testCombo();
+	piskvork();
+	//testCombo();
 	//bugTest();
 	//caseTest();
 	//testPlay();

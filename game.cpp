@@ -9,6 +9,8 @@
 #include "unordered_map"
 #include "PointsFactory.h"
 #include "analyzer.h"
+#include "comboResult.h"
+#include "comboProcessor.h"
 
 extern int boardSize;
 
@@ -17,6 +19,8 @@ extern int searchLevel;
 extern int comboLevel;
 
 extern int timeOut;
+
+extern int comboTimeOut;
 
 extern bool debugEnable;
 
@@ -46,7 +50,32 @@ long long getSystemTime() {
 	return 1000 * t.time + t.millitm;
 }
 
-bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *gameResult, Color** map) {
+bool tryComboSearchIteration(points * neighbors, Color aiColor, gameResult *gameResult) {
+
+	gameResult->combo = 0;
+	long long targerTime = getSystemTime() + comboTimeOut;
+	for (int level = 3; level <= comboLevel; level += 2) {
+		if (getSystemTime() > targerTime) {
+			break;
+		}
+		comboResult result = kill(aiColor, level, targerTime);
+		if (debugEnable) {
+			printf("level %d value %d comboLevel %d\n", level, result.canWin, comboLevel);
+		}
+		gameResult->combo = level;
+		if (result.canWin) {
+			gameResult->value = MAX_VALUE;
+			gameResult->result = point(result.p.x, result.p.y);
+			return true;
+		}
+		if (!result.isDeep) {
+			break;
+		}
+	}
+	return false;
+}
+
+bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *gameResult) {
 	//如果必败，则朴素搜索
 	bool loseFlag = false;
 	if (neighbors->count == loseSet.count) {
@@ -94,7 +123,7 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			gameResult->level = level;
 			if (debugEnable) {
 				printf("level %d, value %d, speed %d k, x:%d y:%d time %lld ms\n", level, value, speed, gameResult->result.x, gameResult->result.y, getSystemTime() - t);
-				printMapWithStar(map, currentPointResult);
+				printMapWithStar(getMap(), currentPointResult);
 			}
 			if (value == MAX_VALUE)
 				break;
@@ -116,7 +145,7 @@ gameResult search(Color aiColor, Color** map)
 	clearPatternRecord();
 	initGameMap(map);
 	loseSet.reset();
-
+	
 	//初始分析
 	points* neighbors = PointsFactory::createPointNeighborPoints(0, 0);
 	fillNeighbor(neighbors);
@@ -133,7 +162,11 @@ gameResult search(Color aiColor, Color** map)
 	}
 
 	//得分迭代搜索
-	tryScoreSearchIteration(neighbors, aiColor, &gameResult, map);
+	if (tryComboSearchIteration(neighbors, aiColor, &gameResult)) {
+		return gameResult;
+	}
+
+	tryScoreSearchIteration(neighbors, aiColor, &gameResult);
 
 	return gameResult;
 }

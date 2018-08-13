@@ -135,6 +135,8 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 comboResult kill(Color color, int level, long long targetTime)
 {
 	currentTargetTime = targetTime;
+	processorResult.canWin = false;
+	processorResult.isDeep = false;
 
 	deepLevel = level;
 	currentLevel = level;

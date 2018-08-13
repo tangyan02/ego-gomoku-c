@@ -13,7 +13,7 @@ private:
 
 	static points dfsTempPoints[30];
 
-	static points comboNeighborPoints[30];
+	static points comboNeighborPoints[50];
 
 public:
 

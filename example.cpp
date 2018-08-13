@@ -101,9 +101,9 @@ void brain_turn()
 		}
 	}
 	pipeOut("MESSAGE time limit %d", thisTimeOut);
-	timeOut = thisTimeOut;
-	//timeOut = thisTimeOut / 3 * 2;
-	//comboTimeOut = thisTimeOut - timeOut;
+	//timeOut = thisTimeOut;
+	timeOut = thisTimeOut / 4 * 3;
+	comboTimeOut = thisTimeOut - timeOut;
 	gameResult result = search(BLACK, map);
 	point p = result.result;
 	if (result.value == MAX_VALUE) {
@@ -112,8 +112,7 @@ void brain_turn()
 	if (result.value == MIN_VALUE) {
 		pipeOut("MESSAGE ¡ø¡ø¡ø");
 	}
-	pipeOut("MESSAGE ¡ð¡ñ level %d value %d (%d,%d) speed %d k (%d) ¡ñ¡ð",result.level, result.value, p.x, p.y, result.speed, result.node);
-	//pipeOut("DEBUG extend %d, combo %d nodes %d", result.extend, result.combo, result.node);
+	pipeOut("MESSAGE ¡ð¡ñ level %d(%d) value %d (%d,%d) speed %d k (%d) ¡ñ¡ð", result.level, result.combo, result.value, p.x, p.y, result.speed, result.node);
 	do_mymove(p.x, p.y);
 }
 
