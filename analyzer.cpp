@@ -152,9 +152,15 @@ bool tryFourAttack(Color color, points *neighbors) {
 
 bool tryThreeOrFourAttack(Color color, points *neighbors) {
 	if (color == WHITE) {
+		if (blackPatternCountInNull[PATTERN_ACTIVE_FOUR] > 0) {
+			return checkFourAttack(neighbors, whitePatternCountInNull, whitePattern);
+		}
 		return checkThreeOrFourAttack(neighbors, whitePatternCountInNull, whitePattern);
 	}
 	if (color == BLACK) {
+		if (whitePatternCountInNull[PATTERN_ACTIVE_FOUR] > 0) {
+			return checkFourAttack(neighbors, blackPatternCountInNull, blackPattern);
+		}
 		return checkThreeOrFourAttack(neighbors, blackPatternCountInNull, blackPattern);
 	}
 	return false;

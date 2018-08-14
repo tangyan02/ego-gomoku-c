@@ -54,22 +54,56 @@ bool tryComboSearchIteration(points * neighbors, Color aiColor, gameResult *game
 
 	gameResult->combo = 0;
 	long long targerTime = getSystemTime() + comboTimeOut;
+	bool selfSearch = true;
+	bool otherSearch[256];
+	for (int i = 0; i < neighbors->count; i++) {
+		otherSearch[i] = true;
+	}
 	for (int level = 3; level <= comboLevel; level += 2) {
 		if (getSystemTime() > targerTime) {
 			break;
 		}
-		comboResult result = kill(aiColor, level, targerTime);
-		if (debugEnable) {
-			printf("level %d value %d comboLevel %d\n", level, result.canWin, comboLevel);
+		if (selfSearch) {
+			comboResult result = kill(aiColor, level, targerTime);
+			if (debugEnable) {
+				printf("level %d value %d comboLevel %d\n", level, result.canWin, comboLevel);
+			}
+			gameResult->combo = level;
+			if (result.canWin) {
+				gameResult->value = MAX_VALUE;
+				gameResult->result = point(result.p.x, result.p.y);
+				return true;
+			}
+
+			if (!result.isDeep) {
+				selfSearch = false;;
+			}
 		}
-		gameResult->combo = level;
-		if (result.canWin) {
-			gameResult->value = MAX_VALUE;
-			gameResult->result = point(result.p.x, result.p.y);
-			return true;
-		}
-		if (!result.isDeep) {
-			break;
+
+		//遍历扩展节点
+		for (int i = 0; i < neighbors->count; i++) {
+			if (otherSearch[i]) {
+				point p = point(neighbors->list[i].x, neighbors->list[i].y);
+				//先查必败表
+				if (loseSet.contains(p)) {
+					continue;
+				}
+				move(p.x, p.y, aiColor);
+				comboResult result = kill(getOtherColor(aiColor), level, targerTime);
+				gameResult->combo = level;
+				undoMove(p.x, p.y, aiColor);
+				if (debugEnable){
+					printMap(getMap());
+					printf("canWin %d\n", result.canWin);
+				}
+				if (result.canWin) {
+					printf("MESSAGE find lose point %d, %d\n", p.y, p.y);
+					loseSet.add(point(p.x, p.y));
+				}
+				if (!result.isDeep) {
+					otherSearch[i] = false;
+				}
+			}
 		}
 	}
 	return false;
@@ -145,7 +179,7 @@ gameResult search(Color aiColor, Color** map)
 	clearPatternRecord();
 	initGameMap(map);
 	loseSet.reset();
-	
+
 	//初始分析
 	points* neighbors = PointsFactory::createPointNeighborPoints(0, 0);
 	fillNeighbor(neighbors);
@@ -195,6 +229,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		return 0;
 	}
 	nodeCount++;
+
 
 	if (level == 0 || level == 1) {
 		if (extend < currentLevel) {

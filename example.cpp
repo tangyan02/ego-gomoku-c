@@ -12,6 +12,7 @@ static unsigned seed;
 extern int boardSize;
 extern int timeOut;
 extern int comboTimeOut;
+static bool record = false;
 
 void brain_init()
 {
@@ -73,6 +74,7 @@ void brain_block(int x, int y)
 
 int brain_takeback(int x, int y)
 {
+	record = false;
 	if (x >= 0 && y >= 0 && x < width && y < height && map[x][y] != 0) {
 		map[x][y] = 0;
 		return 0;
@@ -88,6 +90,10 @@ unsigned rnd(unsigned n)
 
 void brain_turn()
 {
+	if (!record) {
+		printMapInMessage(map);
+	}
+	record = true;
 	int thisTimeOut = info_time_left / 10;
 	thisTimeOut = min(info_timeout_turn, thisTimeOut);
 	int pointCount = 0;

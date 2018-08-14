@@ -28,10 +28,11 @@ bool returnWinValue(int level, point p) {
 }
 
 void selectAttack(points* neighbor, Color color, int comboType) {
+	tryFiveAttack(getOtherColor(color), neighbor);
 	if (comboType == COMBO_FOUR) {
-		if (tryFourAttack(color, neighbor)) {
-			return;
-		}
+			if (tryFourAttack(color, neighbor)) {
+				return;
+			}
 	}
 	if (comboType == COMBO_THREE) {
 		if (tryThreeOrFourAttack(color, neighbor)) {
@@ -138,6 +139,18 @@ comboResult kill(Color color, int level, long long targetTime)
 	processorResult.canWin = false;
 	processorResult.isDeep = false;
 
+	//我方4连
+	deepLevel = level;
+	currentLevel = level;
+	processorResult.isDeep = false;
+	processorResult.canWin = killDfs(level, color, color, point(), point(), COMBO_FOUR);
+	if (deepLevel == 0) {
+		processorResult.isDeep = true;
+	}
+	if (processorResult.canWin) {
+		return processorResult;
+	}
+	//对方4连
 	deepLevel = level;
 	currentLevel = level;
 	processorResult.canWin = killDfs(level, getOtherColor(color), getOtherColor(color), point(), point(), COMBO_FOUR);
@@ -147,6 +160,7 @@ comboResult kill(Color color, int level, long long targetTime)
 		return processorResult;
 	}
 
+	//我方3连
 	deepLevel = level;
 	currentLevel = level;
 	processorResult.isDeep = false;
@@ -170,7 +184,8 @@ extern int ** map;
 
 static void init() {
 	initPattern();
-	map = readMap("combo2.txt");
+	//boardSize = 20;
+	map = readMap("combo6.txt");
 	initGameMap(map);
 	printMap(map);
 }
@@ -189,7 +204,7 @@ void testKill() {
 		if (getSystemTime() > targerTime) {
 			break;
 		}
-		comboResult result = kill(WHITE, i, targerTime);
+		comboResult result = kill(BLACK, i, targerTime);
 		if (result.canWin) {
 			printf("WIN\n");
 			printMapWithStar(map, result.p);

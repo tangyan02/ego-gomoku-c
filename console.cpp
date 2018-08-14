@@ -36,13 +36,13 @@ void printMapInMessage(Color ** map)
 		for (int i = 0; i < boardSize; i++)
 		{
 			if (map[i][j] == BLACK)
-				cout << "¡ð";
+				cout << "x";
 			if (map[i][j] == WHITE)
-				cout << "¡ñ";
+				cout << "o";
 			if (map[i][j] == STAR)
-				cout << "¡ï";
+				cout << "*";
 			if (map[i][j] == NULL)
-				cout << "¡¤";
+				cout << ".";
 		}
 		cout << endl;
 	}
