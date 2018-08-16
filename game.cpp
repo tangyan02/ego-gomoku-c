@@ -44,6 +44,8 @@ static unordered_map<long long, point> cache;
 
 static unordered_map<long long, point> cacheLast;
 
+static bool isWeak;
+
 long long getSystemTime() {
 	struct timeb t;
 	ftime(&t);
@@ -56,6 +58,7 @@ bool tryComboSearchIteration(points * neighbors, Color aiColor, gameResult *game
 	long long targerTime = getSystemTime() + comboTimeOut;
 	bool selfSearch = true;
 	bool otherSearch[256];
+	int loseCount = 0;
 	for (int i = 0; i < neighbors->count; i++) {
 		otherSearch[i] = true;
 	}
@@ -92,12 +95,10 @@ bool tryComboSearchIteration(points * neighbors, Color aiColor, gameResult *game
 				comboResult result = kill(getOtherColor(aiColor), level, targerTime);
 				gameResult->combo = level;
 				undoMove(p.x, p.y, aiColor);
-				if (debugEnable){
-					printMap(getMap());
-					printf("canWin %d\n", result.canWin);
-				}
 				if (result.canWin) {
-					printf("MESSAGE find lose point %d, %d\n", p.y, p.y);
+					if (!loseSet.contains(p.x, p.y)) {
+						loseCount++;
+					}
 					loseSet.add(point(p.x, p.y));
 				}
 				if (!result.isDeep) {
@@ -106,6 +107,7 @@ bool tryComboSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			}
 		}
 	}
+	printf("MESSAGE lose point count %d\n", loseCount);
 	return false;
 }
 
@@ -155,14 +157,15 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			gameResult->node = nodeCount;
 			gameResult->value = value;
 			gameResult->level = level;
-			if (debugEnable) {
+			printf("MESSAGE level %d, value %d, speed %d k, x:%d y:%d time %lld ms\n", level, value, speed, gameResult->result.x, gameResult->result.y, getSystemTime() - t);
+			/*if (debugEnable) {
 				printf("level %d, value %d, speed %d k, x:%d y:%d time %lld ms\n", level, value, speed, gameResult->result.x, gameResult->result.y, getSystemTime() - t);
 				printMapWithStar(getMap(), currentPointResult);
-			}
+			}*/
 			if (value == MAX_VALUE)
 				break;
 		}
-		if (getSystemTime() - searchStartTime > timeOut / 3) {
+		if (getSystemTime() - searchStartTime > timeOut / 4) {
 			timeOutEnable = true;
 		}
 	}
@@ -184,6 +187,12 @@ gameResult search(Color aiColor, Color** map)
 	points* neighbors = PointsFactory::createPointNeighborPoints(0, 0);
 	fillNeighbor(neighbors);
 	selectAndSortPoints(neighbors, aiColor);
+
+	//判断是否有优势
+	if (getScoreValue(aiColor, aiColor, isWeak) < -75)
+		isWeak = true;
+	else
+		isWeak = false;
 
 	if (neighbors->count == 0) {
 		gameResult.result = point(boardSize / 2, boardSize / 2);
@@ -233,8 +242,12 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 
 	if (level == 0 || level == 1) {
 		if (extend < currentLevel) {
-			int value = getScoreValue(color, aiColor);
+			int value = getScoreValue(color, aiColor, isWeak);
 			if (value > alpha && value < beta) {
+				comboResult comboResult = kill(color, currentLevel, searchStartTime + timeOut);
+				if (comboResult.canWin) {
+					return MAX_VALUE;
+				}
 				level += 2;
 				extend += 2;
 			}
@@ -243,7 +256,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 
 	//叶子分数计算
 	if (level == 0) {
-		return getScoreValue(color, aiColor);
+		return getScoreValue(color, aiColor, isWeak);
 	}
 
 	//获取扩展节点

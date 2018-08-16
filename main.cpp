@@ -58,10 +58,10 @@ void caseTest() {
 
 int main()
 {
-	//piskvork();
-	//testCombo();
+	piskvork();
+	testCombo();
 	//bugTest();
-	caseTest();
+	//caseTest();
 	//testPlay();
 	//testPattern();
 	//testPatternRecorder();

@@ -1,3 +1,3 @@
 #pragma once
 
-int getScoreValue(Color color, Color aiColor);
+int getScoreValue(Color color, Color aiColor, bool isWeak);

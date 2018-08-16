@@ -3,6 +3,7 @@
 #include "patternRecorder.h"
 #include "PointsFactory.h"
 #include "gameMap.h"
+#include "score.h"
 
 static int directX[] = { 0, 1, 1, 1 };
 

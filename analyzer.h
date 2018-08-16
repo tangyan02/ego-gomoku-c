@@ -16,3 +16,5 @@ bool tryThreeDefence(Color color, points *neighbors);
 point getFiveAttack(points *neighbors, Color color);
 
 bool hasComboAttack(Color color, int comboType);
+
+bool isGreater(Color aiColor);

@@ -12,9 +12,9 @@ extern int boardSize;
 
 extern Color** map;
 
-int score[10] = { 0, 100000, 10000, 80, 90, 40, 45, 25, 30, 10 };
+int score[10] = { 0, 100000, 10000, 80, 90, 40, 45, 25, 25, 10 };
 
-int getScoreValue(Color color, Color aiColor) {
+int getScoreValue(Color color, Color aiColor, bool isWeak) {
 	int result = 0;
 	if (color == WHITE) {
 		for (int i = 1; i < 10; i++) {
@@ -28,8 +28,25 @@ int getScoreValue(Color color, Color aiColor) {
 			result += score[i] * blackPatternCount[i];
 		}
 	}
+
 	if (color != aiColor) {
-		return -result;
+		isWeak = !isWeak;
+	}
+	//·ÀÓùÐÞÕý
+	if (isWeak) {
+		if (color == WHITE) {
+			for (int i = 1; i < 10; i++) {
+				result -= score[i] * whitePatternCount[i] / 2;
+			}
+		}
+		if (color == BLACK) {
+			for (int i = 1; i < 10; i++) {
+				result -= score[i] * blackPatternCount[i] / 2;
+			}
+		}
+	}
+	if (color != aiColor) {
+		result = -result;
 	}
 	return result;
 }

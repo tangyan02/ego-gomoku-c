@@ -108,7 +108,7 @@ void brain_turn()
 	}
 	pipeOut("MESSAGE time limit %d", thisTimeOut);
 	//timeOut = thisTimeOut;
-	timeOut = thisTimeOut / 4 * 3;
+	timeOut = thisTimeOut / 5 * 4;
 	comboTimeOut = thisTimeOut - timeOut;
 	gameResult result = search(BLACK, map);
 	point p = result.result;
