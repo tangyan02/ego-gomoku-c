@@ -44,8 +44,6 @@ static unordered_map<long long, point> cache;
 
 static unordered_map<long long, point> cacheLast;
 
-static bool isWeak;
-
 long long getSystemTime() {
 	struct timeb t;
 	ftime(&t);
@@ -157,11 +155,10 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			gameResult->node = nodeCount;
 			gameResult->value = value;
 			gameResult->level = level;
-			printf("MESSAGE level %d, value %d, speed %d k, x:%d y:%d time %lld ms\n", level, value, speed, gameResult->result.x, gameResult->result.y, getSystemTime() - t);
-			/*if (debugEnable) {
-				printf("level %d, value %d, speed %d k, x:%d y:%d time %lld ms\n", level, value, speed, gameResult->result.x, gameResult->result.y, getSystemTime() - t);
+			printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, cost %lld ms\n", level, value, gameResult->result.x, gameResult->result.y, speed, getSystemTime() - t);
+			if (debugEnable) {
 				printMapWithStar(getMap(), currentPointResult);
-			}*/
+			}
 			if (value == MAX_VALUE)
 				break;
 		}
@@ -187,12 +184,6 @@ gameResult search(Color aiColor, Color** map)
 	points* neighbors = PointsFactory::createPointNeighborPoints(0, 0);
 	fillNeighbor(neighbors);
 	selectAndSortPoints(neighbors, aiColor);
-
-	//判断是否有优势
-	if (getScoreValue(aiColor, aiColor, isWeak) < -75)
-		isWeak = true;
-	else
-		isWeak = false;
 
 	if (neighbors->count == 0) {
 		gameResult.result = point(boardSize / 2, boardSize / 2);
@@ -239,24 +230,9 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	}
 	nodeCount++;
 
-
-	if (level == 0 || level == 1) {
-		if (extend < currentLevel) {
-			int value = getScoreValue(color, aiColor, isWeak);
-			if (value > alpha && value < beta) {
-				comboResult comboResult = kill(color, currentLevel, searchStartTime + timeOut);
-				if (comboResult.canWin) {
-					return MAX_VALUE;
-				}
-				level += 2;
-				extend += 2;
-			}
-		}
-	}
-
 	//叶子分数计算
 	if (level == 0) {
-		return getScoreValue(color, aiColor, isWeak);
+		return getScoreValue(color, aiColor);
 	}
 
 	//获取扩展节点
