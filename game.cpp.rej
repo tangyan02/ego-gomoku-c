@@ -1,12 +1,14 @@
 diff a/game.cpp b/game.cpp	(rejected hunks)
-@@ -138,6 +138,10 @@
- 		return value;
- 	}
- 
-+	//��������
-+	points neighbors = getNeighbor();
-+	analyzeData data = getAnalyzeData(color, neighbors);
-+
- 	//Ҷ�ӷ�������
- 	if (level <= 0) {
- 		int value = getScoreValue();
+@@ -276,7 +276,11 @@
+ 	points* extremePoints = PointsFactory::createDfsTempPoints(level);
+ 	for (int i = 0; i < neighbors->count; i++) {
+ 		point p = point(neighbors->list[i].x, neighbors->list[i].y);
+-
++		
++		if (isPatternSleepyFour) {
++			level += 2;
++			extend += 2;
++		}
+ 		move(p.x, p.y, color);
+ 		int value;
+ 		//�Ȳ�ذܱ�

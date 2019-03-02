@@ -7,7 +7,7 @@
 
 extern int boardSize;
 
-static int score[512];
+static int scoreList[512];
 
 static int directX[] = { 0, 1, 1, 1 };
 
@@ -19,7 +19,8 @@ extern int whitePattern[20][20][4];
 extern int blackPatternCountInNull[10];
 extern int whitePatternCountInNull[10];
 
-int levelScore[10] = { 0, 100000,10000,100,100,50,50,20,2,1 };
+extern int score[10];
+
 
 extern Color ** map;
 
@@ -27,9 +28,9 @@ int getScore(int x, int y, Color color) {
 	int value = 0;
 	for (int k = 0; k < 4; k++) {
 		if (color == BLACK)
-			value += levelScore[blackPattern[x][y][k]];
+			value += score[blackPattern[x][y][k]];
 		if (color == WHITE)
-			value += levelScore[whitePattern[x][y][k]];
+			value += score[whitePattern[x][y][k]];
 	}
 	return value;
 }
@@ -69,9 +70,9 @@ void selectAndSortPoints(points *neighbors, Color color) {
 
 	//ÅÅÐò
 	for (int i = 0; i < neighbors->count; i++) {
-		score[i] = getScore(neighbors->list[i].x, neighbors->list[i].y, color);
+		scoreList[i] = getScore(neighbors->list[i].x, neighbors->list[i].y, color);
 	}
-	qsort(neighbors, score, 0, neighbors->count - 1);
+	qsort(neighbors, scoreList, 0, neighbors->count - 1);
 
 }
 

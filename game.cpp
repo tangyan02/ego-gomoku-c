@@ -195,11 +195,12 @@ gameResult search(Color aiColor, Color** map)
 		return gameResult;
 	}
 
-	//得分迭代搜索
+	//算杀
 	if (tryComboSearchIteration(neighbors, aiColor, &gameResult)) {
 		return gameResult;
 	}
 
+	//得分迭代搜索
 	tryScoreSearchIteration(neighbors, aiColor, &gameResult);
 
 	return gameResult;
@@ -230,18 +231,42 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	}
 	nodeCount++;
 
-	//叶子分数计算
-	if (level == 0) {
-		return getScoreValue(color, aiColor);
+	if (level <= 1) 
+	{
+		int value = getScoreValue(color, aiColor);
+		
+		/*
+		if (value > alpha && value < beta) {
+			comboResult result = kill(color, currentLevel + 1, getSystemTime() + 1000);
+			if (result.canWin) {
+				return MAX_VALUE;
+			}
+		}
+		*/
+
+		//延伸
+		
+		if (value < beta && value > alpha && extend < currentLevel) {
+			level += 2;
+			extend += 2;
+		}
+		
+
+		//叶子分数计算
+		if (level == 0) {
+			//int value = getScoreValue(color, aiColor);
+			return value;
+		}
+	}
+
+	if (canWinCheck(color)) {
+		return MAX_VALUE;
 	}
 
 	//获取扩展节点
 	points* neighbors = PointsFactory::createPointNeighborPoints(level, extend);
 	fillNeighbor(neighbors);
 
-	if (canWinCheck(color)) {
-		return MAX_VALUE;
-	}
 
 	//排序
 	selectAndSortPoints(neighbors, color);

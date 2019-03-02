@@ -12,7 +12,7 @@ extern int boardSize;
 
 extern Color** map;
 
-int score[10] = { 0, 100000, 10000, 80, 90, 40, 50, 20, 35, 10 };
+int score[10] = { 0, 100000, 10000, 80, 90, 40, 50, 20, 25, 10 };
 
 int getScoreValue(Color color, Color aiColor) {
 	int result = 0;
