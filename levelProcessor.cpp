@@ -35,7 +35,7 @@ int getScore(int x, int y, Color color) {
 	return value;
 }
 
-void qsort(points *neighbors, int score[], int l, int r) {
+void qsort(point *list, int score[], int l, int r) {
 	int x = l;
 	int y = r;
 	int mid = score[(x + y) / 2];
@@ -46,15 +46,15 @@ void qsort(points *neighbors, int score[], int l, int r) {
 			int t = score[x];
 			score[x] = score[y];
 			score[y] = t;
-			point p = neighbors->list[x];
-			neighbors->list[x] = neighbors->list[y];
-			neighbors->list[y] = p;
+			point p = list[x];
+			list[x] = list[y];
+			list[y] = p;
 			x++;
 			y--;
 		}
 	}
-	if (x < r) qsort(neighbors, score, x, r);
-	if (l < y) qsort(neighbors, score, l, y);
+	if (x < r) qsort(list, score, x, r);
+	if (l < y) qsort(list, score, l, y);
 }
 
 void selectAndSortPoints(points *neighbors, Color color) {
@@ -69,10 +69,11 @@ void selectAndSortPoints(points *neighbors, Color color) {
 		return;
 
 	//ÅÅĞò
+	point* list = neighbors->list;
 	for (int i = 0; i < neighbors->count; i++) {
-		scoreList[i] = getScore(neighbors->list[i].x, neighbors->list[i].y, color);
+		scoreList[i] = getScore(list[i].x, list[i].y, color);
 	}
-	qsort(neighbors, scoreList, 0, neighbors->count - 1);
+	qsort(list, scoreList, 0, neighbors->count - 1);
 
 }
 

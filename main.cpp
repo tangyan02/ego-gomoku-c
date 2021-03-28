@@ -58,7 +58,7 @@ void caseTest() {
 
 int main()
 {
-	piskvork();
+	//piskvork();
 	//testCombo();
 	//bugTest();
 	caseTest();
