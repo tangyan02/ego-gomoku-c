@@ -8,6 +8,8 @@
 
 int **map;
 
+points moveHistory;
+
 extern int boardSize;
 
 static int directX[] = { 0, 1, 1, 1, 0, -1, -1, -1 };
@@ -45,16 +47,16 @@ void updateSide(int i, int j) {
 
 void updateNeighbor(int i, int j, bool isAdd, Color pointColor) {
 	updateSide(i, j);
-	/*
-	for (int x = i - 2; x <= i + 2; x++)
-		for (int y = j - 2; y <= j + 2; y++)
-			if (reachable(x, y)) {
-				if (i == x && j == y)
-					continue;
-				if (map[x][y] == NULL)
-					addNeighborCount(x, y, isAdd);
-			}
-	*/
+	
+	//for (int x = i - 2; x <= i + 2; x++)
+	//	for (int y = j - 2; y <= j + 2; y++)
+	//		if (reachable(x, y)) {
+	//			if (i == x && j == y)
+	//				continue;
+	//			if (map[x][y] == NULL)
+	//				addNeighborCount(x, y, isAdd);
+	//		}
+	
 	for (int k = 0; k < 8; k++) {
 		int x = i + directX[k];
 		int y = j + directY[k];
@@ -130,6 +132,7 @@ void move(int x, int y, Color color) {
 	updateLineKey(x, y);
 	updatePointPattern(x, y);
 	updateLinePatternCount(x, y);
+	moveHistory.add(point(x, y));
 }
 
 void undoMove(int x, int y, Color color) {
@@ -140,6 +143,7 @@ void undoMove(int x, int y, Color color) {
 	updateLineKey(x, y);
 	updatePointPattern(x, y);
 	updateLinePatternCount(x, y);
+	moveHistory.pop();
 }
 
 Color getColor(int x, int y)

@@ -12,6 +12,7 @@ static unsigned seed;
 extern int boardSize;
 extern int timeOut;
 extern int comboTimeOut;
+extern bool piskvorkMessageEnable;
 static bool record = false;
 
 void brain_init()
@@ -93,6 +94,7 @@ void brain_turn()
 	if (!record) {
 		printMapInMessage(map);
 	}
+	piskvorkMessageEnable = true;
 	record = true;
 	int thisTimeOut = info_time_left / 10;
 	thisTimeOut = min(info_timeout_turn, thisTimeOut);
@@ -118,7 +120,7 @@ void brain_turn()
 	if (result.value == MIN_VALUE) {
 		pipeOut("MESSAGE ¡ø¡ø¡ø");
 	}
-	pipeOut("MESSAGE ¡ð¡ñ level %d(%d) value %d (%d,%d) speed %d k (%d) ¡ñ¡ð", result.level, result.combo, result.value, p.x, p.y, result.speed, result.node);
+	pipeOut("MESSAGE :level %d(%d) value %d (%d,%d) speed %d k (%d) ", result.level, result.combo, result.value, p.x, p.y, result.speed, result.node);
 	do_mymove(p.x, p.y);
 }
 

@@ -24,6 +24,8 @@ extern int comboTimeOut;
 
 extern bool debugEnable;
 
+extern bool piskvorkMessageEnable;
+
 static int directX[] = { 0, 1, 1, 1 };
 
 static int directY[] = { 1, 1, 0, -1 };
@@ -105,7 +107,9 @@ bool tryComboSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			}
 		}
 	}
-	printf("MESSAGE lose point count %d\n", loseCount);
+	if (piskvorkMessageEnable) {
+		printf("MESSAGE lose point count %d\n", loseCount);
+	}
 	return false;
 }
 
@@ -121,7 +125,7 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 	searchStartTime = getSystemTime();
 	cacheLast.clear();
 	cache.clear();
-	for (int level = 2; level <= searchLevel; level += 2)
+	for (int level = 2; level <= searchLevel; level += 2 )
 	{
 		long long t = getSystemTime();
 		nodeCount = 0;
@@ -155,7 +159,9 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			gameResult->node = nodeCount;
 			gameResult->value = value;
 			gameResult->level = level;
-			printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, cost %lld ms\n", level, value, gameResult->result.x, gameResult->result.y, speed, getSystemTime() - t);
+			if (piskvorkMessageEnable) {
+				printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, cost %lld ms\n", level, value, gameResult->result.x, gameResult->result.y, speed, getSystemTime() - t);
+			}
 			if (debugEnable) {
 				printMapWithStar(getMap(), currentPointResult);
 			}
@@ -235,17 +241,16 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	{
 		int value = getScoreValue(color, aiColor);
 		
-		/*
-		if (value > alpha && value < beta) {
-			comboResult result = kill(color, currentLevel + 1, getSystemTime() + 1000);
+	
+		/*if (value > alpha && value < beta) {
+			comboResult result = kill(color, 5, getSystemTime() + 100);
 			if (result.canWin) {
 				return MAX_VALUE;
 			}
-		}
-		*/
+		}*/
 
 		//ÑÓÉì
-		
+
 		if (value < beta && value > alpha && extend < currentLevel) {
 			level += 2;
 			extend += 2;
@@ -330,11 +335,19 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		}
 	}
 
-	point extremePoint = extremePoints->list[rand() % extremePoints->count];
-	if (level == currentLevel && extend == 0) {
-		currentPointResult = point(extremePoint.x, extremePoint.y);
+	if (extremePoints->count > 0) {
+		point extremePoint = extremePoints->list[rand() % extremePoints->count];
+		if (level == currentLevel && extend == 0) {
+			currentPointResult = point(extremePoint.x, extremePoint.y);
+		}
+		cache[getMapHashCode()] = extremePoint;
+	}
+	else {
+		point extremePoint = neighbors->list[0];
+		if (level == currentLevel && extend == 0) {
+			currentPointResult = point(extremePoint.x, extremePoint.y);
+		}
 	}
 
-	cache[getMapHashCode()] = extremePoint;
 	return extreme;
 }

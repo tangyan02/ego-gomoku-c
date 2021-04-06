@@ -19,6 +19,8 @@ bool debugEnable = false;
 
 bool moreAnalyze = false;
 
+bool piskvorkMessageEnable = false;
+
 Color getOtherColor(Color color)
 {
 	if (color == 1 || color == 2)

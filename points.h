@@ -14,6 +14,7 @@ public:
 	~points();
 	void add(point p);
 	void addMany(points *ps);
+	void pop();
 	void clear();
 	bool contains(int x, int y);
 };

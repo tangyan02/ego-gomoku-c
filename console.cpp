@@ -97,3 +97,30 @@ void printMapWithStar(Color ** map, point p)
 	printMap(map);
 	map[p.x][p.y] = NULL;
 }
+
+void printPlayers(vector<player>& players)
+{
+	printf("players:\n");
+	for (int i = 0; i < players.size(); i++) {
+		printf("version:%d sigma:%d score:", players[i].version, players[i].sigma);
+		for (int j = 0; j < 10; j++) {
+			printf("%d ", players[i].score[j]);
+		}
+		printf("\n");
+	}
+}
+
+void printGroupResult(int winCount[], vector<player>& players)
+{
+	printf("===========\n");
+	printf("group result:\n");
+	for (int i = 0; i < players.size(); i++) {
+		printf("%d: %d", players[i].version, winCount[i]);
+		printf(" sigma:%d",players[i].sigma);
+		printf(" scoore:");
+		for (int j = 0; j < 10; j++) {
+			printf("%d ", players[i].score[j]);
+		}
+		printf("\n");
+	}
+}

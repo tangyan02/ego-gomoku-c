@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -173,7 +173,9 @@
     <Text Include="input007.txt" />
     <Text Include="input008.txt" />
     <Text Include="License" />
+    <Text Include="openings.txt" />
     <Text Include="patternRecorder.txt" />
+    <Text Include="players.txt" />
     <Text Include="ReadMe.txt" />
     <Text Include="README.md" />
   </ItemGroup>
@@ -186,10 +188,12 @@
     <ClInclude Include="game.h" />
     <ClInclude Include="gameMap.h" />
     <ClInclude Include="io.h" />
+    <ClInclude Include="learn.h" />
     <ClInclude Include="levelProcessor.h" />
     <ClInclude Include="pattern.h" />
     <ClInclude Include="patternRecorder.h" />
     <ClInclude Include="pisqpipe.h" />
+    <ClInclude Include="player.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="pointHash.h" />
     <ClInclude Include="points.h" />
@@ -209,12 +213,14 @@
     <ClCompile Include="example.cpp" />
     <ClCompile Include="gameMap.cpp" />
     <ClCompile Include="io.cpp" />
+    <ClCompile Include="learn.cpp" />
     <ClCompile Include="levelProcessor.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="pattern.cpp" />
     <ClCompile Include="patternRecorder.cpp" />
     <ClCompile Include="pisqpipe.cpp" />
+    <ClCompile Include="player.cpp" />
     <ClCompile Include="point.cpp" />
     <ClCompile Include="pointHash.cpp" />
     <ClCompile Include="points.cpp" />
@@ -227,6 +233,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="winChecker.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

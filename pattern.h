@@ -21,5 +21,7 @@ void initPattern();
 
 int getLineKey(int line[]);
 
+void setBaseScore(int score[], int k);
+
 void testPattern();
 

@@ -10,6 +10,9 @@ extern int whitePattern[20][20][4];
 
 extern int boardSize;
 
+extern int blackPatternTotalScore;
+extern int whitePatternTotalScore;
+
 extern Color** map;
 
 int score[10] = { 0, 100000, 10000, 80, 90, 40, 50, 20, 25, 10 };
@@ -17,22 +20,36 @@ int score[10] = { 0, 100000, 10000, 80, 90, 40, 50, 20, 25, 10 };
 int getScoreValue(Color color, Color aiColor) {
 	int result = 0;
 	if (color == WHITE) {
-		for (int i = 1; i < 10; i++) {
-			result += score[i] * whitePatternCount[i];
-			result -= score[i] * blackPatternCount[i];
-		}
+		return whitePatternTotalScore - blackPatternTotalScore;
 	}
 	if (color == BLACK) {
-		for (int i = 1; i < 10; i++) {
-			result -= score[i] * whitePatternCount[i];
-			result += score[i] * blackPatternCount[i];
-		}
+		return blackPatternTotalScore - whitePatternTotalScore;
 	}
 	if (color != aiColor) {
 		result = -result;
 	}
 	return result;
 }
+
+//int getScoreValue(Color color, Color aiColor) {
+//	int result = 0;
+//	if (color == WHITE) {
+//		for (int i = 1; i < 10; i++) {
+//			result += score[i] * whitePatternCount[i];
+//			result -= score[i] * blackPatternCount[i];
+//		}
+//	}
+//	if (color == BLACK) {
+//		for (int i = 1; i < 10; i++) {
+//			result -= score[i] * whitePatternCount[i];
+//			result += score[i] * blackPatternCount[i];
+//		}
+//	}
+//	if (color != aiColor) {
+//		result = -result;
+//	}
+//	return result;
+//}
 
 /***************************²âÊÔ´úÂë·Ö¸ô***********************************/
 

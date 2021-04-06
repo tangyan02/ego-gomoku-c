@@ -25,6 +25,11 @@ void points::addMany(points *ps)
 	}
 }
 
+void points::pop()
+{
+	count--;
+}
+
 void points::clear()
 {
 	count = 0;
