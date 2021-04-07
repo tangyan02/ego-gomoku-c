@@ -56,13 +56,13 @@ void caseTest() {
 	debugEnable = true;
 	comboTimeOut = 3000;
 	Color ** map = readMap("input008.txt");
-	gameResult result = search(BLACK, map);
+	gameResult result = search(WHITE, map);
 	printMapWithStar(map, result.result);
 }
 
 int main()
 {
-	piskvork();
+	//piskvork();
 	//testCombo();
 	//bugTest();
 	caseTest();
