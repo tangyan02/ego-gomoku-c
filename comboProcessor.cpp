@@ -29,7 +29,7 @@ bool returnWinValue(int level, point p) {
 	return true;
 }
 
-void selectAttack(points* neighbor, Color color, int comboType) {
+void selectAttack(points* neighbor, Color color, int& comboType) {
 	tryFiveAttack(getOtherColor(color), neighbor);
 	if (comboType == COMBO_FOUR) {
 		if (tryFourAttack(color, neighbor)) {
@@ -37,6 +37,16 @@ void selectAttack(points* neighbor, Color color, int comboType) {
 		}
 	}
 	if (comboType == COMBO_THREE) {
+
+		if (tryFourAttack(getOtherColor(color), neighbor)) {
+			//米字路线有两个以上对面的进攻4的点，放弃3连, 转化4连
+			if (neighbor->count > 1) {
+				comboType = COMBO_FOUR;
+				selectAttack(neighbor, color, comboType);
+				return;
+			}
+		}
+
 		if (tryThreeOrFourAttack(color, neighbor)) {
 			return;
 		}
@@ -218,7 +228,7 @@ static void init() {
 static void testSelectAttack() {
 	points* ps = PointsFactory::createComboNeighborPoints(0);
 	fillNeighbor(ps);
-	selectAttack(ps, BLACK, COMBO_THREE);
+	//selectAttack(ps, BLACK, COMBO_THREE);
 	printMapWithStars(map, *ps);
 }
 
