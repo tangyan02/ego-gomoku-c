@@ -19,3 +19,5 @@ void printPatternAnalyzeInMessage();
 void updateLineKey(int x, int y);
 
 void initPatternRecord();
+
+bool existPattern(Color color, int patternCode);

@@ -235,6 +235,17 @@ void initPatternRecord() {
 		}
 }
 
+bool existPattern(Color color, int patternCode)
+{
+	if (color == BLACK) {
+		return blackPatternCount[patternCode] > 0;
+	}
+	if (color == WHITE) {
+		return whitePatternCount[patternCode] > 0;
+	}
+	return false;
+}
+
 /***************************** ²âÊÔ´úÂë·Ö¸ô ***************************************/
 
 static void printKey(int key) {
