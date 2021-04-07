@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "pisqpipe.h"
+
+
+#ifdef _WIN32
 #include <windows.h>
 #include "game.h"
 #include "io.h"
@@ -12,7 +15,9 @@ static unsigned seed;
 extern int boardSize;
 extern int timeOut;
 extern int comboTimeOut;
-extern bool piskvorkMessageEnable;
+extern bool piskvorkMessageEnable; 
+extern bool comboEnable;
+
 static bool record = false;
 
 void brain_init()
@@ -96,6 +101,7 @@ void brain_turn()
 	}
 	piskvorkMessageEnable = true;
 	record = true;
+	comboEnable = true;
 	int thisTimeOut = info_time_left / 10;
 	thisTimeOut = min(info_timeout_turn, thisTimeOut);
 	int pointCount = 0;
@@ -146,3 +152,6 @@ void brain_eval(int x, int y)
 }
 
 #endif
+
+
+#endif //_WIN32

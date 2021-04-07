@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "score.h"
-#include "gamemap.h"
+#include "gameMap.h"
 
 extern int blackPatternCount[10];
 extern int whitePatternCount[10];

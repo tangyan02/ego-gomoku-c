@@ -45,7 +45,7 @@ Color nextColorForOpennings(Color** map) {
 
 Color** readMapFromOpennings(int lineNum, Color** map) {
 	FILE* fp;
-	fopen_s(&fp, "openings.txt", "r");
+	fp = fopen("./openings.txt", "r");
 	char line[1024] = "";
 	char* p=line;
 	for (int i = 0; i < lineNum; i++)
@@ -65,7 +65,7 @@ Color** readMapFromOpennings(int lineNum, Color** map) {
 	while (true)
 	{
 		int x, y;
-		int result = sscanf_s(p, "%d, %d,", &x, &y);
+		int result = sscanf(p, "%d, %d,", &x, &y);
 		x += 10;
 		y += 10;
 		map[x][y] = color;
@@ -128,10 +128,6 @@ Color ** readMap(char * path)
 			if (c == 'x')
 				map[i][j] = BLACK;
 			if (c == 'o')
-				map[i][j] = WHITE;
-			if (c == '¡Á')
-				map[i][j] = BLACK;
-			if (c == '¡ñ')
 				map[i][j] = WHITE;
 		}
 		i++;

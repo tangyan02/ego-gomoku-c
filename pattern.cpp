@@ -8,7 +8,7 @@ static int directY[] = { 1, 1, 0, -1 };
 int patternLib[PATTERN_SIZE] = { PATTERN_NULL };
 int patternScore[PATTERN_SIZE] = { PATTERN_NULL };
 
-static int baseScore[10] = { 0, 100000, 10000,43, 51, 24 ,22, 11, 14 ,7 };
+static int baseScore[10] = { 0, 100000, 10000,43 ,49, 21, 24, 10 ,12, 4 };
 static int sigma = 2;
 
 static bool inited = false;

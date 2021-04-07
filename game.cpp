@@ -242,12 +242,12 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		int value = getScoreValue(color, aiColor);
 		
 	
-		/*if (value > alpha && value < beta) {
+		if (value > alpha && value < beta) {
 			comboResult result = kill(color, 5, getSystemTime() + 100);
 			if (result.canWin) {
 				return MAX_VALUE;
 			}
-		}*/
+		}
 
 		//ÑÓÉì
 

@@ -2,7 +2,7 @@
 
 #include "learn.h"
 #include "console.h"
-#include "gamemap.h"
+#include "gameMap.h"
 #include "io.h"
 #include "game.h"
 #include "score.h"
@@ -30,6 +30,8 @@ static int groupCurrentPlayCount;
 
 extern int comboLevel;
 
+extern bool comboEnable;
+
 static int baseScore[10] = { 0, 100000, 10000, 40, 50, 20, 25, 10, 12, 5 };
 
 
@@ -38,8 +40,8 @@ static bool oneTurn(player player, Color** map) {
 	gameResult result = search(player.color, map);
 	point p = result.result;
 	map[p.x][p.y] = player.color;
-	system("cls");
-	printMap(map);
+	//system("cls");
+	//printMap(map);
 	if (win(map)) {
 		return true;
 	}
@@ -48,15 +50,15 @@ static bool oneTurn(player player, Color** map) {
 
 static void recordPlayers(vector<player>& players,int count, int maxVersion) {
 	FILE* fp;
-	fopen_s(&fp, "players.txt", "w");
+	fp = fopen("./players.txt", "w");
 	
-	fprintf_s(fp, "version:%d\ngameCounts:%d\nlastPlayers:%d\n", maxVersion, count, players.size());
+	fprintf(fp, "version:%d\ngameCounts:%d\nlastPlayers:%d\n", maxVersion, count, players.size());
 	
 	for (int i = 0; i < players.size(); i++) {
-		fprintf_s(fp, "%d %d\n", players[i].version, players[i].sigma);
+		fprintf(fp, "%d %d\n", players[i].version, players[i].sigma);
 		for (int j = 0; j < 10; j++)
-			fprintf_s(fp, "%d ", players[i].score[j]);
-		fprintf_s(fp, "\n");
+			fprintf(fp, "%d ", players[i].score[j]);
+		fprintf(fp, "\n");
 	}
 	fclose(fp);
 }
@@ -65,10 +67,13 @@ static int selfPlay(player p1, player p2, Color** map)
 {
 	boardSize = 20;
 	debugEnable = false;
+	comboEnable = false;
 
 	timeOut = 1000;
 	comboTimeOut = 0;
 	comboLevel = 0;
+
+	printf("%d/%d player1:%d %s  vs  player2:%d %s ", groupCurrentPlayCount, groupPlayCount, p1.version, getCharOfColor(p1.color), p2.version, getCharOfColor(p2.color));
 
 	bool p1Trun = true;
 	while(true){
@@ -78,7 +83,9 @@ static int selfPlay(player p1, player p2, Color** map)
 		} else {
 			finish = oneTurn(p2, map);
 		}
-		printf("player1:%d  vs  player2:%d   %d/%d \n", p1.version, p2.version, groupCurrentPlayCount, groupPlayCount);
+
+		//printf("player1:%d  vs  player2:%d   %d/%d \n", p1.version, p2.version, groupCurrentPlayCount, groupPlayCount);
+
 		if (finish) {
 			break;
 		}
@@ -86,12 +93,11 @@ static int selfPlay(player p1, player p2, Color** map)
 	}
 
 	groupCurrentPlayCount++;
-	printf("game over\n");
 	if (p1Trun) {
-		printf("winner %d\n", p1.version);
+		printf("winner: %d\n", p1.version);
 		return p1.id;
 	} else {
-		printf("winner %d\n", p2.version);
+		printf("winner: %d\n", p2.version);
 		return p2.id;
 	}
 	return -1;
@@ -153,7 +159,7 @@ static void breed(vector<player>& players, int& maxVersion) {
 		players.push_back(child);
 	}
 
-	for (int i = 0; i < size; i++) {
+	for (int i = 0; i < size/4; i++) {
 		player child = copy(players[i], maxVersion);
 		accident(child);
 		players.push_back(child);
@@ -225,42 +231,44 @@ static vector<player> groupPlay(vector<player> &players, int n, int openings) {
 
 
 void selfLearn() {
-	unsigned seed;  // Random generator seed
-	seed = time(0);
-	srand(seed);
+	while (true) {
+		unsigned seed;  // Random generator seed
+		seed = time(0);
+		srand(seed);
 
-	boardSize = 20;
-	FILE* fp;
-	fopen_s(&fp, "players.txt", "r");
+		boardSize = 20;
+		FILE* fp;
+		fp = fopen("players.txt", "r");
 
-	vector<player> players;
-	int n,count, version;
-	fscanf_s(fp, "version:%d gameCounts:%d lastPlayers:%d", &version, &count, &n);
-	for (int i = 0; i < n; i++) {
-		player p;
+		vector<player> players;
+		int n, count, version;
+		fscanf (fp, "version:%d gameCounts:%d lastPlayers:%d", &version, &count, &n);
+		for (int i = 0; i < n; i++) {
+			player p;
 
-		fscanf_s(fp, "%d %d",&p.version, &p.sigma);
-		for (int j = 0; j < 10; j++) {
-			fscanf_s(fp, "%d", &p.score[j]);
+			fscanf (fp, "%d %d", &p.version, &p.sigma);
+			for (int j = 0; j < 10; j++) {
+				fscanf (fp, "%d", &p.score[j]);
+			}
+			players.push_back(p);
 		}
-		players.push_back(p);
+		fclose(fp);
+
+		breed(players, version);
+
+		printf ("version:%d gamesCount:%d\n", version, count);
+		printPlayers(players);
+
+		printf ("start...\n");
+
+		int openings = 2;
+		groupPlayCount = players.size() * (players.size() - 1) * openings;
+		groupCurrentPlayCount = 0;
+		vector<player> lastPlaters = groupPlay(players, n, openings);
+		count += groupPlayCount;
+		recordPlayers(lastPlaters, count, version);
+		printf("submit result finish\n");
 	}
-	fclose(fp);
-
-	breed(players, version);
-
-	printPlayers(players);
-	
-	printf_s("any press to start...");
-	getchar();
-
-	int openings = 2;
-	groupPlayCount = players.size()*(players.size()-1)*openings;
-	groupCurrentPlayCount = 0;
-    vector<player> lastPlaters = groupPlay(players, n, openings);
-	count += groupPlayCount;
-	recordPlayers(lastPlaters, count, version);
-	printf("submit result finish\n");
 }
 
 //////////////////////////////////////////////

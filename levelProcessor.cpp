@@ -5,6 +5,7 @@
 #include "PointsFactory.h"
 #include "analyzer.h"
 
+
 extern int boardSize;
 
 static int scoreList[512];

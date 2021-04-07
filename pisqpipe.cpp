@@ -2,7 +2,11 @@
 /** don't modify this file */
 
 #include "stdafx.h"
+
+#ifdef _WIN32
 #include <windows.h>
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -264,3 +268,7 @@ int piskvork()
 		do_command();
 	}
 }
+
+
+
+#endif // _WIN32

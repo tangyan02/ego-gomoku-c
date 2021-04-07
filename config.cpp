@@ -21,6 +21,8 @@ bool moreAnalyze = false;
 
 bool piskvorkMessageEnable = false;
 
+bool comboEnable = true;
+
 Color getOtherColor(Color color)
 {
 	if (color == 1 || color == 2)

@@ -12,6 +12,8 @@ extern int whitePattern[20][20][4];
 extern int blackPatternCountInNull[10];
 extern int whitePatternCountInNull[10];
 
+extern bool comboEnable;
+
 static comboResult processorResult;
 
 static int currentLevel;
@@ -60,6 +62,10 @@ void selectDefence(points* neighbor, Color color, int comboType) {
 }
 
 static bool killDfs(int level, Color color, Color aiColor, point lastPoint, point lastLastPoint, int comboType) {
+	if (!comboEnable) {
+		return false;
+	}
+
 	if (getSystemTime() > currentTargetTime) {
 		return false;
 	}

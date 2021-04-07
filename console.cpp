@@ -55,13 +55,13 @@ void printMap(Color ** map)
 		for (int j = 0; j < boardSize; j++)
 		{
 			if (map[i][j] == BLACK)
-				cout << "¡ð";
+				cout << "x";
 			if (map[i][j] == WHITE)
-				cout << "¡ñ";
+				cout << "o";
 			if (map[i][j] == STAR)
-				cout << "¡ï";
+				cout << "*";
 			if (map[i][j] == NULL)
-				cout << "¡¤";
+				cout << ".";
 		}
 		cout << endl;
 	}
@@ -123,4 +123,15 @@ void printGroupResult(int winCount[], vector<player>& players)
 		}
 		printf("\n");
 	}
+}
+
+string getCharOfColor(Color color)
+{
+	if (color == BLACK) {
+		return "x";
+	}
+	if (color == WHITE) {
+		return "o";
+	}
+	return "?";
 }
