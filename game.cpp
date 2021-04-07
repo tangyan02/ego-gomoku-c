@@ -243,7 +243,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		
 	
 		if (value > alpha && value < beta) {
-			comboResult result = kill(color, 5, getSystemTime() + 100);
+			comboResult result = kill(color, currentLevel, getSystemTime() + 500);
 			if (result.canWin) {
 				return MAX_VALUE;
 			}
