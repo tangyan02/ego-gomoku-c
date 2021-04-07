@@ -45,7 +45,7 @@ Color nextColorForOpennings(Color** map) {
 
 Color** readMapFromOpennings(int lineNum, Color** map) {
 	FILE* fp;
-	fopen_s(&fp, "openings.txt", "r");
+	fp = fopen( "openings.txt", "r");
 	char line[1024] = "";
 	char* p=line;
 	for (int i = 0; i < lineNum; i++)
@@ -54,7 +54,7 @@ Color** readMapFromOpennings(int lineNum, Color** map) {
 	}
 	fclose(fp);
 
-	//ÊÖ¶¯¼Ó¸ö,Ê¹¸ñÊ½Ò»ÖÂ
+	//ï¿½Ö¶ï¿½ï¿½Ó¸ï¿½,Ê¹ï¿½ï¿½Ê½Ò»ï¿½ï¿½
 	line[strlen(line)] = ',';
 
 	for (int i = 0; i < boardSize; i++)
@@ -65,13 +65,13 @@ Color** readMapFromOpennings(int lineNum, Color** map) {
 	while (true)
 	{
 		int x, y;
-		int result = sscanf_s(p, "%d, %d,", &x, &y);
+		int result = sscanf(p, "%d, %d,", &x, &y);
 		x += 10;
 		y += 10;
 		map[x][y] = color;
 		color = getOtherColor(color);
 
-		//Ôö¼ÓÆ«ÒÆÁ¿
+		//ï¿½ï¿½ï¿½ï¿½Æ«ï¿½ï¿½ï¿½ï¿½
 		bool isBreak = false;
 		while (*p != ',') {
 			p++;
@@ -128,10 +128,6 @@ Color ** readMap(char * path)
 			if (c == 'x')
 				map[i][j] = BLACK;
 			if (c == 'o')
-				map[i][j] = WHITE;
-			if (c == '¡Á')
-				map[i][j] = BLACK;
-			if (c == '¡ñ')
 				map[i][j] = WHITE;
 		}
 		i++;

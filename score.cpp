@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "score.h"
-#include "gamemap.h"
+#include "gameMap.h"
 
 extern int blackPatternCount[10];
 extern int whitePatternCount[10];
@@ -51,7 +51,7 @@ int getScoreValue(Color color, Color aiColor) {
 //	return result;
 //}
 
-/***************************²âÊÔ´úÂë·Ö¸ô***********************************/
+/***************************ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Ö¸ï¿½***********************************/
 
 int getValueByPattern(Color color) {
 	int result = 0;

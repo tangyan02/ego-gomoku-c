@@ -2,7 +2,7 @@
 
 #include "learn.h"
 #include "console.h"
-#include "gamemap.h"
+#include "gameMap.h"
 #include "io.h"
 #include "game.h"
 #include "score.h"
@@ -48,15 +48,15 @@ static bool oneTurn(player player, Color** map) {
 
 static void recordPlayers(vector<player>& players,int count, int maxVersion) {
 	FILE* fp;
-	fopen_s(&fp, "players.txt", "w");
+	fp = fopen("./players.txt", "w");
 	
-	fprintf_s(fp, "version:%d\ngameCounts:%d\nlastPlayers:%d\n", maxVersion, count, players.size());
+	fprintf(fp, "version:%d\ngameCounts:%d\nlastPlayers:%d\n", maxVersion, count, players.size());
 	
 	for (int i = 0; i < players.size(); i++) {
-		fprintf_s(fp, "%d %d\n", players[i].version, players[i].sigma);
+		fprintf(fp, "%d %d\n", players[i].version, players[i].sigma);
 		for (int j = 0; j < 10; j++)
-			fprintf_s(fp, "%d ", players[i].score[j]);
-		fprintf_s(fp, "\n");
+			fprintf(fp, "%d ", players[i].score[j]);
+		fprintf(fp, "\n");
 	}
 	fclose(fp);
 }
@@ -201,7 +201,7 @@ static vector<player> groupPlay(vector<player> &players, int n, int openings) {
 				}
 			}
 
-	//ÅÅÐò
+	//ï¿½ï¿½ï¿½ï¿½
 	for (int i = 0; i < players.size(); i++)
 		for (int j = i + 1; j < players.size(); j++)
 			if (winCount[i] < winCount[j]) {
@@ -231,17 +231,17 @@ void selfLearn() {
 
 	boardSize = 20;
 	FILE* fp;
-	fopen_s(&fp, "players.txt", "r");
+	fp = fopen("./players.txt", "r");
 
 	vector<player> players;
 	int n,count, version;
-	fscanf_s(fp, "version:%d gameCounts:%d lastPlayers:%d", &version, &count, &n);
+	fscanf(fp, "version:%d gameCounts:%d lastPlayers:%d", &version, &count, &n);
 	for (int i = 0; i < n; i++) {
 		player p;
 
-		fscanf_s(fp, "%d %d",&p.version, &p.sigma);
+		fscanf(fp, "%d %d",&p.version, &p.sigma);
 		for (int j = 0; j < 10; j++) {
-			fscanf_s(fp, "%d", &p.score[j]);
+			fscanf(fp, "%d", &p.score[j]);
 		}
 		players.push_back(p);
 	}
@@ -251,7 +251,7 @@ void selfLearn() {
 
 	printPlayers(players);
 	
-	printf_s("any press to start...");
+	printf("any press to start...");
 	getchar();
 
 	int openings = 2;

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "console.h"
-#include "gamemap.h"
+#include "gameMap.h"
 #include "io.h"
 #include "game.h"
 #include "score.h"
@@ -62,7 +62,7 @@ void caseTest() {
 
 int main()
 {
-	piskvork();
+	//piskvork();
 	//testCombo();
 	//bugTest();
 	//caseTest();
