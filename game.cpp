@@ -238,15 +238,17 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	nodeCount++;
 
 	int value = getScoreValue(color, aiColor);
-	if (value > alpha && value < beta) {
-		comboResult result = kill(color, currentLevel, getSystemTime() + 100);
-		if (result.canWin) {
-			return MAX_VALUE;
-		}
-	}
 
 	if (level <= 1) 
 	{
+
+		if (value > alpha && value < beta) {
+			comboResult result = kill(color, currentLevel, getSystemTime() + 100);
+			if (result.canWin) {
+				return MAX_VALUE;
+			}
+		}
+
 		//ÑÓÉì
 		if (value < beta && value > alpha && extend < currentLevel) {
 			level += 2;

@@ -1,5 +1,9 @@
 #include "stdafx.h"
 
+#define PLAY_DRAW 0
+#define PLAY_WIN 1
+#define PLAY_NOT_FINISH 2
+
 #include "learn.h"
 #include "console.h"
 #include "gameMap.h"
@@ -34,7 +38,11 @@ extern bool comboEnable;
 
 static int openings;
 
-static bool oneTurn(player player, Color** map) {
+static int oneTurn(player player, Color** map) {
+	if (mapFull(map)) {
+		return PLAY_DRAW;
+	}
+
 	setBaseScore(player.score, player.sigma);
 	gameResult result = search(player.color, map);
 	point p = result.result;
@@ -42,9 +50,9 @@ static bool oneTurn(player player, Color** map) {
 	//system("cls");
 	//printMap(map);
 	if (win(map)) {
-		return true;
+		return PLAY_WIN;
 	}
-	return false;
+	return PLAY_NOT_FINISH;
 }
 
 static void recordPlayers(vector<player>& players,int count, int maxVersion) {
@@ -67,8 +75,8 @@ static int selfPlay(player p1, player p2, Color** map)
 	printf("%d/%d player1:%d %c  vs  player2:%d %c ", groupCurrentPlayCount, groupPlayCount, p1.version, getCharOfColor(p1.color), p2.version, getCharOfColor(p2.color));
 
 	bool p1Trun = true;
+	int finish;
 	while(true){
-		bool finish = false;
 		if (p1Trun) {
 			finish = oneTurn(p1, map);
 		} else {
@@ -77,20 +85,24 @@ static int selfPlay(player p1, player p2, Color** map)
 
 		//printf("player1:%d  vs  player2:%d   %d/%d \n", p1.version, p2.version, groupCurrentPlayCount, groupPlayCount);
 
-		if (finish) {
+		if (finish == PLAY_WIN || finish == PLAY_DRAW) {
 			break;
 		}
 		p1Trun = !p1Trun;
 	}
 
 	groupCurrentPlayCount++;
-	if (p1Trun) {
-		printf("winner: %d\n", p1.version);
-		return p1.id;
-	} else {
-		printf("winner: %d\n", p2.version);
-		return p2.id;
+	if (finish != PLAY_NOT_FINISH) {
+		if (p1Trun) {
+			printf("winner: %d\n", p1.version);
+			return p1.id;
+		}
+		else {
+			printf("winner: %d\n", p2.version);
+			return p2.id;
+		}
 	}
+	printf("draw\n");
 	return -1;
 }
 
@@ -180,11 +192,19 @@ static vector<player> groupPlay(vector<player> &players, int n, int openings) {
 					players[j].color = WHITE;
 					if (players[i].color == color) {
 						int winId = selfPlay(players[i], players[j], mapTemp);
-						winCount[winId]++;
+						if (winId != -1) {
+							winCount[winId]+=2;
+						} else {
+							winCount[winId]++;
+						}
 					}
 					else {
 						int winId = selfPlay(players[j], players[i], mapTemp);
-						winCount[winId]++;
+						if (winId != -1) {
+							winCount[winId]+=2;
+						} else {
+							winCount[winId]++;
+						}
 					}
 
 					copyMap(map, mapTemp);
@@ -202,7 +222,7 @@ static vector<player> groupPlay(vector<player> &players, int n, int openings) {
 			}
 	}
 
-	//����
+	//sort
 	for (int i = 0; i < players.size(); i++)
 		for (int j = i + 1; j < players.size(); j++)
 			if (winCount[i] < winCount[j]) {

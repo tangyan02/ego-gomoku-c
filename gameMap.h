@@ -24,3 +24,5 @@ Color ** getMap();
 long long getMapHashCode();
 
 void updateHashCode(int x, int y, Color color);
+
+bool mapFull(Color** map);

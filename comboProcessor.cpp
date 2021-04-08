@@ -179,7 +179,7 @@ comboResult killVCF(Color color, int level, long long targetTime)
 	processorResult.canWin = false;
 	processorResult.isDeep = false;
 
-	//�ҷ�4��
+	//my 4 attack
 	for (int i = 3; i <= level; i++) {
 		deepLevel = level;
 		currentLevel = level;
@@ -198,7 +198,7 @@ comboResult kill(Color color, int level, long long targetTime)
 	processorResult.canWin = false;
 	processorResult.isDeep = false;
 
-	//�ҷ�4��
+	//my 4 attack
 	deepLevel = level;
 	currentLevel = level;
 	processorResult.isDeep = false;
@@ -209,7 +209,7 @@ comboResult kill(Color color, int level, long long targetTime)
 	if (processorResult.canWin) {
 		return processorResult;
 	}
-	//�Է�4��
+	//opp 4 attack
 	deepLevel = level;
 	currentLevel = level;
 	processorResult.canWin = killDfs(level, getOtherColor(color), getOtherColor(color), point(), point(), COMBO_FOUR);
@@ -219,7 +219,7 @@ comboResult kill(Color color, int level, long long targetTime)
 		return processorResult;
 	}
 
-	////�ҷ�3��
+	////my 3 attack
 	deepLevel = level;
 	currentLevel = level;
 	processorResult.isDeep = false;
@@ -233,7 +233,7 @@ comboResult kill(Color color, int level, long long targetTime)
 	return processorResult;
 }
 
-//=========================���Դ���ָ�=========================
+//=========================test=========================
 
 
 #include"io.h"

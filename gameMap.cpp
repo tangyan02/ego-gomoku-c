@@ -202,3 +202,15 @@ void updateHashCode(int x, int y, Color color)
 		}
 	}
 }
+
+bool mapFull(Color** map)
+{
+	int count = 0;
+	for (int i = 0; i < boardSize; i++)
+		for (int j = 0; j < boardSize; j++) {
+			if (map[i][j] != NULL) {
+				count++;
+			}
+		}
+	return count > 200;
+}
