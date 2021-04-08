@@ -45,7 +45,7 @@ Color nextColorForOpennings(Color** map) {
 
 Color** readMapFromOpennings(int lineNum, Color** map) {
 	FILE* fp;
-	fp = fopen("/Users/tangyan/ego-gomoku-c/ego-gomoku-c/openings.txt", "r");
+	fp = fopen("openings.txt", "r");
 	char line[2048] = "";
 	char* p=line;
 	for (int i = 0; i < lineNum; i++)
@@ -136,3 +136,8 @@ Color ** readMap(char * path)
 }
 
 
+void copyMap(Color** map, Color** toMap){
+	for (int i = 0; i < boardSize; i++)
+		for (int j = 0; j < boardSize; j++)
+			toMap[i][j] = map[i][j];
+}

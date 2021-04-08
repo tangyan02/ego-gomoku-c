@@ -51,9 +51,9 @@ static bool oneTurn(player player, Color** map) {
 static void recordPlayers(vector<player>& players,int count, int maxVersion) {
 	FILE* fp;
 	fp = fopen("./players.txt", "w");
-	
-	fprintf(fp, "version:%d\ngameCounts:%d\nlastPlayers:%d\n", maxVersion, count, players.size());
-	
+
+	fprintf(fp, "version:%d\ngameCounts:%d\nlastPlayers:%d\ntimeOut:%d\n", maxVersion, count, players.size(), timeOut);
+
 	for (int i = 0; i < players.size(); i++) {
 		fprintf(fp, "%d %d\n", players[i].version, players[i].sigma);
 		for (int j = 0; j < 10; j++)
@@ -65,14 +65,6 @@ static void recordPlayers(vector<player>& players,int count, int maxVersion) {
 
 static int selfPlay(player p1, player p2, Color** map)
 {
-	boardSize = 20;
-	debugEnable = false;
-	comboEnable = false;
-
-	timeOut = 50;
-	comboTimeOut = 0;
-	comboLevel = 0;
-
 	printf("%d/%d player1:%d %c  vs  player2:%d %c ", groupCurrentPlayCount, groupPlayCount, p1.version, getCharOfColor(p1.color), p2.version, getCharOfColor(p2.color));
 
 	bool p1Trun = true;
@@ -174,38 +166,42 @@ static vector<player> groupPlay(vector<player> &players, int n, int openings) {
 		players[i].id = i;
 		winCount[i] = 0;
 	}
-	Color** map = getEmptyMap();
+	Color ** map = getEmptyMap();
+	Color ** mapTemp = getEmptyMap();
 
-	for (int k = 1; k <= openings; k++)
+	for (int k = 1; k <= openings; k++){
+		map = readMapFromOpennings(k, map);
+
 		for (int i = 0; i < players.size(); i++)
 			for (int j = i; j < players.size(); j++) {
 				if (i != j) {
-					map = readMapFromOpennings(k, map);
-					Color color = nextColorForOpennings(map);
+					copyMap(map, mapTemp);
+					Color color = nextColorForOpennings(mapTemp);
 					players[i].color = BLACK;
 					players[j].color = WHITE;
 					if (players[i].color == color) {
-						int winId = selfPlay(players[i], players[j], map);
+						int winId = selfPlay(players[i], players[j], mapTemp);
 						winCount[winId]++;
 					}
 					else {
-						int winId = selfPlay(players[j], players[i], map);
+						int winId = selfPlay(players[j], players[i], mapTemp);
 						winCount[winId]++;
 					}
 
-					map = readMapFromOpennings(k, map);
+					copyMap(map, mapTemp);
 					players[i].color = WHITE;
 					players[j].color = BLACK;
 					if (players[i].color == color) {
-						int winId = selfPlay(players[i], players[j], map);
+						int winId = selfPlay(players[i], players[j], mapTemp);
 						winCount[winId]++;
 					}
 					else {
-						int winId = selfPlay(players[j], players[i], map);
+						int winId = selfPlay(players[j], players[i], mapTemp);
 						winCount[winId]++;
 					}
 				}
 			}
+	}
 
 	//����
 	for (int i = 0; i < players.size(); i++)
@@ -237,7 +233,6 @@ void selfLearn() {
 		seed = time(0);
 		srand(seed);
 
-		boardSize = 20;
 		FILE* fp;
 		fp = fopen("players.txt", "r");
 
@@ -247,8 +242,17 @@ void selfLearn() {
 		}
 
 		vector<player> players;
-		int n, count, version;
-		fscanf (fp, "version:%d gameCounts:%d lastPlayers:%d", &version, &count, &n);
+		int n, count, version, fileTimeOut;
+		fscanf (fp, "version:%d gameCounts:%d lastPlayers:%d timeOut:%d", &version, &count, &n, &fileTimeOut);
+		
+		boardSize = 20;
+		debugEnable = false;
+		comboEnable = false;
+
+		timeOut = fileTimeOut;
+		comboTimeOut = 0;
+		comboLevel = 0;
+
 		for (int i = 0; i < n; i++) {
 			player p;
 
@@ -262,7 +266,7 @@ void selfLearn() {
 
 		breed(players, version);
 
-		printf ("version:%d gamesCount:%d\n", version, count);
+		printf ("version:%d gamesCount:%d timeOut:%d\n", version, count, fileTimeOut);
 		printPlayers(players);
 
 		printf ("start...\n");
