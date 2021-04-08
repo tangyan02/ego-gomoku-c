@@ -2,7 +2,7 @@
 #include "io.h"
 #include <iostream>  
 #include <fstream>  
-#include <string>  
+#include <cstring>  
 
 using namespace std;
 
@@ -54,7 +54,7 @@ Color** readMapFromOpennings(int lineNum, Color** map) {
 	}
 	fclose(fp);
 
-	//手动加个,使格式一致
+	//锟街讹拷锟接革拷,使锟斤拷式一锟斤拷
 	line[strlen(line)] = ',';
 
 	for (int i = 0; i < boardSize; i++)
@@ -71,7 +71,7 @@ Color** readMapFromOpennings(int lineNum, Color** map) {
 		map[x][y] = color;
 		color = getOtherColor(color);
 
-		//增加偏移量
+		//锟斤拷锟斤拷偏锟斤拷锟斤拷
 		bool isBreak = false;
 		while (*p != ',') {
 			p++;
