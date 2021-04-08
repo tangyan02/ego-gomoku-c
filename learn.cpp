@@ -261,7 +261,7 @@ void selfLearn() {
 
 		printf ("start...\n");
 
-		int openings = 2;
+		int openings = 4;
 		groupPlayCount = players.size() * (players.size() - 1) * openings;
 		groupCurrentPlayCount = 0;
 		vector<player> lastPlaters = groupPlay(players, n, openings);
