@@ -43,6 +43,8 @@ void printMapInMessage(Color ** map)
 				cout << "*";
 			if (map[i][j] == NULL)
 				cout << ".";
+			if (map[i][j] == FLAG)
+				cout << 'F';
 		}
 		cout << endl;
 	}
@@ -62,6 +64,8 @@ void printMap(Color ** map)
 				cout << "* ";
 			if (map[i][j] == NULL)
 				cout << ". ";
+			if (map[i][j] == FLAG)
+				cout << "F ";
 		}
 		cout << endl;
 	}

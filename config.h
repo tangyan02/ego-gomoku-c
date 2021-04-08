@@ -5,6 +5,7 @@
 #define BLACK 1
 #define WHITE 2
 #define STAR 3
+#define FLAG 4
 
 #define MAX_VALUE 10000000
 #define MIN_VALUE -10000000
