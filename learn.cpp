@@ -32,8 +32,7 @@ extern int comboLevel;
 
 extern bool comboEnable;
 
-static int baseScore[10] = { 0, 100000, 10000, 40, 50, 20, 25, 10, 12, 5 };
-
+static int openings;
 
 static bool oneTurn(player player, Color** map) {
 	setBaseScore(player.score, player.sigma);
@@ -52,7 +51,7 @@ static void recordPlayers(vector<player>& players,int count, int maxVersion) {
 	FILE* fp;
 	fp = fopen("./players.txt", "w");
 
-	fprintf(fp, "version:%d\ngameCounts:%d\nlastPlayers:%d\ntimeOut:%d\n", maxVersion, count, players.size(), timeOut);
+	fprintf(fp, "version:%d\ngameCounts:%d\nlastPlayers:%d\ntimeOut:%d\nopeningNum:%d", maxVersion, count, players.size(), timeOut, openings);
 
 	for (int i = 0; i < players.size(); i++) {
 		fprintf(fp, "%d %d\n", players[i].version, players[i].sigma);
@@ -242,14 +241,15 @@ void selfLearn() {
 		}
 
 		vector<player> players;
-		int n, count, version, fileTimeOut;
-		fscanf (fp, "version:%d gameCounts:%d lastPlayers:%d timeOut:%d", &version, &count, &n, &fileTimeOut);
+		int n, count, version, fileTimeOut, openingNum;
+		fscanf (fp, "version:%d gameCounts:%d lastPlayers:%d timeOut:%d openingNum:%d", &version, &count, &n, &fileTimeOut, &openingNum);
 		
 		boardSize = 20;
 		debugEnable = false;
 		comboEnable = false;
 
 		timeOut = fileTimeOut;
+		openings = openingNum;
 		comboTimeOut = 0;
 		comboLevel = 0;
 
@@ -271,7 +271,6 @@ void selfLearn() {
 
 		printf ("start...\n");
 
-		int openings = 4;
 		groupPlayCount = players.size() * (players.size() - 1) * openings;
 		groupCurrentPlayCount = 0;
 		vector<player> lastPlaters = groupPlay(players, n, openings);
@@ -282,6 +281,8 @@ void selfLearn() {
 }
 
 //////////////////////////////////////////////
+
+static int baseScore[10] = { 0, 100000, 10000, 40, 50, 20, 25, 10, 12, 5 };
 
 void testSelfPlay()
 {
@@ -304,6 +305,7 @@ void testSelfPlay()
 
 	//selfPlay(p1, p2);
 }
+
 
 void testGroupPlay() {
 	boardSize = 20;
