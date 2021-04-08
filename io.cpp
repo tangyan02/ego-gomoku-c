@@ -45,17 +45,25 @@ Color nextColorForOpennings(Color** map) {
 
 Color** readMapFromOpennings(int lineNum, Color** map) {
 	FILE* fp;
-	fp = fopen("./openings.txt", "r");
-	char line[1024] = "";
+	fp = fopen("/Users/tangyan/ego-gomoku-c/ego-gomoku-c/openings.txt", "r");
+	char line[2048] = "";
 	char* p=line;
 	for (int i = 0; i < lineNum; i++)
 	{
-		fgets(line, 1024, fp);
+		for (int j = 0; j < 2048; j++){
+			line[j] = '\0';
+		}
+		fgets(line, 2048, fp);
 	}
 	fclose(fp);
 
 	//�ֶ��Ӹ�,ʹ��ʽһ��
-	line[strlen(line)] = ',';
+	for (int i = 0; i < 2048;i++){
+		if(line[i] == '\0') {
+			line[i] = ',';
+			break;
+		}
+	}
 
 	for (int i = 0; i < boardSize; i++)
 		for (int j = 0; j < boardSize; j++)
@@ -64,6 +72,9 @@ Color** readMapFromOpennings(int lineNum, Color** map) {
 	Color color = WHITE;
 	while (true)
 	{
+		if (p[0] == '\0') {
+			break;
+		}
 		int x, y;
 		int result = sscanf(p, "%d, %d,", &x, &y);
 		x += 10;
@@ -75,23 +86,12 @@ Color** readMapFromOpennings(int lineNum, Color** map) {
 		bool isBreak = false;
 		while (*p != ',') {
 			p++;
-			if (p - line > strlen(line)) {
-				isBreak = true;
-				break;
-			}
 		}
 		p++;
 		while (*p != ',') {
 			p++;
-			if (p - line > strlen(line)) {
-				isBreak = true;
-				break;
-			}
 		}
 		p++;
-		if (isBreak) {
-			break;
-		}
 	}
 	return map;
 }

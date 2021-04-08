@@ -69,7 +69,7 @@ static int selfPlay(player p1, player p2, Color** map)
 	debugEnable = false;
 	comboEnable = false;
 
-	timeOut = 1000;
+	timeOut = 50;
 	comboTimeOut = 0;
 	comboLevel = 0;
 
@@ -231,7 +231,7 @@ static vector<player> groupPlay(vector<player> &players, int n, int openings) {
 
 
 void selfLearn() {
-	setbuf(stdout, NULL);
+	setbuf(stdout, NULL); 
 	while (true) {
 		unsigned seed;  // Random generator seed
 		seed = time(0);
@@ -239,7 +239,12 @@ void selfLearn() {
 
 		boardSize = 20;
 		FILE* fp;
-		fp = fopen("players.txt", "r");
+		fp = fopen("/Users/tangyan/ego-gomoku-c/ego-gomoku-c/players.txt", "r");
+
+		if(fp == NULL) {
+			printf("file players.txt open error");
+			return;
+		}
 
 		vector<player> players;
 		int n, count, version;
