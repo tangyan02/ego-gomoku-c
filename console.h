@@ -25,4 +25,4 @@ void printPlayers(vector<player>& players);
 
 void printGroupResult(int winCount[], vector<player>& players);
 
-string getCharOfColor(Color color);
+char getCharOfColor(Color color);

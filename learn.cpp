@@ -73,7 +73,7 @@ static int selfPlay(player p1, player p2, Color** map)
 	comboTimeOut = 0;
 	comboLevel = 0;
 
-	printf("%d/%d player1:%d %s  vs  player2:%d %s ", groupCurrentPlayCount, groupPlayCount, p1.version, getCharOfColor(p1.color), p2.version, getCharOfColor(p2.color));
+	printf("%d/%d player1:%d %c  vs  player2:%d %c ", groupCurrentPlayCount, groupPlayCount, p1.version, getCharOfColor(p1.color), p2.version, getCharOfColor(p2.color));
 
 	bool p1Trun = true;
 	while(true){
@@ -207,7 +207,7 @@ static vector<player> groupPlay(vector<player> &players, int n, int openings) {
 				}
 			}
 
-	//ÅÅÐò
+	//ï¿½ï¿½ï¿½ï¿½
 	for (int i = 0; i < players.size(); i++)
 		for (int j = i + 1; j < players.size(); j++)
 			if (winCount[i] < winCount[j]) {

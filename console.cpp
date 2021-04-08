@@ -125,13 +125,13 @@ void printGroupResult(int winCount[], vector<player>& players)
 	}
 }
 
-string getCharOfColor(Color color)
+char getCharOfColor(Color color)
 {
 	if (color == BLACK) {
-		return "x";
+		return 'x';
 	}
 	if (color == WHITE) {
-		return "o";
+		return 'o';
 	}
-	return "?";
+	return '?';
 }
