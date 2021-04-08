@@ -231,6 +231,7 @@ static vector<player> groupPlay(vector<player> &players, int n, int openings) {
 
 
 void selfLearn() {
+	setbuf(stdout, NULL);
 	while (true) {
 		unsigned seed;  // Random generator seed
 		seed = time(0);
