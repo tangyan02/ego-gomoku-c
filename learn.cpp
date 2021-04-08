@@ -239,7 +239,7 @@ void selfLearn() {
 
 		boardSize = 20;
 		FILE* fp;
-		fp = fopen("/Users/tangyan/ego-gomoku-c/ego-gomoku-c/players.txt", "r");
+		fp = fopen("players.txt", "r");
 
 		if(fp == NULL) {
 			printf("file players.txt open error");
