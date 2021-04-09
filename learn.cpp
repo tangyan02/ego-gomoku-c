@@ -98,17 +98,19 @@ static int selfPlay(player p1, player p2, Color** map)
 	}
 
 	groupCurrentPlayCount++;
-	if (finish != PLAY_NOT_FINISH && finish != PLAY_DRAW) {
+	long long cost = getSystemTime() - startTime;
+	if (finish != PLAY_NOT_FINISH && finish != PLAY_DRAW)
+	{
 		if (p1Trun) {
-			printf("winner: %d turns:%d\n", p1.version, turnCount);
+			printf("winner: %d turns:%d cost:%ldms\n", p1.version, turnCount, cost);
 			return p1.id;
 		}
 		else {
-			printf("winner: %d turns:%d\n", p2.version, turnCount);
+			printf("winner: %d turns:%d cost:%ldms\n", p2.version, turnCount, cost);
 			return p2.id;
 		}
 	}
-	printf("draw game turns:%d cost:%ldms\n", turnCount, getSystemTime() - startTime);
+	printf("draw game turns:%d cost:%ldms\n", turnCount, cost);
 	return -1;
 }
 
