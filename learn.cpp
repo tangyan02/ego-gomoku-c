@@ -56,7 +56,7 @@ static void recordPlayers(vector<player>& players,int count, int maxVersion) {
 	FILE* fp;
 	fp = fopen("./players.txt", "w");
 
-	fprintf(fp, "version:%d\ngameCounts:%d\nlastPlayers:%d\ntimeOut:%d\nopeningNum:%d", maxVersion, count, players.size(), timeOut, openings);
+	fprintf(fp, "version:%d\ngameCounts:%d\nlastPlayers:%d\ntimeOut:%d\nopeningNum:%d\nsearchLevel:%d\n", maxVersion, count, players.size(), timeOut, openings, searchLevel);
 
 	for (int i = 0; i < players.size(); i++) {
 		fprintf(fp, "%d %d\n", players[i].version, players[i].sigma);
