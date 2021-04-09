@@ -89,11 +89,11 @@ bool tryComboSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			}
 		}
 
-		//������չ�ڵ�
+		
 		for (int i = 0; i < neighbors->count; i++) {
 			if (otherSearch[i]) {
 				point p = point(neighbors->list[i].x, neighbors->list[i].y);
-				//�Ȳ�ذܱ�
+				//lose remove
 				if (loseSet.contains(p)) {
 					continue;
 				}
@@ -120,13 +120,13 @@ bool tryComboSearchIteration(points * neighbors, Color aiColor, gameResult *game
 }
 
 bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *gameResult) {
-	//����ذܣ�����������
+	//if all lose points , normal search
 	bool loseFlag = false;
 	if (neighbors->count == loseSet.count) {
 		loseSet.reset();
 		loseFlag = true;
 	}
-	//�÷�����
+	//normal search
 	timeOutEnable = false;
 	searchStartTime = getSystemTime();
 	cacheLast.clear();
@@ -203,13 +203,13 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 gameResult search(Color aiColor, Color** map)
 {
 	gameResult gameResult;
-	//��ʼ��
+	//init 
 	initPattern();
 	clearPatternRecord();
 	initGameMap(map);
 	loseSet.reset();
 
-	//��ʼ����
+	//init neighbors
 	points* neighbors = PointsFactory::createPointNeighborPoints(0, 0);
 	fillNeighbor(neighbors);
 	selectAndSortPoints(neighbors, aiColor);
@@ -224,12 +224,12 @@ gameResult search(Color aiColor, Color** map)
 		return gameResult;
 	}
 
-	//��ɱ
+	//combo search
 	if (tryComboSearchIteration(neighbors, aiColor, &gameResult)) {
 		return gameResult;
 	}
 
-	//�÷ֵ�������
+	//normal search
 	tryScoreSearchIteration(neighbors, aiColor, &gameResult);
 
 	return gameResult;
@@ -249,7 +249,7 @@ void moveHistoryBestToFirst(points * neighbors) {
 	}
 }
 
-/* �㴰�ڲ��Է�
+/* alpha beta serach
 */
 int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) {
 	if (getSystemTime() - searchStartTime > timeOut) {
@@ -272,17 +272,19 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 
 	if (level <= 1) 
 	{
-		//����
+		// extend
 		if (value < beta && value > alpha && extend < currentLevel) {
+			extendNodeCount++;
 			level += 2;
 			extend += 2;
 			if (extend > maxExtend) {
 				maxExtend = extend;
 			}
-			extendNodeCount++;
 		}
 
-		//Ҷ�ӷ�������
+		
+
+		// leaf node get value
 		if (level == 0) {
 			//int value = getScoreValue(color, aiColor);
 			return value;
@@ -293,18 +295,18 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		return MAX_VALUE;
 	}
 
-	//��ȡ��չ�ڵ�
+	//get neighbors
 	points* neighbors = PointsFactory::createPointNeighborPoints(level, extend);
 	fillNeighbor(neighbors);
 
 
-	//����
+	//sort
 	selectAndSortPoints(neighbors, color);
 
-	//�������Žڵ�˳��
+	//user history best
 	moveHistoryBestToFirst(neighbors);
 
-	//������չ�ڵ�
+	//move and dfs
 	int extreme = MIN_VALUE;
 	points* extremePoints = PointsFactory::createDfsTempPoints(level);
 	for (int i = 0; i < neighbors->count; i++) {
@@ -312,7 +314,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 
 		move(p.x, p.y, color);
 		int value;
-		//�Ȳ�ذܱ�
+		//zero window search
 		if (level == currentLevel && extend == 0 && loseSet.contains(p)) {
 			value = MIN_VALUE;
 		}
@@ -321,7 +323,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 				value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha, extend);
 			}
 			else {
-				//�㴰�ڲ���
+				//try zero window
 				value = -dfs(level - 1, getOtherColor(color), aiColor, -alpha - 1, -alpha, extend);
 				if (value > alpha && value < beta) {
 					value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha, extend);
