@@ -94,7 +94,7 @@ void initGameMap(Color** value) {
 	bottom = 0;
 	left = boardSize - 1;
 	top = boardSize - 1;
-	//³õÊ¼»¯¹þÏ£È¨Öµ
+	//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ï£È¨Öµ
 	srand((unsigned)time(NULL));
 
 	for (int i = 0; i < boardSize; i++)
@@ -110,7 +110,7 @@ void initGameMap(Color** value) {
 		for (int j = 0; j < boardSize; j++) {
 			neighborCount[i][j] = 0;
 		}
-	//³õÊ¼»¯µØÍ¼ºÍ¹þÏ£Âë
+	//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Í¼ï¿½Í¹ï¿½Ï£ï¿½ï¿½
 	for (int i = 0; i < boardSize; i++)
 		for (int j = 0; j < boardSize; j++) {
 			Color color = map[i][j];
@@ -201,16 +201,4 @@ void updateHashCode(int x, int y, Color color)
 			hashCode ^= weightWhite[x][y];
 		}
 	}
-}
-
-bool mapFull(Color** map)
-{
-	int count = 0;
-	for (int i = 0; i < boardSize; i++)
-		for (int j = 0; j < boardSize; j++) {
-			if (map[i][j] != NULL) {
-				count++;
-			}
-		}
-	return count > 200;
 }

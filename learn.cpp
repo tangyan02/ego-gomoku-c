@@ -40,10 +40,6 @@ static int openings;
 
 
 static int oneTurn(player player, Color** map) {
-	if (mapFull(map)) {
-		return PLAY_DRAW;
-	}
-
 	setBaseScore(player.score, player.sigma);
 	gameResult result = search(player.color, map);
 	point p = result.result;
@@ -77,7 +73,9 @@ static int selfPlay(player p1, player p2, Color** map)
 
 	bool p1Trun = true;
 	int finish;
-	while(true){
+	int turnCount = 0;
+	while (true)
+	{
 		if (p1Trun) {
 			finish = oneTurn(p1, map);
 		} else {
@@ -86,6 +84,11 @@ static int selfPlay(player p1, player p2, Color** map)
 
 		//printf("player1:%d  vs  player2:%d   %d/%d \n", p1.version, p2.version, groupCurrentPlayCount, groupPlayCount);
 
+		turnCount++;
+		if (turnCount>50) {
+			finish = PLAY_DRAW;
+		}
+
 		if (finish == PLAY_WIN || finish == PLAY_DRAW) {
 			break;
 		}
@@ -93,17 +96,17 @@ static int selfPlay(player p1, player p2, Color** map)
 	}
 
 	groupCurrentPlayCount++;
-	if (finish != PLAY_NOT_FINISH) {
+	if (finish != PLAY_NOT_FINISH && finish != PLAY_DRAW) {
 		if (p1Trun) {
-			printf("winner: %d\n", p1.version);
+			printf("winner: %d turns:%d\n", p1.version, turnCount);
 			return p1.id;
 		}
 		else {
-			printf("winner: %d\n", p2.version);
+			printf("winner: %d turns:%d\n", p2.version, turnCount);
 			return p2.id;
 		}
 	}
-	printf("draw\n");
+	printf("draw game turns:%d\n", turnCount);
 	return -1;
 }
 
@@ -170,7 +173,14 @@ static void breed(vector<player>& players, int& maxVersion) {
 	}
 }
 
-
+static void winCountIncrease(player&p1 ,player&p2, int winId, int winCount[]){
+	if (winId != -1) {
+		winCount[winId]+=2;
+	} else {
+		winCount[p1.id]++;
+		winCount[p2.id]++;
+	}
+}
 
 static vector<player> groupPlay(vector<player> &players, int n, int openings) {
 	int winCount[1000] = {0};
@@ -188,36 +198,28 @@ static vector<player> groupPlay(vector<player> &players, int n, int openings) {
 			for (int j = i; j < players.size(); j++) {
 				if (i != j) {
 					copyMap(map, mapTemp);
-					Color color = nextColorForOpennings(mapTemp);
+					Color nextColor = nextColorForOpennings(mapTemp);
 					players[i].color = BLACK;
 					players[j].color = WHITE;
-					if (players[i].color == color) {
+					if (players[i].color == nextColor) {
 						int winId = selfPlay(players[i], players[j], mapTemp);
-						if (winId != -1) {
-							winCount[winId]+=2;
-						} else {
-							winCount[winId]++;
-						}
+						winCountIncrease(players[i], players[j],winId, winCount);
 					}
 					else {
 						int winId = selfPlay(players[j], players[i], mapTemp);
-						if (winId != -1) {
-							winCount[winId]+=2;
-						} else {
-							winCount[winId]++;
-						}
+						winCountIncrease(players[i], players[j], winId, winCount);
 					}
 
 					copyMap(map, mapTemp);
 					players[i].color = WHITE;
 					players[j].color = BLACK;
-					if (players[i].color == color) {
+					if (players[i].color == nextColor) {
 						int winId = selfPlay(players[i], players[j], mapTemp);
-						winCount[winId]++;
+						winCountIncrease(players[i], players[j], winId, winCount);
 					}
 					else {
 						int winId = selfPlay(players[j], players[i], mapTemp);
-						winCount[winId]++;
+						winCountIncrease(players[i], players[j], winId, winCount);
 					}
 				}
 			}
