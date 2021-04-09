@@ -38,6 +38,7 @@ extern bool comboEnable;
 
 static int openings;
 
+
 static int oneTurn(player player, Color** map) {
 	if (mapFull(map)) {
 		return PLAY_DRAW;
@@ -261,13 +262,14 @@ void selfLearn() {
 		}
 
 		vector<player> players;
-		int n, count, version, fileTimeOut, openingNum;
-		fscanf (fp, "version:%d gameCounts:%d lastPlayers:%d timeOut:%d openingNum:%d", &version, &count, &n, &fileTimeOut, &openingNum);
+		int n, count, version, fileTimeOut, openingNum, fileSearchLevel;
+		fscanf (fp, "version:%d gameCounts:%d lastPlayers:%d timeOut:%d openingNum:%d searchLevel:%d", &version, &count, &n, &fileTimeOut, &openingNum, &fileSearchLevel);
 		
 		boardSize = 20;
 		debugEnable = false;
 		comboEnable = false;
 
+		searchLevel = fileSearchLevel;
 		timeOut = fileTimeOut;
 		openings = openingNum;
 		comboTimeOut = 0;

@@ -1,8 +1,9 @@
 version:135
 gameCounts:9389
 lastPlayers:8
-timeOut:50
+timeOut:1000
 openingNum:12
+searchLevel:6
 97 1
 0 100000 10000 40 61 28 26 10 11 5 
 119 4
