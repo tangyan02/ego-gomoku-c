@@ -38,6 +38,12 @@ static bool timeOutEnable = false;
 
 static int currentLevel;
 
+static int maxExtend;
+
+static int innerComboNodeCount;
+
+static int extendNodeCount;
+
 static point currentPointResult;
 
 static pointHash loseSet;
@@ -83,11 +89,11 @@ bool tryComboSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			}
 		}
 
-		//±éÀúÀ©Õ¹½Úµã
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¹ï¿½Úµï¿½
 		for (int i = 0; i < neighbors->count; i++) {
 			if (otherSearch[i]) {
 				point p = point(neighbors->list[i].x, neighbors->list[i].y);
-				//ÏÈ²é±Ø°Ü±í
+				//ï¿½È²ï¿½Ø°Ü±ï¿½
 				if (loseSet.contains(p)) {
 					continue;
 				}
@@ -114,13 +120,13 @@ bool tryComboSearchIteration(points * neighbors, Color aiColor, gameResult *game
 }
 
 bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *gameResult) {
-	//Èç¹û±Ø°Ü£¬ÔòÆÓËØËÑË÷
+	//ï¿½ï¿½ï¿½ï¿½Ø°Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	bool loseFlag = false;
 	if (neighbors->count == loseSet.count) {
 		loseSet.reset();
 		loseFlag = true;
 	}
-	//µÃ·ÖËÑË÷
+	//ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½
 	timeOutEnable = false;
 	searchStartTime = getSystemTime();
 	cacheLast.clear();
@@ -130,6 +136,9 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 		long long t = getSystemTime();
 		nodeCount = 0;
 		currentLevel = level;
+		maxExtend = 0;
+		innerComboNodeCount = 0;
+		extendNodeCount = 0;
 
 		cacheLast = cache;
 		cache.clear();
@@ -159,8 +168,22 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			gameResult->node = nodeCount;
 			gameResult->value = value;
 			gameResult->level = level;
-			if (piskvorkMessageEnable) {
-				printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, cost %lld ms\n", level, value, gameResult->result.x, gameResult->result.y, speed, getSystemTime() - t);
+			gameResult->maxExtend = maxExtend;
+			gameResult->innerComboNode = innerComboNodeCount;
+			gameResult->extendNode = extendNodeCount;
+			if (piskvorkMessageEnable)
+			{
+				printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, node %d , max extend %d, extend node %d , inner combo nodes %d,  cost %lld ms\n", 
+					level, 
+					value, 
+					gameResult->result.x, 
+					gameResult->result.y, 
+					speed,
+					nodeCount,
+					maxExtend,
+					extendNodeCount,
+					innerComboNodeCount, 
+					getSystemTime() - t);
 			}
 			if (debugEnable) {
 				printMapWithStar(getMap(), currentPointResult);
@@ -180,13 +203,13 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 gameResult search(Color aiColor, Color** map)
 {
 	gameResult gameResult;
-	//³õÊ¼»¯
+	//ï¿½ï¿½Ê¼ï¿½ï¿½
 	initPattern();
 	clearPatternRecord();
 	initGameMap(map);
 	loseSet.reset();
 
-	//³õÊ¼·ÖÎö
+	//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
 	points* neighbors = PointsFactory::createPointNeighborPoints(0, 0);
 	fillNeighbor(neighbors);
 	selectAndSortPoints(neighbors, aiColor);
@@ -201,12 +224,12 @@ gameResult search(Color aiColor, Color** map)
 		return gameResult;
 	}
 
-	//ËãÉ±
+	//ï¿½ï¿½É±
 	if (tryComboSearchIteration(neighbors, aiColor, &gameResult)) {
 		return gameResult;
 	}
 
-	//µÃ·Öµü´úËÑË÷
+	//ï¿½Ã·Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	tryScoreSearchIteration(neighbors, aiColor, &gameResult);
 
 	return gameResult;
@@ -226,7 +249,7 @@ void moveHistoryBestToFirst(points * neighbors) {
 	}
 }
 
-/* Áã´°¿Ú²âÊÔ·¨
+/* ï¿½ã´°ï¿½Ú²ï¿½ï¿½Ô·ï¿½
 */
 int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) {
 	if (getSystemTime() - searchStartTime > timeOut) {
@@ -238,25 +261,28 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	nodeCount++;
 
 	int value = getScoreValue(color, aiColor);
+	
+	if (value > alpha && value < beta) {
+		innerComboNodeCount++;
+		comboResult result = kill(color, 5, getSystemTime() + timeOut/10);
+		if (result.canWin) {
+			return MAX_VALUE;
+		}
+	}
 
 	if (level <= 1) 
 	{
-
-		if (value > alpha && value < beta) {
-			comboResult result = kill(color, currentLevel, getSystemTime() + 100);
-			if (result.canWin) {
-				return MAX_VALUE;
-			}
-		}
-
-		//ÑÓÉì
+		//ï¿½ï¿½ï¿½ï¿½
 		if (value < beta && value > alpha && extend < currentLevel) {
 			level += 2;
 			extend += 2;
+			if (extend > maxExtend) {
+				maxExtend = extend;
+			}
+			extendNodeCount++;
 		}
-		
 
-		//Ò¶×Ó·ÖÊý¼ÆËã
+		//Ò¶ï¿½Ó·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if (level == 0) {
 			//int value = getScoreValue(color, aiColor);
 			return value;
@@ -267,18 +293,18 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		return MAX_VALUE;
 	}
 
-	//»ñÈ¡À©Õ¹½Úµã
+	//ï¿½ï¿½È¡ï¿½ï¿½Õ¹ï¿½Úµï¿½
 	points* neighbors = PointsFactory::createPointNeighborPoints(level, extend);
 	fillNeighbor(neighbors);
 
 
-	//ÅÅÐò
+	//ï¿½ï¿½ï¿½ï¿½
 	selectAndSortPoints(neighbors, color);
 
-	//µ÷Õû×îÓÅ½ÚµãË³Ðò
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å½Úµï¿½Ë³ï¿½ï¿½
 	moveHistoryBestToFirst(neighbors);
 
-	//±éÀúÀ©Õ¹½Úµã
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¹ï¿½Úµï¿½
 	int extreme = MIN_VALUE;
 	points* extremePoints = PointsFactory::createDfsTempPoints(level);
 	for (int i = 0; i < neighbors->count; i++) {
@@ -286,7 +312,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 
 		move(p.x, p.y, color);
 		int value;
-		//ÏÈ²é±Ø°Ü±í
+		//ï¿½È²ï¿½Ø°Ü±ï¿½
 		if (level == currentLevel && extend == 0 && loseSet.contains(p)) {
 			value = MIN_VALUE;
 		}
@@ -295,7 +321,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 				value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha, extend);
 			}
 			else {
-				//Áã´°¿Ú²âÊÔ
+				//ï¿½ã´°ï¿½Ú²ï¿½ï¿½ï¿½
 				value = -dfs(level - 1, getOtherColor(color), aiColor, -alpha - 1, -alpha, extend);
 				if (value > alpha && value < beta) {
 					value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha, extend);
