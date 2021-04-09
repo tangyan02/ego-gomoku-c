@@ -38,7 +38,8 @@ Color nextColorForOpennings(Color** map) {
 			if (map[i][j] == WHITE)
 				whiteCount++;
 		}
-	if (whiteCount >= blackCount)
+	// white always first for openings
+	if (whiteCount > blackCount)
 		return BLACK;
 	return WHITE;
 }
