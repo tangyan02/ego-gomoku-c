@@ -71,6 +71,8 @@ static int selfPlay(player p1, player p2, Color** map)
 {
 	printf("%d/%d player1:%d %c  vs  player2:%d %c ", groupCurrentPlayCount, groupPlayCount, p1.version, getCharOfColor(p1.color), p2.version, getCharOfColor(p2.color));
 
+	long long startTime = getSystemTime();
+
 	bool p1Trun = true;
 	int finish;
 	int turnCount = 0;
@@ -106,7 +108,7 @@ static int selfPlay(player p1, player p2, Color** map)
 			return p2.id;
 		}
 	}
-	printf("draw game turns:%d\n", turnCount);
+	printf("draw game turns:%d cost:%ldms\n", turnCount, getSystemTime() - startTime);
 	return -1;
 }
 
