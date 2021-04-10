@@ -87,7 +87,7 @@ static int selfPlay(player p1, player p2, Color** map)
 		//printf("player1:%d  vs  player2:%d   %d/%d \n", p1.version, p2.version, groupCurrentPlayCount, groupPlayCount);
 
 		turnCount++;
-		if (turnCount> 100) {
+		if (turnCount > 80) {
 			finish = PLAY_DRAW;
 		}
 

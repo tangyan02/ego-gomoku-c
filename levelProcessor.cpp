@@ -114,6 +114,5 @@ void selectAndSortPoints(points *neighbors, Color color) {
 		}*/
 	}
 	qsort(list, scoreList, 0, neighbors->count - 1);
-
 }
 

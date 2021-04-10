@@ -22,7 +22,9 @@ static int deepLevel;
 
 static long long currentTargetTime;
 
-// extern int ** map;
+static bool otherWin;
+
+//extern int ** map;
 
 bool returnWinValue(int level, point p) {
 	if (level == currentLevel) {
@@ -39,32 +41,15 @@ void selectAttack(points* neighbor, Color color, int& comboType) {
 		}
 	}
 	if (comboType == COMBO_THREE) {
-
-		if(tryThreeDefence(color, neighbor)) {
-			if(neighbor->count>4) {
-				// for (int i = 0; i < neighbor->count;i++){
-				// 	map[neighbor->list[i].x][neighbor->list[i].y] = FLAG;
-				// }
-				// printMap(map);
-				// for (int i = 0; i < neighbor->count;i++){
-				// 	map[neighbor->list[i].x][neighbor->list[i].y] = NULL;
-				// }
-				comboType = COMBO_FOUR;
-				selectAttack(neighbor, color, comboType);
-				return;
-			}
-		}
-
-		if (tryFourDefence(color, neighbor))
-		{
-			if (neighbor->count > 3) {
-				// for (int i = 0; i < neighbor->count;i++){
-				// 	map[neighbor->list[i].x][neighbor->list[i].y] = FLAG;
-				// }
-				// printMap(map);
-				// for (int i = 0; i < neighbor->count;i++){
-				// 	map[neighbor->list[i].x][neighbor->list[i].y] = NULL;
-				// }
+		if (tryThreeDefence(color, neighbor)) {
+			if (neighbor->count > 2) {
+				//for (int i = 0; i < tempPoints->count; i++) {
+				//	map[tempPoints->list[i].x][tempPoints->list[i].y] = FLAG;
+				//}
+				//printMap(map);
+				//for (int i = 0; i < tempPoints->count; i++) {
+				//	map[tempPoints->list[i].x][tempPoints->list[i].y] = NULL;
+				//}
 				comboType = COMBO_FOUR;
 				selectAttack(neighbor, color, comboType);
 				return;
@@ -104,7 +89,24 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 		return false;
 	}
 
+	if (otherWin) {
+		return false;
+	}
+
 	deepLevel = level < deepLevel ? level : deepLevel;
+
+	if (comboType == COMBO_THREE) {
+		if (color != aiColor) {
+			int tempDeepLevel = deepLevel;
+			if (killDfs(currentLevel, color, color, point(), point(), COMBO_FOUR)) {
+				//printMap(map);
+				otherWin = true;
+				//printf("hit\n");
+				return false;
+			}
+			deepLevel = tempDeepLevel;
+		}
+	}
 
 	if (color == aiColor) {
 		if (!hasComboAttack(color, comboType)) {
@@ -112,7 +114,7 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 		}
 	}
 
-	points* ps = PointsFactory::createComboNeighborPoints(level);
+	points* ps = PointsFactory::createComboNeighborPoints(comboType, level);
 	if (level == currentLevel) {
 		fillNeighbor(ps);
 	}
@@ -135,6 +137,7 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 
 	if (canWinCheck(color)) {
 		if (color == aiColor) {
+			//printMap(map);
 			return returnWinValue(level, getFiveAttack(ps, color));
 		}
 		else {
@@ -222,6 +225,7 @@ comboResult kill(Color color, int level, long long targetTime)
 	////my 3 attack
 	deepLevel = level;
 	currentLevel = level;
+	otherWin = false;
 	processorResult.isDeep = false;
 	processorResult.canWin = killDfs(level, color, color, point(), point(), COMBO_THREE);
 	if (deepLevel == 0) {
@@ -244,26 +248,30 @@ extern int ** map;
 static void init() {
 	initPattern();
 	boardSize = 20;
-	map = readMap("combo8.txt");
+	map = readMap("combo.txt");
 	initGameMap(map);
 	printMap(map);
 }
 
 static void testSelectAttack() {
-	points* ps = PointsFactory::createComboNeighborPoints(0);
+	points* ps = PointsFactory::createComboNeighborPoints(0, COMBO_THREE);
 	fillNeighbor(ps);
 	//selectAttack(ps, BLACK, COMBO_THREE);
 	printMapWithStars(map, *ps);
 }
 
 void testKill() {
-	long long targerTime = getSystemTime() + 1000;
-	for (int i = 1; i <= 30; i += 2) {
+	long long targerTime = getSystemTime() + 5000;
+	for (int i = 3; i <= 30; i += 2) {
 		printf("level %d\n", i);
 		if (getSystemTime() > targerTime) {
+			printf("TIME OUT\n");
 			break;
 		}
-		comboResult result = kill(WHITE, i, targerTime);
+		comboResult result = kill(BLACK, i, targerTime);
+		if (getSystemTime() > targerTime) {
+			printf("TIME OUT\n");
+		}
 		if (result.canWin) {
 			printf("WIN\n");
 			printMapWithStar(map, result.p);
@@ -274,6 +282,7 @@ void testKill() {
 			printf("NULL\n");
 		}
 		if (!result.isDeep) {
+			printf("not deep");
 			break;
 		}
 	}

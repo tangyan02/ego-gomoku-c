@@ -56,7 +56,24 @@ void updateNeighbor(int i, int j, bool isAdd, Color pointColor) {
 	//			if (map[x][y] == NULL)
 	//				addNeighborCount(x, y, isAdd);
 	//		}
-	
+	//for (int k = 0; k < 8; k++) {
+	//	int x = i + directX[k];
+	//	int y = j + directY[k];
+	//	if (reachable(x, y)) {
+	//		Color color = map[x][y];
+	//		if (color == NULL) {
+	//			addNeighborCount(x, y, isAdd);
+	//		}
+	//	}
+	//	int x2 = x + directX[k];
+	//	int y2 = y + directY[k];
+	//	if (reachable(x2, y2)) {
+	//		Color color = map[x2][y2];
+	//		if (color == NULL) {
+	//			addNeighborCount(x2, y2, isAdd);
+	//		}
+	//	}
+	//}
 	for (int k = 0; k < 8; k++) {
 		int x = i + directX[k];
 		int y = j + directY[k];
