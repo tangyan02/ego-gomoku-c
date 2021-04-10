@@ -134,16 +134,16 @@ static void variation(player& p) {
 		}
 		p.score[i] += delta;
 	}
-
-	if (rand() % 2 == 0) {
-		int delta = 1;
-		if (rand() % 2 == 0) {
-			delta = -delta;
-		}
-		if (p.sigma + delta >= 0) {
-			p.sigma += delta;
-		}
-	}
+	p.sigma = 0;
+	//if (rand() % 2 == 0) {
+	//	int delta = 1;
+	//	if (rand() % 2 == 0) {
+	//		delta = -delta;
+	//	}
+	//	if (p.sigma + delta >= 0) {
+	//		p.sigma += delta;
+	//	}
+	//}
 	
 }
 
@@ -156,10 +156,11 @@ static void accident(player& p) {
 		}
 	}
 
-	if (rand() % 2 == 0) {
-		int sigma = rand() % (p.sigma*2+1) + 1;
-		p.sigma = sigma;
-	}
+	p.sigma = 0;
+	//if (rand() % 2 == 0) {
+	//	int sigma = rand() % (p.sigma*2+1) + 1;
+	//	p.sigma = sigma;
+	//}
 }
 
 static void breed(vector<player>& players, int& maxVersion) {
