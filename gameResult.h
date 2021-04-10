@@ -11,6 +11,7 @@ public:
 	int maxExtend = 0;
 	int extendNode = 0;
 	int innerComboNode = 0;
+	int innerComboSucNode = 0;
 	gameResult();
 	~gameResult();
 };

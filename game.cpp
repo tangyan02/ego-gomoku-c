@@ -42,6 +42,8 @@ static int maxExtend;
 
 static int innerComboNodeCount;
 
+static int innerComboSucNodeCount;
+
 static int extendNodeCount;
 
 static point currentPointResult;
@@ -138,6 +140,7 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 		currentLevel = level;
 		maxExtend = 0;
 		innerComboNodeCount = 0;
+		innerComboSucNodeCount = 0;
 		extendNodeCount = 0;
 
 		cacheLast = cache;
@@ -170,20 +173,23 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			gameResult->level = level;
 			gameResult->maxExtend = maxExtend;
 			gameResult->innerComboNode = innerComboNodeCount;
+			gameResult->innerComboSucNode = innerComboSucNodeCount;
 			gameResult->extendNode = extendNodeCount;
 			if (piskvorkMessageEnable)
 			{
-				printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, node %d , max extend %d, extend node %d , inner combo nodes %d,  cost %lld ms\n", 
+				printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, node %d, cost %lld ms , max extend %d, extend node %d , inner combo nodes %d, inner combo suc nodes %d\n", 
 					level, 
 					value, 
 					gameResult->result.x, 
-					gameResult->result.y, 
+					gameResult->result.y,
 					speed,
 					nodeCount,
+					getSystemTime() - t,
 					maxExtend,
 					extendNodeCount,
-					innerComboNodeCount, 
-					getSystemTime() - t);
+					innerComboNodeCount,
+					innerComboSucNodeCount
+					);
 			}
 			if (debugEnable) {
 				printMapWithStar(getMap(), currentPointResult);
@@ -273,6 +279,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 			innerComboNodeCount++;
 			comboResult result = kill(color, 5, getSystemTime() + timeOut / 10);
 			if (result.canWin) {
+				innerComboSucNodeCount++;
 				return MAX_VALUE;
 			}
 		}
