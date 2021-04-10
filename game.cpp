@@ -265,16 +265,18 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 
 	int value = getScoreValue(color, aiColor);
 	
-	//if (value > alpha && value < beta) {
-	//	innerComboNodeCount++;
-	//	comboResult result = kill(color, 5, getSystemTime() + timeOut/10);
-	//	if (result.canWin) {
-	//		return MAX_VALUE;
-	//	}
-	//}
+
 
 	if (level <= 1) 
 	{
+		if (value > alpha && value < beta && extend > 0) {
+			innerComboNodeCount++;
+			comboResult result = kill(color, 5, getSystemTime() + timeOut / 10);
+			if (result.canWin) {
+				return MAX_VALUE;
+			}
+		}
+
 		// extend
 		if (value < beta && value > alpha && extend < currentLevel) {
 			level += 2;
