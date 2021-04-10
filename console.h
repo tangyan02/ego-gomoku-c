@@ -26,3 +26,5 @@ void printPlayers(vector<player>& players);
 void printGroupResult(int winCount[], vector<player>& players);
 
 char getCharOfColor(Color color);
+
+void printMoveHistory();

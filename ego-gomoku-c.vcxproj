@@ -160,6 +160,7 @@
     <Text Include="combo5.txt" />
     <Text Include="combo6.txt" />
     <Text Include="combo7.txt" />
+    <Text Include="combo8.txt" />
     <Text Include="comboVCF.txt" />
     <Text Include="failCombo.txt" />
     <Text Include="fourDefence.txt" />

@@ -8,6 +8,8 @@ using namespace std;
 
 extern int boardSize;
 
+extern points moveHistory;
+
 Color ** getEmptyMap() {
 	Color ** map = new Color*[boardSize];
 	for (int i = 0; i < boardSize; i++)
@@ -141,4 +143,11 @@ void copyMap(Color** map, Color** toMap){
 	for (int i = 0; i < boardSize; i++)
 		for (int j = 0; j < boardSize; j++)
 			toMap[i][j] = map[i][j];
+}
+
+void printMoveHistory() {
+	for (int i = 0; i < moveHistory.count; i++) {
+		printf("->(%d, %d)", moveHistory.list[i].x, moveHistory.list[i].y);
+	}
+	printf("\n");
 }

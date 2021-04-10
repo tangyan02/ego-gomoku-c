@@ -22,9 +22,7 @@ static int deepLevel;
 
 static long long currentTargetTime;
 
-static bool otherWin;
-
-//extern int ** map;
+extern int ** map;
 
 bool returnWinValue(int level, point p) {
 	if (level == currentLevel) {
@@ -41,21 +39,6 @@ void selectAttack(points* neighbor, Color color, int& comboType) {
 		}
 	}
 	if (comboType == COMBO_THREE) {
-		if (tryThreeDefence(color, neighbor)) {
-			if (neighbor->count > 2) {
-				//for (int i = 0; i < tempPoints->count; i++) {
-				//	map[tempPoints->list[i].x][tempPoints->list[i].y] = FLAG;
-				//}
-				//printMap(map);
-				//for (int i = 0; i < tempPoints->count; i++) {
-				//	map[tempPoints->list[i].x][tempPoints->list[i].y] = NULL;
-				//}
-				comboType = COMBO_FOUR;
-				selectAttack(neighbor, color, comboType);
-				return;
-			}
-		}
-
 		if (tryThreeOrFourAttack(color, neighbor)) {
 			return;
 		}
@@ -89,19 +72,24 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 		return false;
 	}
 
-	if (otherWin) {
-		return false;
-	}
+	//if (otherWin) {
+	//	return false;
+	//}
 
 	deepLevel = level < deepLevel ? level : deepLevel;
+	//printf("hit\n");
+	//printMap(map);
+	//printMoveHistory();
 
 	if (comboType == COMBO_THREE) {
 		if (color != aiColor) {
 			int tempDeepLevel = deepLevel;
+			deepLevel = level;
 			if (killDfs(currentLevel, color, color, point(), point(), COMBO_FOUR)) {
-				//printMap(map);
-				otherWin = true;
 				//printf("hit\n");
+				//printMap(map);
+				//printMoveHistory();
+				deepLevel = tempDeepLevel;
 				return false;
 			}
 			deepLevel = tempDeepLevel;
@@ -137,7 +125,9 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 
 	if (canWinCheck(color)) {
 		if (color == aiColor) {
+			//printf("win\n");
 			//printMap(map);
+			//printMoveHistory();
 			return returnWinValue(level, getFiveAttack(ps, color));
 		}
 		else {
@@ -212,20 +202,19 @@ comboResult kill(Color color, int level, long long targetTime)
 	if (processorResult.canWin) {
 		return processorResult;
 	}
-	//opp 4 attack
-	deepLevel = level;
-	currentLevel = level;
-	processorResult.canWin = killDfs(level, getOtherColor(color), getOtherColor(color), point(), point(), COMBO_FOUR);
-	if (deepLevel == 0 || processorResult.canWin) {
-		processorResult.isDeep = true;
-		processorResult.canWin = false;
-		return processorResult;
-	}
+	//opp 4 attack £¨ cal in dfs , this check can ignore£©
+	//deepLevel = level;
+	//currentLevel = level;
+	//processorResult.canWin = killDfs(level, getOtherColor(color), getOtherColor(color), point(), point(), COMBO_FOUR);
+	//if (deepLevel == 0 || processorResult.canWin) {
+	//	processorResult.isDeep = true;
+	//	processorResult.canWin = false;
+	//	return processorResult;
+	//}
 
 	////my 3 attack
 	deepLevel = level;
 	currentLevel = level;
-	otherWin = false;
 	processorResult.isDeep = false;
 	processorResult.canWin = killDfs(level, color, color, point(), point(), COMBO_THREE);
 	if (deepLevel == 0) {

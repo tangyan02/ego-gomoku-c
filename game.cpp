@@ -259,12 +259,15 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		return 0;
 	}
 	nodeCount++;
+	if (extend > 0) {
+		extendNodeCount++;
+	}
 
 	int value = getScoreValue(color, aiColor);
 	
 	if (value > alpha && value < beta) {
 		innerComboNodeCount++;
-		comboResult result = kill(color, 5, getSystemTime() + timeOut/10);
+		comboResult result = kill(color, currentLevel - 1, getSystemTime() + timeOut/10);
 		if (result.canWin) {
 			return MAX_VALUE;
 		}
@@ -273,14 +276,13 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	if (level <= 1) 
 	{
 		// extend
-		if (value < beta && value > alpha && extend < currentLevel) {
-			extendNodeCount++;
-			level += 2;
-			extend += 2;
-			if (extend > maxExtend) {
-				maxExtend = extend;
-			}
-		}
+		//if (value < beta && value > alpha && extend < currentLevel) {
+		//	level += 2;
+		//	extend += 2;
+		//	if (extend > maxExtend) {
+		//		maxExtend = extend;
+		//	}
+		//}
 
 		
 
