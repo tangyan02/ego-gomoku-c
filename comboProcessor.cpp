@@ -41,7 +41,7 @@ void selectAttack(points* neighbor, Color color, int& comboType) {
 	if (comboType == COMBO_THREE) {
 
 		if(tryThreeDefence(color, neighbor)) {
-			if(neighbor->count>3) {
+			if(neighbor->count>4) {
 				// for (int i = 0; i < neighbor->count;i++){
 				// 	map[neighbor->list[i].x][neighbor->list[i].y] = FLAG;
 				// }
@@ -57,7 +57,7 @@ void selectAttack(points* neighbor, Color color, int& comboType) {
 
 		if (tryFourDefence(color, neighbor))
 		{
-			if (neighbor->count > 2) {
+			if (neighbor->count > 3) {
 				// for (int i = 0; i < neighbor->count;i++){
 				// 	map[neighbor->list[i].x][neighbor->list[i].y] = FLAG;
 				// }
