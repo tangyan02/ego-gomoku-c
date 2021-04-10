@@ -202,15 +202,6 @@ comboResult kill(Color color, int level, long long targetTime)
 	if (processorResult.canWin) {
 		return processorResult;
 	}
-	//opp 4 attack £¨ cal in dfs , this check can ignore£©
-	//deepLevel = level;
-	//currentLevel = level;
-	//processorResult.canWin = killDfs(level, getOtherColor(color), getOtherColor(color), point(), point(), COMBO_FOUR);
-	//if (deepLevel == 0 || processorResult.canWin) {
-	//	processorResult.isDeep = true;
-	//	processorResult.canWin = false;
-	//	return processorResult;
-	//}
 
 	////my 3 attack
 	deepLevel = level;
