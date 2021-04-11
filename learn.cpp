@@ -134,7 +134,6 @@ static void variation(player& p) {
 		}
 		p.score[i] += delta;
 	}
-	p.sigma = 0;
 	if (rand() % 2 == 0) {
 		int delta = 1;
 		if (rand() % 2 == 0) {
@@ -156,7 +155,6 @@ static void accident(player& p) {
 		}
 	}
 
-	p.sigma = 0;
 	if (rand() % 2 == 0) {
 		int sigma = rand() % (p.sigma*2+1) + 1;
 		p.sigma = sigma;
@@ -171,11 +169,11 @@ static void breed(vector<player>& players, int& maxVersion) {
 		players.push_back(child);
 	}
 
-	for (int i = 0; i < size/4; i++) {
-		player child = copy(players[i], maxVersion);
-		accident(child);
-		players.push_back(child);
-	}
+	//for (int i = 0; i < size/4; i++) {
+	//	player child = copy(players[i], maxVersion);
+	//	accident(child);
+	//	players.push_back(child);
+	//}
 }
 
 static void winCountIncrease(player&p1 ,player&p2, int winId, int winCount[]){
