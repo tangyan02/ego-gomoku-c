@@ -269,20 +269,21 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		extendNodeCount++;
 	}
 
-	int value = getScoreValue(color, aiColor);
-	
-
 
 	if (level <= 1) 
 	{
-		if (value > alpha && value < beta && extend > 0) {
-			innerComboNodeCount++;
-			comboResult result = kill(color, 5, getSystemTime() + timeOut / 10);
-			if (result.canWin) {
-				innerComboSucNodeCount++;
-				return MAX_VALUE;
-			}
-		}
+		int value = getScoreValue(color, aiColor);
+		
+		//combo, ignore because if can not win, time to execute is waste . win rate about 1/5 to 1/3  
+		 
+		//if (value > alpha && value < beta && extend > 0) {
+		//	innerComboNodeCount++;
+		//	comboResult result = kill(color, 5, getSystemTime() + timeOut / 10);
+		//	if (result.canWin) {
+		//		innerComboSucNodeCount++;
+		//		return MAX_VALUE;
+		//	}
+		//}
 
 		// extend
 		if (value < beta && value > alpha && extend < currentLevel) {
