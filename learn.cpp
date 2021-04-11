@@ -280,7 +280,7 @@ void selfLearn() {
 		timeOut = fileTimeOut;
 		openings = openingNum;
 		comboTimeOut = fileTimeOut /5;
-		comboLevel = 0;
+		comboLevel = 9;
 
 		for (int i = 0; i < n; i++) {
 			player p;
