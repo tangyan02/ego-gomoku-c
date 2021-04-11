@@ -274,12 +274,12 @@ void selfLearn() {
 		
 		boardSize = 20;
 		debugEnable = false;
-		comboEnable = false;
+		comboEnable = true;
 
 		searchLevel = fileSearchLevel;
 		timeOut = fileTimeOut;
 		openings = openingNum;
-		comboTimeOut = 0;
+		comboTimeOut = fileTimeOut /5;
 		comboLevel = 0;
 
 		for (int i = 0; i < n; i++) {
