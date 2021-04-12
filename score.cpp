@@ -13,7 +13,7 @@ extern int boardSize;
 extern int blackPatternTotalScore;
 extern int whitePatternTotalScore;
 
-extern Color** map;
+extern Color** boardMap;
 
 int score[10] = { 0, 100000, 10000, 80, 90, 40, 50, 20, 25, 10 };
 
@@ -51,7 +51,7 @@ int getScoreValue(Color color, Color aiColor) {
 //	return result;
 //}
 
-/***************************²âÊÔ´úÂë·Ö¸ô***********************************/
+/***************************ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Ö¸ï¿½***********************************/
 
 int getValueByPattern(Color color) {
 	int result = 0;
@@ -59,10 +59,10 @@ int getValueByPattern(Color color) {
 		for (int i = 0; i < boardSize; i++)
 			for (int j = 0; j < boardSize; j++) {
 				for (int k = 0; k < 4; k++) {
-					if (map[i][j] == WHITE) {
+					if (boardMap[i][j] == WHITE) {
 						result += score[whitePattern[i][j][k]];
 					}
-					if (map[i][j] == BLACK) {
+					if (boardMap[i][j] == BLACK) {
 						result -= score[blackPattern[i][j][k]];
 					}
 				}
@@ -72,10 +72,10 @@ int getValueByPattern(Color color) {
 		for (int i = 0; i < boardSize; i++)
 			for (int j = 0; j < boardSize; j++)
 				for (int k = 0; k < 4; k++) {
-					if (map[i][j] == WHITE) {
+					if (boardMap[i][j] == WHITE) {
 						result -= score[whitePattern[i][j][k]];
 					}
-					if (map[i][j] == BLACK) {
+					if (boardMap[i][j] == BLACK) {
 						result += score[blackPattern[i][j][k]];
 					}
 				}

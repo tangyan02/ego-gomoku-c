@@ -1,53 +1,78 @@
-#include "stdafx.h"
 #include "gameMap.h"
+#include "PointsFactory.h"
+#include "levelProcessor.h"
+#include "patternRecorder.h"
+#include "stdafx.h"
 #include "stdlib.h"
 #include "vector"
-#include <time.h>  
-#include "patternRecorder.h"
-#include "PointsFactory.h"
+#include <map>
+#include <time.h>
+#ifdef __GNUC__
+#include <ext/hash_map>
+using namespace __gnu_cxx;
+#else
+#include <hash_map>
+#endif
 
-int **map;
+int **boardMap;
 
 points moveHistory;
 
+int neighborCount[20][20];
+
+extern map<int, hash_map<int, point> > neighborSortTree[3];
+
+extern int singleScore[3][20][20];
+
 extern int boardSize;
 
-static int directX[] = { 0, 1, 1, 1, 0, -1, -1, -1 };
-static int directY[] = { 1, 1, 0, -1, -1, -1, 0, 1 };
+static int directX[] = {0, 1, 1, 1, 0, -1, -1, -1};
+static int directY[] = {1, 1, 0, -1, -1, -1, 0, 1};
 
 static long long weightBlack[20][20];
 static long long weightWhite[20][20];
 
 static long long hashCode = 0;
-static int neighborCount[20][20];
 
 static int left, right, top, bottom;
 
-Color ** getMap() {
-	return map;
+Color **getMap()
+{
+	return boardMap;
 }
 
-void addNeighborCount(int x, int y, bool isAdd) {
+void addNeighborCount(int x, int y, bool isAdd)
+{
 	if (isAdd)
 		neighborCount[x][y]++;
 	else
 		neighborCount[x][y]--;
 }
 
-void updateSide(int i, int j) {
-	if (j - 2 < left) left = j - 2;
-	if (j + 2 > right) right = j + 2;
-	if (i - 2 < top) top = i - 2;
-	if (i + 2 > bottom) bottom = i + 2;
-	if (left < 0) left = 0;
-	if (top < 0) top = 0;
-	if (right >= boardSize) right = boardSize - 1;
-	if (bottom >= boardSize) bottom = boardSize - 1;
+void updateSide(int i, int j)
+{
+	if (j - 2 < left)
+		left = j - 2;
+	if (j + 2 > right)
+		right = j + 2;
+	if (i - 2 < top)
+		top = i - 2;
+	if (i + 2 > bottom)
+		bottom = i + 2;
+	if (left < 0)
+		left = 0;
+	if (top < 0)
+		top = 0;
+	if (right >= boardSize)
+		right = boardSize - 1;
+	if (bottom >= boardSize)
+		bottom = boardSize - 1;
 }
 
-void updateNeighbor(int i, int j, bool isAdd, Color pointColor) {
+void updateNeighbor(int i, int j, bool isAdd, Color pointColor)
+{
 	updateSide(i, j);
-	
+
 	//for (int x = i - 2; x <= i + 2; x++)
 	//	for (int y = j - 2; y <= j + 2; y++)
 	//		if (reachable(x, y)) {
@@ -74,39 +99,51 @@ void updateNeighbor(int i, int j, bool isAdd, Color pointColor) {
 	//		}
 	//	}
 	//}
-	for (int k = 0; k < 8; k++) {
+	for (int k = 0; k < 8; k++)
+	{
 		int x = i + directX[k];
 		int y = j + directY[k];
-		if (reachable(x, y)) {
-			Color color = map[x][y];
-			if (color == NULL) {
+		if (reachable(x, y))
+		{
+			Color color = boardMap[x][y];
+			if (color == NULL)
+			{
 				addNeighborCount(x, y, isAdd);
+				updateNeighborSortTree(x, y, isAdd);
 			}
-			else {
-				if (color == pointColor) {
+			else
+			{
+				if (color == pointColor)
+				{
 					int x1 = i + directX[k] * 3;
 					int y1 = j + directY[k] * 3;
 					int x2 = i - directX[k] * 2;
 					int y2 = j - directY[k] * 2;
-					if (reachable(x1, y1)) {
-						if (map[x1][y1] == NULL) {
+					if (reachable(x1, y1))
+					{
+						if (boardMap[x1][y1] == NULL)
+						{
 							addNeighborCount(x1, y1, isAdd);
+							updateNeighborSortTree(x1, y1, isAdd);
 						}
 					}
-					if (reachable(x2, y2)) {
-						if (map[x2][y2] == NULL) {
+					if (reachable(x2, y2))
+					{
+						if (boardMap[x2][y2] == NULL)
+						{
 							addNeighborCount(x2, y2, isAdd);
+							updateNeighborSortTree(x2, y2, isAdd);
 						}
 					}
 				}
 			}
 		}
 	}
-	
 }
 
-void initGameMap(Color** value) {
-	map = value;
+void initGameMap(Color **value)
+{
+	boardMap = value;
 	right = 0;
 	bottom = 0;
 	left = boardSize - 1;
@@ -115,36 +152,50 @@ void initGameMap(Color** value) {
 	srand((unsigned)time(NULL));
 
 	for (int i = 0; i < boardSize; i++)
-		for (int j = 0; j < boardSize; j++) {
-			for (int k = 0; k < 4; k++) {
+		for (int j = 0; j < boardSize; j++)
+		{
+			for (int k = 0; k < 4; k++)
+			{
 				weightBlack[i][j] = weightBlack[i][j] << 15 | rand();
 				weightWhite[i][j] = weightWhite[i][j] << 15 | rand();
 			}
 		}
 
-
 	for (int i = 0; i < boardSize; i++)
-		for (int j = 0; j < boardSize; j++) {
+		for (int j = 0; j < boardSize; j++)
+		{
 			neighborCount[i][j] = 0;
 		}
+
+	for (Color color = 1; color <= 2; color++)
+	{
+		neighborSortTree[color].clear();
+		for (int i = 0; i < boardSize; i++)
+			for (int j = 0; j < boardSize; j++)
+				singleScore[color][i][j] = -1;
+	}
+	// neighborSortTree.clear();
 	//��ʼ����ͼ�͹�ϣ��
 	for (int i = 0; i < boardSize; i++)
-		for (int j = 0; j < boardSize; j++) {
-			Color color = map[i][j];
-			if (color != NULL) {
+		for (int j = 0; j < boardSize; j++)
+		{
+			Color color = boardMap[i][j];
+			if (color != NULL)
+			{
 				updateHashCode(i, j, color);
 				bool isAdd = color == NULL ? false : true;
 				updateNeighbor(i, j, true, color);
 			}
 		}
 
-	initPatternRecord();	
+	initPatternRecord();
 }
 
-void move(int x, int y, Color color) {
+void move(int x, int y, Color color)
+{
 	removeLinePatternCount(x, y);
 	updateHashCode(x, y, color);
-	map[x][y] = color;
+	boardMap[x][y] = color;
 	updateNeighbor(x, y, true, color);
 	updateLineKey(x, y);
 	updatePointPattern(x, y);
@@ -152,10 +203,11 @@ void move(int x, int y, Color color) {
 	moveHistory.add(point(x, y));
 }
 
-void undoMove(int x, int y, Color color) {
+void undoMove(int x, int y, Color color)
+{
 	removeLinePatternCount(x, y);
 	updateHashCode(x, y, color);
-	map[x][y] = NULL_COLOR;
+	boardMap[x][y] = NULL_COLOR;
 	updateNeighbor(x, y, false, color);
 	updateLineKey(x, y);
 	updatePointPattern(x, y);
@@ -165,23 +217,29 @@ void undoMove(int x, int y, Color color) {
 
 Color getColor(int x, int y)
 {
-	return map[x][y];
+	return boardMap[x][y];
 }
 
-void fillPointLinesNeighbor(int px, int py, points* ps) {
-	for (int i = 0; i < 8; i++) {
+void fillPointLinesNeighbor(int px, int py, points *ps)
+{
+	for (int i = 0; i < 8; i++)
+	{
 		int x = px;
 		int y = py;
-		for (int k = 0; k < 4; k++) {
+		for (int k = 0; k < 4; k++)
+		{
 			x += directX[i];
 			y += directY[i];
-			if (!reachable(x, y)) {
+			if (!reachable(x, y))
+			{
 				break;
 			}
-			if (map[x][y] != NULL)
+			if (boardMap[x][y] != NULL)
 				continue;
-			if (neighborCount[x][y] > 0 && map[x][y] == NULL) {
-				if (!ps->contains(x, y)) {
+			if (neighborCount[x][y] > 0 && boardMap[x][y] == NULL)
+			{
+				if (!ps->contains(x, y))
+				{
 					ps->add(point(x, y));
 				}
 			}
@@ -189,10 +247,11 @@ void fillPointLinesNeighbor(int px, int py, points* ps) {
 	}
 }
 
-void fillNeighbor(points* ps) {
+void fillNeighbor(points *ps)
+{
 	for (int i = top; i <= bottom; i++)
 		for (int j = left; j <= right; j++)
-			if (neighborCount[i][j] > 0 && map[i][j] == NULL)
+			if (neighborCount[i][j] > 0 && boardMap[i][j] == NULL)
 				ps->add(point(i, j));
 }
 
@@ -210,11 +269,14 @@ long long getMapHashCode()
 
 void updateHashCode(int x, int y, Color color)
 {
-	if (color != NULL) {
-		if (color == BLACK) {
+	if (color != NULL)
+	{
+		if (color == BLACK)
+		{
 			hashCode ^= weightBlack[x][y];
 		}
-		if (color == WHITE) {
+		if (color == WHITE)
+		{
 			hashCode ^= weightWhite[x][y];
 		}
 	}

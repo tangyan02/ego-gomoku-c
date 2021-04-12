@@ -28,7 +28,7 @@ int keyFullWithBlank[8];
 extern int patternLib[PATTERN_SIZE];
 extern int patternScore[PATTERN_SIZE];
 
-extern Color** map;
+extern Color** boardMap;
 
 extern int boardSize;
 
@@ -53,7 +53,7 @@ int getPatternState(int x, int y, Color selfColor) {
 	if (!reachable(x, y)) {
 		return STATE_OTHER;
 	}
-	Color color = map[x][y];
+	Color color = boardMap[x][y];
 	if (color == NULL_COLOR) {
 		return STATE_BLANK;
 	}
@@ -84,30 +84,30 @@ int buildLineAndGetKey(int line[], int x, int y, int direct, Color selfColor) {
 }
 
 void addPointDirectPatternCount(int x, int y, int direct) {
-	if (map[x][y] == BLACK) {
+	if (boardMap[x][y] == BLACK) {
 		blackPatternCount[blackPattern[x][y][direct]]++;
 		blackPatternTotalScore += patternScore[blackLineKey[x][y][direct]];
 	}
-	if (map[x][y] == WHITE) {
+	if (boardMap[x][y] == WHITE) {
 		whitePatternCount[whitePattern[x][y][direct]]++;
 		whitePatternTotalScore += patternScore[whiteLineKey[x][y][direct]];
 	}
-	if (map[x][y] == NULL) {
+	if (boardMap[x][y] == NULL) {
 		blackPatternCountInNull[blackPattern[x][y][direct]]++;
 		whitePatternCountInNull[whitePattern[x][y][direct]]++;
 	}
 }
 
 void removePointDirectPatternCount(int x, int y, int direct) {
-	if (map[x][y] == BLACK) {
+	if (boardMap[x][y] == BLACK) {
 		blackPatternCount[blackPattern[x][y][direct]]--;
 		blackPatternTotalScore -= patternScore[blackLineKey[x][y][direct]];
 	}
-	if (map[x][y] == WHITE) {
+	if (boardMap[x][y] == WHITE) {
 		whitePatternCount[whitePattern[x][y][direct]]--;
 		whitePatternTotalScore -= patternScore[whiteLineKey[x][y][direct]];
 	}
-	if (map[x][y] == NULL) {
+	if (boardMap[x][y] == NULL) {
 		blackPatternCountInNull[blackPattern[x][y][direct]]--;
 		whitePatternCountInNull[whitePattern[x][y][direct]]--;
 	}
@@ -246,7 +246,7 @@ bool existPattern(Color color, int patternCode)
 	return false;
 }
 
-/***************************** ²âÊÔ´úÂë·Ö¸ô ***************************************/
+/***************************** ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Ö¸ï¿½ ***************************************/
 
 static void printKey(int key) {
 	for (int i = 0; i < 8; i++) {
@@ -303,8 +303,8 @@ void printPatternAnalyzeInMessage() {
 void testSimpleMove() {
 	boardSize = 20;
 	initPattern();
-	map = readMap("patternRecorder.txt");
-	initGameMap(map);
+	boardMap = readMap("patternRecorder.txt");
+	initGameMap(boardMap);
 
 	move(1, 1, BLACK);
 	move(1, 3, BLACK);

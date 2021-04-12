@@ -58,7 +58,7 @@ void caseTest() {
 	debugEnable = true;
 	comboTimeOut = 3000;
 	timeOut = 5000;
-	Color **map = readMap("input007.txt");
+	Color **map = readMap("/Users/tangyan/ego-gomoku-c/ego-gomoku-c/input007.txt");
 	gameResult result = search(WHITE, map);
 	printMapWithStar(map, result.result);
 }
@@ -68,10 +68,10 @@ int main()
 	//piskvork();
 	//testCombo();
 	//bugTest();
-	//caseTest();
+	caseTest();
 	//testPlay();
 	//testPattern();
 	//testPatternRecorder();
-	selfLearn();
+	//selfLearn();
 	return 0;
 }

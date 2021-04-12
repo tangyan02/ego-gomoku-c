@@ -1,4 +1,5 @@
 #pragma once
+#include "stdafx.h"
 
 #define NULL_COLOR 0
 #define CURRENT_COLOR 1
@@ -11,15 +12,15 @@ void move(int x, int y, Color color);
 
 void undoMove(int x, int y, Color color);
 
-void fillNeighbor(points* ps);
+void fillNeighbor(points *ps);
 
-void fillPointLinesNeighbor(int px, int py, points* ps);
+void fillPointLinesNeighbor(int px, int py, points *ps);
 
 bool reachable(int x, int y);
 
-void initGameMap(Color** value);
+void initGameMap(Color **value);
 
-Color ** getMap();
+Color **getMap();
 
 long long getMapHashCode();
 

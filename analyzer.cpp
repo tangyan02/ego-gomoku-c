@@ -15,7 +15,7 @@ extern int whitePatternCountInNull[10];
 extern int blackPattern[20][20][4];
 extern int whitePattern[20][20][4];
 
-extern Color ** map;
+extern Color ** boardMap;
 
 bool canWinCheck(Color color) {
 	if (color == BLACK) {
@@ -98,21 +98,21 @@ bool checkActiveThreeDefence(points *neighbors, int *otherPatternCountInNull, in
 		points* ps = PointsFactory::createLevelProcessorTempPoints();
 		for (int i = 0; i < neighbors->count; i++)
 			for (int k = 0; k < 4; k++) {
-				//³åËÄ
+				//ï¿½ï¿½ï¿½ï¿½
 				if (selfPatter[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
 					selfPatter[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR
 					)
 					ps->add(neighbors->list[i]);
-				//·À3
+				//ï¿½ï¿½3
 				if (otherPatter[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR) {
 					ps->add(neighbors->list[i]);
-					//¶Ï3·ÀÓù
+					//ï¿½ï¿½3ï¿½ï¿½ï¿½ï¿½
 					if (otherPatternCountInNull[PATTERN_ACTIVE_FOUR] == 1) {
 						int px = neighbors->list[i].x - 4 * directX[k];
 						int py = neighbors->list[i].y - 4 * directY[k];
 						for (int j = 0; j < 9; j++) {
 							if (otherPatter[px][py][k] == PATTERN_SLEEPY_FOUR) {
-								if (reachable(px, py) && map[px][py] == NULL)
+								if (reachable(px, py) && boardMap[px][py] == NULL)
 									ps->add(point(px, py));
 							}
 							px += directX[k];

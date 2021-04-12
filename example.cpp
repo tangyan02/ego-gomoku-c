@@ -10,7 +10,7 @@
 const char *infotext = "name=\"Ego\", author=\"TangYan\", version=\"7.0\", country=\"China\", email=\"tangyan1412@foxmail.com\"";
 
 #define MAX_BOARD 20
-static Color** map;
+static Color** boardMap;
 static unsigned seed;
 extern int boardSize;
 extern int timeOut;
@@ -31,7 +31,7 @@ void brain_init()
 		return;
 	}
 	boardSize = width;
-	map = getEmptyMap();
+	boardMap = getEmptyMap();
 	seed = start_time;
 	initPattern();
 	pipeOut("OK");
@@ -39,19 +39,19 @@ void brain_init()
 
 void brain_restart()
 {
-	map = getEmptyMap();
+	boardMap = getEmptyMap();
 	pipeOut("OK");
 }
 
 int isFree(int x, int y)
 {
-	return x >= 0 && y >= 0 && x < width && y < height && map[x][y] == NULL;
+	return x >= 0 && y >= 0 && x < width && y < height && boardMap[x][y] == NULL;
 }
 
 void brain_my(int x, int y)
 {
 	if (isFree(x, y)) {
-		map[x][y] = BLACK;
+		boardMap[x][y] = BLACK;
 	}
 	else {
 		pipeOut("ERROR my move [%d,%d]", x, y);
@@ -61,7 +61,7 @@ void brain_my(int x, int y)
 void brain_opponents(int x, int y)
 {
 	if (isFree(x, y)) {
-		map[x][y] = WHITE;
+		boardMap[x][y] = WHITE;
 	}
 	else {
 		pipeOut("ERROR opponents's move [%d,%d]", x, y);
@@ -71,7 +71,7 @@ void brain_opponents(int x, int y)
 void brain_block(int x, int y)
 {
 	if (isFree(x, y)) {
-		map[x][y] = 3;
+		boardMap[x][y] = 3;
 	}
 	else {
 		pipeOut("ERROR winning move [%d,%d]", x, y);
@@ -81,8 +81,8 @@ void brain_block(int x, int y)
 int brain_takeback(int x, int y)
 {
 	record = false;
-	if (x >= 0 && y >= 0 && x < width && y < height && map[x][y] != 0) {
-		map[x][y] = 0;
+	if (x >= 0 && y >= 0 && x < width && y < height && boardMap[x][y] != 0) {
+		boardMap[x][y] = 0;
 		return 0;
 	}
 	return 2;
@@ -97,7 +97,7 @@ unsigned rnd(unsigned n)
 void brain_turn()
 {
 	if (!record) {
-		printMapInMessage(map);
+		printMapInMessage(boardMap);
 	}
 	piskvorkMessageEnable = true;
 	record = true;
@@ -109,7 +109,7 @@ void brain_turn()
 	{
 		for (int j = 0; j < boardSize; j++)
 		{
-			if (map[i][j] != NULL) {
+			if (boardMap[i][j] != NULL) {
 				pointCount++;
 			}
 		}
@@ -118,13 +118,13 @@ void brain_turn()
 	//timeOut = thisTimeOut;
 	timeOut = thisTimeOut / 5 * 4;
 	comboTimeOut = thisTimeOut - timeOut;
-	gameResult result = search(BLACK, map);
+	gameResult result = search(BLACK, boardMap);
 	point p = result.result;
 	if (result.value == MAX_VALUE) {
-		pipeOut("MESSAGE ¡ï¡ï¡ï");
+		pipeOut("MESSAGE ï¿½ï¿½ï¿½ï¿½");
 	}
 	if (result.value == MIN_VALUE) {
-		pipeOut("MESSAGE ¡ø¡ø¡ø");
+		pipeOut("MESSAGE ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
 	}
 	pipeOut("MESSAGE :level %d(%d) value %d (%d,%d) speed %d k (%d) ", result.level, result.combo, result.value, p.x, p.y, result.speed, result.node);
 	do_mymove(p.x, p.y);

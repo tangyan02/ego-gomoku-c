@@ -22,7 +22,7 @@ static int deepLevel;
 
 static long long currentTargetTime;
 
-extern int ** map;
+extern int ** boardMap;
 
 bool returnWinValue(int level, point p) {
 	if (level == currentLevel) {
@@ -78,7 +78,7 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 
 	deepLevel = level < deepLevel ? level : deepLevel;
 	//printf("hit\n");
-	//printMap(map);
+	//printMap(boardMap);
 	//printMoveHistory();
 
 	if (comboType == COMBO_THREE) {
@@ -87,7 +87,7 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 			deepLevel = level;
 			if (killDfs(currentLevel, color, color, point(), point(), COMBO_FOUR)) {
 				//printf("hit\n");
-				//printMap(map);
+				//printMap(boardMap);
 				//printMoveHistory();
 				deepLevel = tempDeepLevel;
 				return false;
@@ -126,7 +126,7 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 	if (canWinCheck(color)) {
 		if (color == aiColor) {
 			//printf("win\n");
-			//printMap(map);
+			//printMap(boardMap);
 			//printMoveHistory();
 			return returnWinValue(level, getFiveAttack(ps, color));
 		}
@@ -223,21 +223,21 @@ comboResult kill(Color color, int level, long long targetTime)
 #include"io.h"
 #include"console.h"
 extern int boardSize;
-extern int ** map;
+extern int ** boardMap;
 
 static void init() {
 	initPattern();
 	boardSize = 20;
-	map = readMap("combo.txt");
-	initGameMap(map);
-	printMap(map);
+	boardMap = readMap("combo.txt");
+	initGameMap(boardMap);
+	printMap(boardMap);
 }
 
 static void testSelectAttack() {
 	points* ps = PointsFactory::createComboNeighborPoints(0, COMBO_THREE);
 	fillNeighbor(ps);
 	//selectAttack(ps, BLACK, COMBO_THREE);
-	printMapWithStars(map, *ps);
+	printMapWithStars(boardMap, *ps);
 }
 
 void testKill() {
@@ -254,7 +254,7 @@ void testKill() {
 		}
 		if (result.canWin) {
 			printf("WIN\n");
-			printMapWithStar(map, result.p);
+			printMapWithStar(boardMap, result.p);
 			return;
 		}
 		else
