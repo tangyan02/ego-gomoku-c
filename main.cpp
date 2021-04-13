@@ -68,10 +68,10 @@ int main()
 	//piskvork();
 	//testCombo();
 	//bugTest();
-	//caseTest();
+	caseTest();
 	//testPlay();
 	//testPattern();
 	//testPatternRecorder();
-	selfLearn();
+	//selfLearn();
 	return 0;
 }

@@ -1,12 +1,9 @@
 #pragma once
-#include<vector>
-
-using namespace std;
+#include "point.h"
 
 class points
 {
 public:
-	//vector<point> list;
 	point list[256];
 	int count = 0;
 
@@ -18,4 +15,3 @@ public:
 	void clear();
 	bool contains(int x, int y);
 };
-

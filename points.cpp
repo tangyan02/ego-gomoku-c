@@ -12,7 +12,6 @@ points::~points()
 
 void points::add(point p)
 {
-	//list.push_back(p);
 	list[count] = p;
 	count++;
 }

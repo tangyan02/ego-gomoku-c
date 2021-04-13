@@ -1,11 +1,14 @@
 #pragma once
 
-#include"point.h"
-#include"points.h"
-#include"config.h"
-#include"player.h"
-#include"pointHash.h"
-#include<string>
+#include "point.h"
+#include "points.h"
+#include "config.h"
+#include "player.h"
+#include "pointHash.h"
+#include <string>
+#include <vector>
+
+using namespace std;
 
 void printPoints(points ps);
 
