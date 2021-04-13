@@ -54,11 +54,12 @@ void qsort(point *list, int score[], int l, int r)
 			int t = score[x];
 			score[x] = score[y];
 			score[y] = t;
-			point p = list[x];
-			list[x] = list[y];
-			list[y] = p;
-			x++;
-			y--;
+			t = list[x].x;
+			list[x].x = list[y].x;
+			list[y].x = t;
+			t = list[x].y;
+			list[x].y = list[y].y;
+			list[y].y = t;
 		}
 	}
 	if (x < r)
