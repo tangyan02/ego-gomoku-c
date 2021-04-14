@@ -141,8 +141,8 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 		cache.clear();
 
 		Color color = aiColor;
-		int alpha = MIN_VALUE;
-		int beta = MAX_VALUE;
+		int alpha = MIN_VALUE * 2;
+		int beta = MAX_VALUE * 2;
 
 		int value = dfs(level, color, aiColor, alpha, beta, 0);
 
@@ -183,7 +183,7 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			if (debugEnable) {
 				printMapWithStar(getMap(), currentPointResult);
 			}
-			if (value == MAX_VALUE)
+			if (value >= MAX_VALUE/2)
 				break;
 		}
 		if (getSystemTime() - searchStartTime > timeOut / 4) {
@@ -219,7 +219,7 @@ gameResult search(Color aiColor, Color** map)
 		return gameResult;
 	}
 
-	//combo search
+	//combo search, extend can always instead combo search
 	if (tryComboSearchIteration(neighbors, aiColor, &gameResult)) {
 		return gameResult;
 	}
@@ -258,10 +258,10 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		extendNodeCount++;
 	}
 
+	int value = getScoreValue(color, aiColor);
 
 	if (level <= 1) 
 	{
-		int value = getScoreValue(color, aiColor);
 		// extend
 		if (value < beta && value > alpha && extend < currentLevel) {
 			level += 2;
@@ -278,7 +278,8 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	}
 
 	if (canWinCheck(color)) {
-		return MAX_VALUE;
+		return value + MAX_VALUE;
+		//return MAX_VALUE;
 	}
 
 	//get neighbors
@@ -302,7 +303,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		int value;
 		//zero window search
 		if (level == currentLevel && extend == 0 && loseSet.contains(p)) {
-			value = MIN_VALUE;
+			value = MIN_VALUE + value;
 		}
 		else {
 			if (i == 0) {
@@ -337,11 +338,11 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 			if (debugEnable)
 				printf("(%d, %d) value: %d nodes: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - searchStartTime);
 
-			if (value == MAX_VALUE) {
+			if (value >= MAX_VALUE/2) {
 				currentPointResult = p;
 				return value;
 			}
-			if (value == MIN_VALUE) {
+			if (value <= MIN_VALUE/2) {
 				if (!loseSet.contains(p))
 					loseSet.add(p);
 			}

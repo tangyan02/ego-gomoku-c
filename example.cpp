@@ -115,7 +115,9 @@ void brain_turn()
 		}
 	}
 	pipeOut("MESSAGE time limit %d", thisTimeOut);
-	//timeOut = thisTimeOut;
+	timeOut = thisTimeOut;
+	//comboTimeOut = 0;
+	//comboEnable = false;
 	timeOut = thisTimeOut / 5 * 4;
 	comboTimeOut = thisTimeOut - timeOut;
 	gameResult result = search(BLACK, map);

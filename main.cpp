@@ -67,14 +67,14 @@ void caseTest() {
 
 int main()
 {
-	piskvork();
+	//piskvork();
 	//testCombo();
 	//bugTest();
-	caseTest();
+	//caseTest();
 	//testPlay();
 	//testPattern();
 	//testPatternRecorder();
-	//selfLearn();
+	selfLearn();
 	//testAnalyzer();
 	return 0;
 }

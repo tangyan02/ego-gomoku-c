@@ -72,11 +72,9 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 		return false;
 	}
 
-	//if (otherWin) {
-	//	return false;
-	//}
 
 	deepLevel = level < deepLevel ? level : deepLevel;
+
 	//printf("hit\n");
 	//printMap(map);
 	//printMoveHistory();
@@ -84,15 +82,19 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 	if (comboType == COMBO_THREE) {
 		if (color != aiColor) {
 			int tempDeepLevel = deepLevel;
+			int tempCurrentLevel = currentLevel;
 			deepLevel = level;
+			currentLevel = currentLevel * 2;
 			if (killDfs(currentLevel, color, color, point(), point(), COMBO_FOUR)) {
-				//printf("hit\n");
-				//printMap(map);
-				//printMoveHistory();
+			/*	printf("hit\n");
+				printMap(map);
+				printMoveHistory();*/
 				deepLevel = tempDeepLevel;
+				currentLevel = tempCurrentLevel;
 				return false;
 			}
 			deepLevel = tempDeepLevel;
+			currentLevel = tempCurrentLevel;
 		}
 	}
 
