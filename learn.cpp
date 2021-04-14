@@ -158,7 +158,6 @@ static void accident(player& p) {
 		}
 	}
 
-	p.sigma = 0;
 	if (rand() % 2 == 0) {
 		int sigma = rand() % (p.sigma*2+1) + 1;
 		p.sigma = sigma;
