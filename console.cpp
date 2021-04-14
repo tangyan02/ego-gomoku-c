@@ -19,7 +19,7 @@ void printHash(pointHash hash) {
 	for (int i = 0; i < boardSize; i++)
 	{
 		for (int j = 0; j < boardSize; j++) {
-			if (hash.contains(point(i, j))) {
+			if (hash.contains(i, j)) {
 				printf("%d,%d ", i, j);
 			}
 		}
