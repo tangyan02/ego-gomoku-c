@@ -137,7 +137,6 @@ static void variation(player& p) {
 			p.score[i] = 3;
 		}
 	}
-	p.sigma = 0;
 	if (rand() % 2 == 0) {
 		int delta = 1;
 		if (rand() % 2 == 0) {
