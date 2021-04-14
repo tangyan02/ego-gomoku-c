@@ -103,7 +103,7 @@ bool tryComboSearchIteration(points * neighbors, Color aiColor, gameResult *game
 					if (!loseSet.contains(p.x, p.y)) {
 						loseCount++;
 					}
-					loseSet.add(point(p.x, p.y));
+					loseSet.add(p);
 				}
 				if (!result.isDeep) {
 					otherSearch[i] = false;
