@@ -10,6 +10,7 @@
 #include "patternRecorder.h"
 #include "comboProcessor.h"
 #include "learn.h"
+#include "analyzer.h"
 
 extern bool debugEnable;
 
@@ -57,15 +58,16 @@ void caseTest() {
 	boardSize = 20;
 	debugEnable = true;
 	comboTimeOut = 3000;
-	timeOut = 5000;
-	Color **map = readMap("input007.txt");
-	gameResult result = search(WHITE, map);
+	searchLevel = 12;
+	timeOut = 60* 1000;
+	Color **map = readMap("input008.txt");
+	gameResult result = search(BLACK, map);
 	printMapWithStar(map, result.result);
 }
 
 int main()
 {
-	//piskvork();
+	piskvork();
 	//testCombo();
 	//bugTest();
 	caseTest();
@@ -73,5 +75,6 @@ int main()
 	//testPattern();
 	//testPatternRecorder();
 	//selfLearn();
+	//testAnalyzer();
 	return 0;
 }

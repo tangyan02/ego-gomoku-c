@@ -1,9 +1,10 @@
+#include "stdafx.h"
 #include "levelProcessor.h"
 #include "PointsFactory.h"
 #include "analyzer.h"
 #include "gameMap.h"
 #include "patternRecorder.h"
-#include "stdafx.h"
+#include "pattern.h"
 
 int singleScore[3][20][20];
 
@@ -27,12 +28,12 @@ static int getScore(int x, int y, Color color)
 		if (color == BLACK)
 		{
 			value += patternScore[blackLineKey[x][y][k]];
-			value += patternScore[whiteLineKey[x][y][k]] / 2;
+			//value += patternScore[whiteLineKey[x][y][k]] / 2;
 		}
 		if (color == WHITE)
 		{
 			value += patternScore[whiteLineKey[x][y][k]];
-			value += patternScore[blackLineKey[x][y][k]] / 2;
+			//value += patternScore[blackLineKey[x][y][k]] / 2;
 		}
 	}
 	return value;
@@ -60,6 +61,8 @@ void qsort(point *list, int score[], int l, int r)
 			t = list[x].y;
 			list[x].y = list[y].y;
 			list[y].y = t;
+			x++;
+			y--;
 		}
 	}
 	if (x < r)
@@ -73,6 +76,12 @@ void selectAndSortPoints(points *neighbors, Color color)
 	if (tryFiveAttack(color, neighbors))
 		return;
 	if (tryFourDefence(color, neighbors))
+		return;
+	if (tryActiveFourAttack(color, neighbors))
+		return;
+	if (tryDoubleFourAttack(color, neighbors))
+		return;
+	if (tryDoubleComboDefence(color, neighbors))
 		return;
 	if (tryThreeDefence(color, neighbors))
 		return;

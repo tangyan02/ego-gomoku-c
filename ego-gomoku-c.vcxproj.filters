@@ -120,6 +120,9 @@
     <Text Include="combo8.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="analyze4.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

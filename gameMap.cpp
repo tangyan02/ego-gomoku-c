@@ -56,6 +56,8 @@ void updateNeighbor(int i, int j, bool isAdd, Color pointColor) {
 	//			if (map[x][y] == NULL)
 	//				addNeighborCount(x, y, isAdd);
 	//		}
+	// 
+	// 
 	//for (int k = 0; k < 8; k++) {
 	//	int x = i + directX[k];
 	//	int y = j + directY[k];
@@ -111,7 +113,7 @@ void initGameMap(Color** value) {
 	bottom = 0;
 	left = boardSize - 1;
 	top = boardSize - 1;
-	//��ʼ����ϣȨֵ
+
 	srand((unsigned)time(NULL));
 
 	for (int i = 0; i < boardSize; i++)
@@ -127,7 +129,7 @@ void initGameMap(Color** value) {
 		for (int j = 0; j < boardSize; j++) {
 			neighborCount[i][j] = 0;
 		}
-	//��ʼ����ͼ�͹�ϣ��
+
 	for (int i = 0; i < boardSize; i++)
 		for (int j = 0; j < boardSize; j++) {
 			Color color = map[i][j];
@@ -218,4 +220,9 @@ void updateHashCode(int x, int y, Color color)
 			hashCode ^= weightWhite[x][y];
 		}
 	}
+}
+
+bool inNeighbor(int x, int y)
+{
+	return neighborCount[x][y] > 0;
 }

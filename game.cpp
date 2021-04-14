@@ -40,8 +40,6 @@ static int currentLevel;
 
 static int maxExtend;
 
-static int innerComboNodeCount;
-
 static int extendNodeCount;
 
 static point currentPointResult;
@@ -137,7 +135,6 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 		nodeCount = 0;
 		currentLevel = level;
 		maxExtend = 0;
-		innerComboNodeCount = 0;
 		extendNodeCount = 0;
 
 		cacheLast = cache;
@@ -169,11 +166,10 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			gameResult->value = value;
 			gameResult->level = level;
 			gameResult->maxExtend = maxExtend;
-			gameResult->innerComboNode = innerComboNodeCount;
 			gameResult->extendNode = extendNodeCount;
 			if (piskvorkMessageEnable)
 			{
-				printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, node %d , max extend %d, extend node %d , inner combo nodes %d,  cost %lld ms\n", 
+				printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, node %d , max extend %d, extend node %d , cost %lld ms\n", 
 					level, 
 					value, 
 					gameResult->result.x, 
@@ -182,7 +178,6 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 					nodeCount,
 					maxExtend,
 					extendNodeCount,
-					innerComboNodeCount, 
 					getSystemTime() - t);
 			}
 			if (debugEnable) {
@@ -263,18 +258,10 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		extendNodeCount++;
 	}
 
-	int value = getScoreValue(color, aiColor);
-	
-	//if (value > alpha && value < beta) {
-	//	innerComboNodeCount++;
-	//	comboResult result = kill(color, 5, getSystemTime() + timeOut/10);
-	//	if (result.canWin) {
-	//		return MAX_VALUE;
-	//	}
-	//}
 
 	if (level <= 1) 
 	{
+		int value = getScoreValue(color, aiColor);
 		// extend
 		if (value < beta && value > alpha && extend < currentLevel) {
 			level += 2;
@@ -284,11 +271,8 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 			}
 		}
 
-		
-
 		// leaf node get value
 		if (level == 0) {
-			//int value = getScoreValue(color, aiColor);
 			return value;
 		}
 	}

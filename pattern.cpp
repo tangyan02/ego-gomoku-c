@@ -8,8 +8,8 @@ static int directY[] = { 1, 1, 0, -1 };
 int patternLib[PATTERN_SIZE] = { PATTERN_NULL };
 int patternScore[PATTERN_SIZE] = { PATTERN_NULL };
 
-static int baseScore[10] = { 0, 100000, 10000, 31, 39, 16 ,20, 11, 11, 3 };
-static int sigma = 0;
+static int baseScore[10] = { 0, 100000, 10000, 56, 52, 20, 22, 11, 7, 4 };
+static int sigma = 1;
 
 static bool inited = false;
 
@@ -193,9 +193,4 @@ static void printPatterns() {
 		});
 	}
 
-}
-
-void testPattern() {
-	initPattern();
-	printPatterns();
 }

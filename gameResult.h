@@ -10,7 +10,6 @@ public:
 	int combo = 0;
 	int maxExtend = 0;
 	int extendNode = 0;
-	int innerComboNode = 0;
 	gameResult();
 	~gameResult();
 };
