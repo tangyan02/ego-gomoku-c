@@ -127,7 +127,7 @@ static player copy(player p, int& maxVersion) {
 
 static void variation(player& p) {
 	for (int i = 3; i < 10; i++) {
-		int bond = max(p.score[i] / 4, 5);
+		int bond = max(p.score[i] / 2, 5);
 		int delta = rand() % bond + 1;
 		if (rand() % 2 == 0) {
 			delta = -delta;
