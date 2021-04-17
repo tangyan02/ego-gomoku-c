@@ -167,7 +167,7 @@ static void accident(player& p) {
 static void breed(vector<player>& players, int& maxVersion) {
 	int size = players.size();
 	for (int i = 0; i < size; i++) {
-		player child = copy(players[i], maxVersion);
+		player child = copy(players[i/2], maxVersion);
 		variation(child);
 		players.push_back(child);
 	}

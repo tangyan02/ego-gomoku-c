@@ -5,12 +5,16 @@
 #include <time.h>  
 #include "patternRecorder.h"
 #include "PointsFactory.h"
+//#include "levelProcessor.h"
 
 int **map;
 
 points moveHistory;
 
 extern int boardSize;
+
+//extern int blackPattern[20][20][4];
+//extern int whitePattern[20][20][4];
 
 static int directX[] = { 0, 1, 1, 1, 0, -1, -1, -1 };
 static int directY[] = { 1, 1, 0, -1, -1, -1, 0, 1 };
@@ -58,24 +62,30 @@ void updateNeighbor(int i, int j, bool isAdd, Color pointColor) {
 	//		}
 	// 
 	// 
-	//for (int k = 0; k < 8; k++) {
-	//	int x = i + directX[k];
-	//	int y = j + directY[k];
-	//	if (reachable(x, y)) {
-	//		Color color = map[x][y];
-	//		if (color == NULL) {
-	//			addNeighborCount(x, y, isAdd);
+	//if (countPattern(pointColor, PATTERN_ACTIVE_TWO == 0)) {
+	//	for (int k = 0; k < 8; k++) {
+	//		int x = i + directX[k];
+	//		int y = j + directY[k];
+	//		if (reachable(x, y)) {
+	//			Color color = map[x][y];
+	//			if (color == NULL) {
+	//				addNeighborCount(x, y, isAdd);
+	//			}
+	//		}
+	//		int x2 = x;
+	//		int y2 = y;
+	//		for (int r = 0; r < 4; r++) {
+	//			x2 += directX[k];
+	//			y2 += directY[k];
+	//			if (reachable(x2, y2)) {
+	//				Color color = map[x2][y2];
+	//				if (color == NULL) {
+	//					addNeighborCount(x2, y2, isAdd);
+	//				}
+	//			}
 	//		}
 	//	}
-	//	int x2 = x + directX[k];
-	//	int y2 = y + directY[k];
-	//	if (reachable(x2, y2)) {
-	//		Color color = map[x2][y2];
-	//		if (color == NULL) {
-	//			addNeighborCount(x2, y2, isAdd);
-	//		}
-	//	}
-	//}
+	//} else {
 	for (int k = 0; k < 8; k++) {
 		int x = i + directX[k];
 		int y = j + directY[k];
@@ -104,6 +114,7 @@ void updateNeighbor(int i, int j, bool isAdd, Color pointColor) {
 			}
 		}
 	}
+	//}
 	
 }
 
@@ -147,10 +158,10 @@ void move(int x, int y, Color color) {
 	removeLinePatternCount(x, y);
 	updateHashCode(x, y, color);
 	map[x][y] = color;
-	updateNeighbor(x, y, true, color);
 	updateLineKey(x, y);
 	updatePointPattern(x, y);
 	updateLinePatternCount(x, y);
+	updateNeighbor(x, y, true, color);
 	moveHistory.add(point(x, y));
 }
 
@@ -158,10 +169,10 @@ void undoMove(int x, int y, Color color) {
 	removeLinePatternCount(x, y);
 	updateHashCode(x, y, color);
 	map[x][y] = NULL_COLOR;
-	updateNeighbor(x, y, false, color);
 	updateLineKey(x, y);
 	updatePointPattern(x, y);
 	updateLinePatternCount(x, y);
+	updateNeighbor(x, y, false, color);
 	moveHistory.pop();
 }
 

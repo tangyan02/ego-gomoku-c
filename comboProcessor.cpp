@@ -33,13 +33,14 @@ bool returnWinValue(int level, point p) {
 
 void selectAttack(points* neighbor, Color color, int& comboType) {
 	tryFiveAttack(getOtherColor(color), neighbor);
-	if (comboType == COMBO_FOUR) {
-		if (tryFourAttack(color, neighbor)) {
+
+	if (comboType == COMBO_THREE) {
+		if (tryThreeOrFourAttack(color, neighbor)) {
 			return;
 		}
 	}
-	if (comboType == COMBO_THREE) {
-		if (tryThreeOrFourAttack(color, neighbor)) {
+	if (comboType == COMBO_FOUR) {
+		if (tryFourAttack(color, neighbor)) {
 			return;
 		}
 	}
@@ -54,9 +55,11 @@ void selectDefence(points* neighbor, Color color, int comboType) {
 		}
 	}
 	if (comboType == COMBO_THREE) {
+
 		if (tryFourDefence(color, neighbor)) {
 			return;
 		}
+		
 		if (tryThreeDefence(color, neighbor))
 			return;
 	}
@@ -80,22 +83,28 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 	//printMoveHistory();
 
 	if (comboType == COMBO_THREE) {
-		if (color != aiColor) {
-			int tempDeepLevel = deepLevel;
-			int tempCurrentLevel = currentLevel;
-			deepLevel = level;
-			currentLevel = currentLevel * 2;
-			if (killDfs(currentLevel, color, color, point(), point(), COMBO_FOUR)) {
-			/*	printf("hit\n");
-				printMap(map);
-				printMoveHistory();*/
-				deepLevel = tempDeepLevel;
-				currentLevel = tempCurrentLevel;
-				return false;
+		if (color == aiColor) {
+			if (countPattern(getOtherColor(color), PATTERN_SLEEPY_FOUR) > 0 ||
+				countPattern(getOtherColor(color), PATTERN_ACTIVE_FOUR) > 0) {
+				comboType = COMBO_FOUR;
 			}
-			deepLevel = tempDeepLevel;
-			currentLevel = tempCurrentLevel;
 		}
+		//if (color != aiColor) {
+		//	int tempDeepLevel = deepLevel;
+		//	int tempCurrentLevel = currentLevel;
+		//	deepLevel = level;
+		//	currentLevel = currentLevel * 2;
+		//	if (killDfs(currentLevel, color, color, point(), point(), COMBO_FOUR)) {
+		//	/*	printf("hit\n");
+		//		printMap(map);
+		//		printMoveHistory();*/
+		//		deepLevel = tempDeepLevel;
+		//		currentLevel = tempCurrentLevel;
+		//		return false;
+		//	}
+		//	deepLevel = tempDeepLevel;
+		//	currentLevel = tempCurrentLevel;
+		//}
 	}
 
 	if (color == aiColor) {

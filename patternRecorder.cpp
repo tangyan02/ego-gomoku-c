@@ -247,13 +247,13 @@ void initPatternRecord() {
 		}
 }
 
-bool existPattern(Color color, int patternCode)
+int countPattern(Color color, int patternCode)
 {
 	if (color == BLACK) {
-		return blackPatternCount[patternCode] > 0;
+		return blackPatternCountInNull[patternCode];
 	}
 	if (color == WHITE) {
-		return whitePatternCount[patternCode] > 0;
+		return whitePatternCountInNull[patternCode];
 	}
 	return false;
 }
