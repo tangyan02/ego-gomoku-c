@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -81,6 +81,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -126,6 +127,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -135,7 +137,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
@@ -144,12 +146,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="analyze.txt" />
     <Text Include="analyze2.txt" />
     <Text Include="analyze3.txt" />
+    <Text Include="analyze4.txt" />
     <Text Include="combo.txt" />
     <Text Include="combo2.txt" />
     <Text Include="combo3.txt" />
@@ -157,6 +161,7 @@
     <Text Include="combo5.txt" />
     <Text Include="combo6.txt" />
     <Text Include="combo7.txt" />
+    <Text Include="combo8.txt" />
     <Text Include="comboVCF.txt" />
     <Text Include="failCombo.txt" />
     <Text Include="fourDefence.txt" />
@@ -170,7 +175,9 @@
     <Text Include="input007.txt" />
     <Text Include="input008.txt" />
     <Text Include="License" />
+    <Text Include="openings.txt" />
     <Text Include="patternRecorder.txt" />
+    <Text Include="players.txt" />
     <Text Include="ReadMe.txt" />
     <Text Include="README.md" />
   </ItemGroup>
@@ -183,10 +190,12 @@
     <ClInclude Include="game.h" />
     <ClInclude Include="gameMap.h" />
     <ClInclude Include="io.h" />
+    <ClInclude Include="learn.h" />
     <ClInclude Include="levelProcessor.h" />
     <ClInclude Include="pattern.h" />
     <ClInclude Include="patternRecorder.h" />
     <ClInclude Include="pisqpipe.h" />
+    <ClInclude Include="player.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="pointHash.h" />
     <ClInclude Include="points.h" />
@@ -206,12 +215,14 @@
     <ClCompile Include="example.cpp" />
     <ClCompile Include="gameMap.cpp" />
     <ClCompile Include="io.cpp" />
+    <ClCompile Include="learn.cpp" />
     <ClCompile Include="levelProcessor.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="pattern.cpp" />
     <ClCompile Include="patternRecorder.cpp" />
     <ClCompile Include="pisqpipe.cpp" />
+    <ClCompile Include="player.cpp" />
     <ClCompile Include="point.cpp" />
     <ClCompile Include="pointHash.cpp" />
     <ClCompile Include="points.cpp" />
@@ -224,6 +235,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="winChecker.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

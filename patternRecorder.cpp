@@ -8,6 +8,9 @@ static int directX[] = { 0, 1, 1, 1 };
 
 static int directY[] = { 1, 1, 0, -1 };
 
+int blackPatternTotalScore;
+int whitePatternTotalScore;
+
 int blackPatternCount[10];
 int whitePatternCount[10];
 
@@ -23,12 +26,15 @@ int whiteLineKey[20][20][4];
 int keyFullWithBlank[8];
 
 extern int patternLib[PATTERN_SIZE];
+extern int patternScore[PATTERN_SIZE];
 
 extern Color** map;
 
 extern int boardSize;
 
 void clearPatternRecord() {
+	blackPatternTotalScore = 0;
+	whitePatternTotalScore = 0;
 	for (int i = 0; i < 10; i++) {
 		blackPatternCount[i] = 0;
 		whitePatternCount[i] = 0;
@@ -80,9 +86,11 @@ int buildLineAndGetKey(int line[], int x, int y, int direct, Color selfColor) {
 void addPointDirectPatternCount(int x, int y, int direct) {
 	if (map[x][y] == BLACK) {
 		blackPatternCount[blackPattern[x][y][direct]]++;
+		blackPatternTotalScore += patternScore[blackLineKey[x][y][direct]];
 	}
 	if (map[x][y] == WHITE) {
 		whitePatternCount[whitePattern[x][y][direct]]++;
+		whitePatternTotalScore += patternScore[whiteLineKey[x][y][direct]];
 	}
 	if (map[x][y] == NULL) {
 		blackPatternCountInNull[blackPattern[x][y][direct]]++;
@@ -93,9 +101,11 @@ void addPointDirectPatternCount(int x, int y, int direct) {
 void removePointDirectPatternCount(int x, int y, int direct) {
 	if (map[x][y] == BLACK) {
 		blackPatternCount[blackPattern[x][y][direct]]--;
+		blackPatternTotalScore -= patternScore[blackLineKey[x][y][direct]];
 	}
 	if (map[x][y] == WHITE) {
 		whitePatternCount[whitePattern[x][y][direct]]--;
+		whitePatternTotalScore -= patternScore[whiteLineKey[x][y][direct]];
 	}
 	if (map[x][y] == NULL) {
 		blackPatternCountInNull[blackPattern[x][y][direct]]--;
@@ -223,6 +233,17 @@ void initPatternRecord() {
 				addPointDirectPatternCount(i, j, k);
 			}
 		}
+}
+
+bool existPattern(Color color, int patternCode)
+{
+	if (color == BLACK) {
+		return blackPatternCount[patternCode] > 0;
+	}
+	if (color == WHITE) {
+		return whitePatternCount[patternCode] > 0;
+	}
+	return false;
 }
 
 /***************************** ≤‚ ‘¥˙¬Î∑÷∏Ù ***************************************/

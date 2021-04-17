@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "pisqpipe.h"
+
+
+#ifdef _WIN32
 #include <windows.h>
 #include "game.h"
 #include "io.h"
@@ -12,6 +15,9 @@ static unsigned seed;
 extern int boardSize;
 extern int timeOut;
 extern int comboTimeOut;
+extern bool piskvorkMessageEnable; 
+extern bool comboEnable;
+
 static bool record = false;
 
 void brain_init()
@@ -93,7 +99,9 @@ void brain_turn()
 	if (!record) {
 		printMapInMessage(map);
 	}
+	piskvorkMessageEnable = true;
 	record = true;
+	comboEnable = true;
 	int thisTimeOut = info_time_left / 10;
 	thisTimeOut = min(info_timeout_turn, thisTimeOut);
 	int pointCount = 0;
@@ -107,7 +115,9 @@ void brain_turn()
 		}
 	}
 	pipeOut("MESSAGE time limit %d", thisTimeOut);
-	//timeOut = thisTimeOut;
+	timeOut = thisTimeOut;
+	//comboTimeOut = 0;
+	//comboEnable = false;
 	timeOut = thisTimeOut / 5 * 4;
 	comboTimeOut = thisTimeOut - timeOut;
 	gameResult result = search(BLACK, map);
@@ -118,7 +128,7 @@ void brain_turn()
 	if (result.value == MIN_VALUE) {
 		pipeOut("MESSAGE ¡ø¡ø¡ø");
 	}
-	pipeOut("MESSAGE ¡ð¡ñ level %d(%d) value %d (%d,%d) speed %d k (%d) ¡ñ¡ð", result.level, result.combo, result.value, p.x, p.y, result.speed, result.node);
+	pipeOut("MESSAGE :level %d(%d) value %d (%d,%d) speed %d k (%d) ", result.level, result.combo, result.value, p.x, p.y, result.speed, result.node);
 	do_mymove(p.x, p.y);
 }
 
@@ -144,3 +154,6 @@ void brain_eval(int x, int y)
 }
 
 #endif
+
+
+#endif //_WIN32

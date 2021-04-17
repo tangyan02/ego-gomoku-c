@@ -1,8 +1,14 @@
 #pragma once
-#include"point.h"
-#include"points.h"
-#include"config.h"
-#include"pointHash.h"
+
+#include "point.h"
+#include "points.h"
+#include "config.h"
+#include "player.h"
+#include "pointHash.h"
+#include <string>
+#include <vector>
+
+using namespace std;
 
 void printPoints(points ps);
 
@@ -17,3 +23,11 @@ void printMapWithStars(Color **map, points ps);
 void printMapWithStars(Color **map, pointHash hash);
 
 void printMapWithStar(Color **map, point p);
+
+void printPlayers(vector<player>& players);
+
+void printGroupResult(int winCount[], vector<player>& players);
+
+char getCharOfColor(Color color);
+
+void printMoveHistory();

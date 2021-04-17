@@ -24,6 +24,8 @@ extern int comboTimeOut;
 
 extern bool debugEnable;
 
+extern bool piskvorkMessageEnable;
+
 static int directX[] = { 0, 1, 1, 1 };
 
 static int directY[] = { 1, 1, 0, -1 };
@@ -35,6 +37,10 @@ static long long searchStartTime;
 static bool timeOutEnable = false;
 
 static int currentLevel;
+
+static int maxExtend;
+
+static int extendNodeCount;
 
 static point currentPointResult;
 
@@ -81,11 +87,11 @@ bool tryComboSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			}
 		}
 
-		//遍历扩展节点
+		
 		for (int i = 0; i < neighbors->count; i++) {
 			if (otherSearch[i]) {
 				point p = point(neighbors->list[i].x, neighbors->list[i].y);
-				//先查必败表
+				//lose remove
 				if (loseSet.contains(p)) {
 					continue;
 				}
@@ -97,7 +103,7 @@ bool tryComboSearchIteration(points * neighbors, Color aiColor, gameResult *game
 					if (!loseSet.contains(p.x, p.y)) {
 						loseCount++;
 					}
-					loseSet.add(point(p.x, p.y));
+					loseSet.add(p);
 				}
 				if (!result.isDeep) {
 					otherSearch[i] = false;
@@ -105,34 +111,38 @@ bool tryComboSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			}
 		}
 	}
-	printf("MESSAGE lose point count %d\n", loseCount);
+	if (piskvorkMessageEnable) {
+		printf("MESSAGE lose point count %d\n", loseCount);
+	}
 	return false;
 }
 
 bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *gameResult) {
-	//如果必败，则朴素搜索
+	//if all lose points , normal search
 	bool loseFlag = false;
 	if (neighbors->count == loseSet.count) {
 		loseSet.reset();
 		loseFlag = true;
 	}
-	//得分搜索
+	//normal search
 	timeOutEnable = false;
 	searchStartTime = getSystemTime();
 	cacheLast.clear();
 	cache.clear();
-	for (int level = 2; level <= searchLevel; level += 2)
+	for (int level = 2; level <= searchLevel; level += 2 )
 	{
 		long long t = getSystemTime();
 		nodeCount = 0;
 		currentLevel = level;
+		maxExtend = 0;
+		extendNodeCount = 0;
 
 		cacheLast = cache;
 		cache.clear();
 
 		Color color = aiColor;
-		int alpha = MIN_VALUE;
-		int beta = MAX_VALUE;
+		int alpha = MIN_VALUE * 2;
+		int beta = MAX_VALUE * 2;
 
 		int value = dfs(level, color, aiColor, alpha, beta, 0);
 
@@ -155,11 +165,25 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			gameResult->node = nodeCount;
 			gameResult->value = value;
 			gameResult->level = level;
-			printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, cost %lld ms\n", level, value, gameResult->result.x, gameResult->result.y, speed, getSystemTime() - t);
+			gameResult->maxExtend = maxExtend;
+			gameResult->extendNode = extendNodeCount;
+			if (piskvorkMessageEnable)
+			{
+				printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, node %d , max extend %d, extend node %d , cost %lld ms\n", 
+					level, 
+					value, 
+					gameResult->result.x, 
+					gameResult->result.y, 
+					speed,
+					nodeCount,
+					maxExtend,
+					extendNodeCount,
+					getSystemTime() - t);
+			}
 			if (debugEnable) {
 				printMapWithStar(getMap(), currentPointResult);
 			}
-			if (value == MAX_VALUE)
+			if (value >= MAX_VALUE/2)
 				break;
 		}
 		if (getSystemTime() - searchStartTime > timeOut / 4) {
@@ -174,13 +198,13 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 gameResult search(Color aiColor, Color** map)
 {
 	gameResult gameResult;
-	//初始化
+	//init 
 	initPattern();
 	clearPatternRecord();
 	initGameMap(map);
 	loseSet.reset();
 
-	//初始分析
+	//init neighbors
 	points* neighbors = PointsFactory::createPointNeighborPoints(0, 0);
 	fillNeighbor(neighbors);
 	selectAndSortPoints(neighbors, aiColor);
@@ -195,12 +219,12 @@ gameResult search(Color aiColor, Color** map)
 		return gameResult;
 	}
 
-	//算杀
+	//combo search, extend can always instead combo search
 	if (tryComboSearchIteration(neighbors, aiColor, &gameResult)) {
 		return gameResult;
 	}
 
-	//得分迭代搜索
+	//normal search
 	tryScoreSearchIteration(neighbors, aiColor, &gameResult);
 
 	return gameResult;
@@ -220,7 +244,7 @@ void moveHistoryBestToFirst(points * neighbors) {
 	}
 }
 
-/* 零窗口测试法
+/* alpha beta serach
 */
 int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) {
 	if (getSystemTime() - searchStartTime > timeOut) {
@@ -230,51 +254,46 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		return 0;
 	}
 	nodeCount++;
+	if (extend > 0) {
+		extendNodeCount++;
+	}
+
+	int value = getScoreValue(color, aiColor);
 
 	if (level <= 1) 
 	{
-		int value = getScoreValue(color, aiColor);
-		
-		/*
-		if (value > alpha && value < beta) {
-			comboResult result = kill(color, currentLevel + 1, getSystemTime() + 1000);
-			if (result.canWin) {
-				return MAX_VALUE;
-			}
-		}
-		*/
-
-		//延伸
-		
+		// extend
 		if (value < beta && value > alpha && extend < currentLevel) {
 			level += 2;
 			extend += 2;
+			if (extend > maxExtend) {
+				maxExtend = extend;
+			}
 		}
-		
 
-		//叶子分数计算
+		// leaf node get value
 		if (level == 0) {
-			//int value = getScoreValue(color, aiColor);
 			return value;
 		}
 	}
 
 	if (canWinCheck(color)) {
-		return MAX_VALUE;
+		return value + MAX_VALUE;
+		//return MAX_VALUE;
 	}
 
-	//获取扩展节点
+	//get neighbors
 	points* neighbors = PointsFactory::createPointNeighborPoints(level, extend);
 	fillNeighbor(neighbors);
 
 
-	//排序
+	//sort
 	selectAndSortPoints(neighbors, color);
 
-	//调整最优节点顺序
+	//user history best
 	moveHistoryBestToFirst(neighbors);
 
-	//遍历扩展节点
+	//move and dfs
 	int extreme = MIN_VALUE;
 	points* extremePoints = PointsFactory::createDfsTempPoints(level);
 	for (int i = 0; i < neighbors->count; i++) {
@@ -282,16 +301,16 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 
 		move(p.x, p.y, color);
 		int value;
-		//先查必败表
+		//zero window search
 		if (level == currentLevel && extend == 0 && loseSet.contains(p)) {
-			value = MIN_VALUE;
+			value = MIN_VALUE + value;
 		}
 		else {
 			if (i == 0) {
 				value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha, extend);
 			}
 			else {
-				//零窗口测试
+				//try zero window
 				value = -dfs(level - 1, getOtherColor(color), aiColor, -alpha - 1, -alpha, extend);
 				if (value > alpha && value < beta) {
 					value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha, extend);
@@ -319,22 +338,30 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 			if (debugEnable)
 				printf("(%d, %d) value: %d nodes: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - searchStartTime);
 
-			if (value == MAX_VALUE) {
+			if (value >= MAX_VALUE/2) {
 				currentPointResult = p;
 				return value;
 			}
-			if (value == MIN_VALUE) {
+			if (value <= MIN_VALUE/2) {
 				if (!loseSet.contains(p))
 					loseSet.add(p);
 			}
 		}
 	}
 
-	point extremePoint = extremePoints->list[rand() % extremePoints->count];
-	if (level == currentLevel && extend == 0) {
-		currentPointResult = point(extremePoint.x, extremePoint.y);
+	if (extremePoints->count > 0) {
+		point extremePoint = extremePoints->list[rand() % extremePoints->count];
+		if (level == currentLevel && extend == 0) {
+			currentPointResult = point(extremePoint.x, extremePoint.y);
+		}
+		cache[getMapHashCode()] = extremePoint;
+	}
+	else {
+		point extremePoint = neighbors->list[0];
+		if (level == currentLevel && extend == 0) {
+			currentPointResult = point(extremePoint.x, extremePoint.y);
+		}
 	}
 
-	cache[getMapHashCode()] = extremePoint;
 	return extreme;
 }

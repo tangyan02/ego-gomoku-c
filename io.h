@@ -6,3 +6,8 @@ Color** readMap();
 
 Color** readMap(char* path);
 
+Color** readMapFromOpennings(int lineNum, Color** map);
+
+Color nextColorForOpennings(Color** map);
+
+void copyMap(Color** map, Color** toMap);

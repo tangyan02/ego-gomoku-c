@@ -9,10 +9,16 @@ void pointHash::add(int x, int y)
 	count++;
 }
 
-void pointHash::add(point p)
+void pointHash::add(point& p)
 {
 	signal[p.x][p.y] = true;
 	count++;
+}
+
+void pointHash::remove(point& p)
+{
+	signal[p.x][p.y] = false;
+	count--;
 }
 
 bool pointHash::contains(int x, int y)
@@ -20,7 +26,7 @@ bool pointHash::contains(int x, int y)
 	return signal[x][y];
 }
 
-bool pointHash::contains(point p)
+bool pointHash::contains(point& p)
 {
 	return signal[p.x][p.y];
 }

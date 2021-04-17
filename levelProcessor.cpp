@@ -1,78 +1,147 @@
 #include "stdafx.h"
 #include "levelProcessor.h"
-#include "gameMap.h"
-#include "patternRecorder.h"
 #include "PointsFactory.h"
 #include "analyzer.h"
+#include "gameMap.h"
+#include "patternRecorder.h"
+#include "pattern.h"
+#include "pointHash.h"
+
+int singleScore[3][20][20];
 
 extern int boardSize;
 
 static int scoreList[512];
 
-static int directX[] = { 0, 1, 1, 1 };
+extern int neighborCount[20][20];
 
-static int directY[] = { 1, 1, 0, -1 };
+extern int blackLineKey[20][20][4];
+extern int whiteLineKey[20][20][4];
+extern int patternScore[PATTERN_SIZE];
 
-extern int blackPattern[20][20][4];
-extern int whitePattern[20][20][4];
+extern points moveHistory;
 
-extern int blackPatternCountInNull[10];
-extern int whitePatternCountInNull[10];
+static pointHash pHash;
 
-extern int score[10];
-
-
-extern Color ** map;
-
-int getScore(int x, int y, Color color) {
+static int getScore(int x, int y, Color color)
+{
 	int value = 0;
-	for (int k = 0; k < 4; k++) {
+	for (int k = 0; k < 4; k++)
+	{
 		if (color == BLACK)
-			value += score[blackPattern[x][y][k]];
+		{
+			value += patternScore[blackLineKey[x][y][k]];
+			//value += patternScore[whiteLineKey[x][y][k]] / 2;
+		}
 		if (color == WHITE)
-			value += score[whitePattern[x][y][k]];
+		{
+			value += patternScore[whiteLineKey[x][y][k]];
+			//value += patternScore[blackLineKey[x][y][k]] / 2;
+		}
 	}
 	return value;
 }
 
-void qsort(points *neighbors, int score[], int l, int r) {
+void qsort(point *list, int score[], int l, int r)
+{
 	int x = l;
 	int y = r;
 	int mid = score[(x + y) / 2];
-	while (x < y) {
-		while (score[x] > mid) x++;
-		while (score[y] < mid) y--;
-		if (x <= y) {
+	while (x < y)
+	{
+		while (score[x] > mid)
+			x++;
+		while (score[y] < mid)
+			y--;
+		if (x <= y)
+		{
 			int t = score[x];
 			score[x] = score[y];
 			score[y] = t;
-			point p = neighbors->list[x];
-			neighbors->list[x] = neighbors->list[y];
-			neighbors->list[y] = p;
+			t = list[x].x;
+			list[x].x = list[y].x;
+			list[y].x = t;
+			t = list[x].y;
+			list[x].y = list[y].y;
+			list[y].y = t;
 			x++;
 			y--;
 		}
 	}
-	if (x < r) qsort(neighbors, score, x, r);
-	if (l < y) qsort(neighbors, score, l, y);
+	if (x < r)
+		qsort(list, score, x, r);
+	if (l < y)
+		qsort(list, score, l, y);
 }
 
-void selectAndSortPoints(points *neighbors, Color color) {
-	//连长五
-	if (tryFiveAttack(color, neighbors))
-		return;
-	//堵冲四
-	if (tryFourDefence(color, neighbors))
-		return;
-	//对付活三
-	if (tryThreeDefence(color, neighbors))
-		return;
-
-	//排序
-	for (int i = 0; i < neighbors->count; i++) {
-		scoreList[i] = getScore(neighbors->list[i].x, neighbors->list[i].y, color);
+void removeRepeat(points* ps) {
+	//pHash.reset();
+	bool repeat = false;
+	for (int i = 0; i < ps->count; i++) {
+		if (pHash.contains(ps->list[i])) {
+			repeat = true;
+		}
+		pHash.add(ps->list[i]);
 	}
-	qsort(neighbors, scoreList, 0, neighbors->count - 1);
-
+	if (repeat) {
+		points* temp =PointsFactory::createTempPoints();
+		for (int i = 0; i < ps->count; i++) {
+			if (pHash.contains(ps->list[i])) {
+				temp->add(ps->list[i]);
+				pHash.remove(ps->list[i]);
+			}
+		}
+		/*printf("ps\n");
+		printPoints(*ps);
+		printf("temp\n");
+		printPoints(*temp);
+		ps->clear();
+		ps->addMany(temp);*/
+		return;
+	}
+	for (int i = 0; i < ps->count; i++) {
+		pHash.remove(ps->list[i]);
+	}
 }
 
+void sort(points* neighbors, Color color) {
+	point* list = neighbors->list;
+
+	for (int i = 0; i < neighbors->count; i++)
+	{
+		scoreList[i] = getScore(list[i].x, list[i].y, color);
+	}
+	qsort(list, scoreList, 0, neighbors->count - 1);
+}
+
+void selectAndSortPoints(points *neighbors, Color color)
+{
+	if (tryFiveAttack(color, neighbors)) {
+		removeRepeat(neighbors);
+		return;
+	}
+	if (tryFourDefence(color, neighbors)) {
+		removeRepeat(neighbors);
+		return;
+	}
+	if (tryActiveFourAttack(color, neighbors)) {
+		removeRepeat(neighbors);
+		return;
+	}
+	if (tryDoubleFourAttack(color, neighbors)) {
+		removeRepeat(neighbors);
+		return;
+	}
+	if (tryDoubleComboDefence(color, neighbors)) {
+		removeRepeat(neighbors);
+		//sort(neighbors, color);
+		return;
+	}
+	if (tryThreeDefence(color, neighbors)) {
+		removeRepeat(neighbors);
+		sort(neighbors, color);
+		return;
+	}
+
+	sort(neighbors, color);
+}

@@ -8,6 +8,8 @@
 
 int **map;
 
+points moveHistory;
+
 extern int boardSize;
 
 static int directX[] = { 0, 1, 1, 1, 0, -1, -1, -1 };
@@ -45,16 +47,35 @@ void updateSide(int i, int j) {
 
 void updateNeighbor(int i, int j, bool isAdd, Color pointColor) {
 	updateSide(i, j);
-	/*
-	for (int x = i - 2; x <= i + 2; x++)
-		for (int y = j - 2; y <= j + 2; y++)
-			if (reachable(x, y)) {
-				if (i == x && j == y)
-					continue;
-				if (map[x][y] == NULL)
-					addNeighborCount(x, y, isAdd);
-			}
-	*/
+	
+	//for (int x = i - 2; x <= i + 2; x++)
+	//	for (int y = j - 2; y <= j + 2; y++)
+	//		if (reachable(x, y)) {
+	//			if (i == x && j == y)
+	//				continue;
+	//			if (map[x][y] == NULL)
+	//				addNeighborCount(x, y, isAdd);
+	//		}
+	// 
+	// 
+	//for (int k = 0; k < 8; k++) {
+	//	int x = i + directX[k];
+	//	int y = j + directY[k];
+	//	if (reachable(x, y)) {
+	//		Color color = map[x][y];
+	//		if (color == NULL) {
+	//			addNeighborCount(x, y, isAdd);
+	//		}
+	//	}
+	//	int x2 = x + directX[k];
+	//	int y2 = y + directY[k];
+	//	if (reachable(x2, y2)) {
+	//		Color color = map[x2][y2];
+	//		if (color == NULL) {
+	//			addNeighborCount(x2, y2, isAdd);
+	//		}
+	//	}
+	//}
 	for (int k = 0; k < 8; k++) {
 		int x = i + directX[k];
 		int y = j + directY[k];
@@ -92,7 +113,7 @@ void initGameMap(Color** value) {
 	bottom = 0;
 	left = boardSize - 1;
 	top = boardSize - 1;
-	//初始化哈希权值
+
 	srand((unsigned)time(NULL));
 
 	for (int i = 0; i < boardSize; i++)
@@ -108,7 +129,7 @@ void initGameMap(Color** value) {
 		for (int j = 0; j < boardSize; j++) {
 			neighborCount[i][j] = 0;
 		}
-	//初始化地图和哈希码
+
 	for (int i = 0; i < boardSize; i++)
 		for (int j = 0; j < boardSize; j++) {
 			Color color = map[i][j];
@@ -130,6 +151,7 @@ void move(int x, int y, Color color) {
 	updateLineKey(x, y);
 	updatePointPattern(x, y);
 	updateLinePatternCount(x, y);
+	moveHistory.add(point(x, y));
 }
 
 void undoMove(int x, int y, Color color) {
@@ -140,6 +162,7 @@ void undoMove(int x, int y, Color color) {
 	updateLineKey(x, y);
 	updatePointPattern(x, y);
 	updateLinePatternCount(x, y);
+	moveHistory.pop();
 }
 
 Color getColor(int x, int y)
@@ -197,4 +220,9 @@ void updateHashCode(int x, int y, Color color)
 			hashCode ^= weightWhite[x][y];
 		}
 	}
+}
+
+bool inNeighbor(int x, int y)
+{
+	return neighborCount[x][y] > 0;
 }

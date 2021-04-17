@@ -1,3 +1,6 @@
+
+#ifdef _WIN32
+
 /** header with functions and variables for pipe AI */
 
 /* information about a game - you should use these variables */
@@ -40,3 +43,5 @@ extern int pipeOut(char *fmt,...);
 extern void do_mymove(int x,int y);
 extern void suggest(int x,int y);
 int piskvork();
+
+#endif // _WIN32

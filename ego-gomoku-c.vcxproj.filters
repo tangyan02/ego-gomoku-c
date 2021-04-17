@@ -111,6 +111,18 @@
     <Text Include="combo7.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="openings.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="players.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="combo8.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="analyze4.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -176,6 +188,12 @@
     <ClInclude Include="comboResult.h">
       <Filter>头文件\entity</Filter>
     </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>头文件\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="learn.h">
+      <Filter>头文件\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -240,6 +258,15 @@
     </ClCompile>
     <ClCompile Include="comboResult.cpp">
       <Filter>源文件\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>源文件\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="learn.cpp">
+      <Filter>源文件\core</Filter>
+    </ClCompile>
+    <ClCompile Include="winChecker.cpp">
+      <Filter>源文件\helper</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
