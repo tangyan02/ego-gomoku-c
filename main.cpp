@@ -59,7 +59,7 @@ void caseTest() {
 	debugEnable = true;
 	comboTimeOut = 3000;
 	searchLevel = 12;
-	timeOut = 60* 1000;
+	timeOut = 10 * 1000;
 	Color **map = readMap("input008.txt");
 	gameResult result = search(BLACK, map);
 	printMapWithStar(map, result.result);
@@ -67,14 +67,14 @@ void caseTest() {
 
 int main()
 {
-	piskvork();
+	//piskvork();
 	//testCombo();
 	//bugTest();
-	//caseTest();
+	caseTest();
 	//testPlay();
 	//testPattern();
 	//testPatternRecorder();
-	selfLearn();
+	//selfLearn();
 	//testAnalyzer();
 	return 0;
 }
