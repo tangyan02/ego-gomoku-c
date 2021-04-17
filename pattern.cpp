@@ -6,6 +6,10 @@ static int directX[] = { 0, 1, 1, 1 };
 static int directY[] = { 1, 1, 0, -1 };
 
 int patternLib[PATTERN_SIZE] = { PATTERN_NULL };
+int patternScore[PATTERN_SIZE] = { PATTERN_NULL };
+
+static int baseScore[10] = { 0, 100000, 10000, 48 ,45, 23, 23, 8, 6, 3 };
+static int sigma = 1;
 
 static bool inited = false;
 
