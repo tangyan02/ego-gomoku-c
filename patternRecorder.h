@@ -4,8 +4,6 @@ void testPatternRecorder();
 
 void updatePointPattern(int x, int y);
 
-void addPointDirectPatternCount(int x, int y, int direct);
-
 void updateLinePatternCount(int x, int y);
 
 void removeLinePatternCount(int x, int y);
