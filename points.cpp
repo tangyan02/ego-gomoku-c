@@ -20,7 +20,7 @@ void points::addMany(points *ps)
 {
 	for (int i = 0; i < ps->count; i++)
 	{
-		add(list[i]);
+		add(ps->list[i]);
 	}
 }
 

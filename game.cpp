@@ -306,6 +306,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	}
 
 	if (canWinCheck(color)) {
+		//printMap(getMap());
 		return value + MAX_VALUE;
 		//return MAX_VALUE;
 	}
@@ -314,9 +315,9 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	points* neighbors = PointsFactory::createPointNeighborPoints(level, extend);
 	fillNeighbor(neighbors);
 
-
 	//sort
 	selectAndSortPoints(neighbors, color);
+	//printMapWithStars(getMap(), *neighbors);
 
 	//user history best
 	bool existHitory = moveHistoryBestToFirst(neighbors);

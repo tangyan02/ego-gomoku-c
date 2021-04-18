@@ -158,10 +158,10 @@ void move(int x, int y, Color color) {
 	removeLinePatternCount(x, y);
 	updateHashCode(x, y, color);
 	map[x][y] = color;
+	updateNeighbor(x, y, true, color);
 	updateLineKey(x, y);
 	updatePointPattern(x, y);
 	updateLinePatternCount(x, y);
-	updateNeighbor(x, y, true, color);
 	moveHistory.add(point(x, y));
 }
 
@@ -169,10 +169,10 @@ void undoMove(int x, int y, Color color) {
 	removeLinePatternCount(x, y);
 	updateHashCode(x, y, color);
 	map[x][y] = NULL_COLOR;
+	updateNeighbor(x, y, false, color);
 	updateLineKey(x, y);
 	updatePointPattern(x, y);
 	updateLinePatternCount(x, y);
-	updateNeighbor(x, y, false, color);
 	moveHistory.pop();
 }
 

@@ -15,6 +15,11 @@ extern int whitePatternCountInNull[10];
 extern int blackPattern[20][20][4];
 extern int whitePattern[20][20][4];
 
+extern int blackLineKey[20][20][4];
+extern int whiteLineKey[20][20][4];
+
+extern int patternLib[PATTERN_SIZE];
+
 extern Color ** map;
 
 bool canWinCheck(Color color) {
@@ -94,118 +99,70 @@ bool checkDoubleFourAttack(points* neighbors, int* patternCountInNull, int patte
 }
 
 
-bool checkDoubleComboDefence(points* neighbors, int* patternCountInNull, int* MyPatternCountInNull, int patter[][20][4], int MyPatter[][20][4]) {
+bool checkDoubleComboDefence(points* neighbors, int* patternCountInNull, int pattern[][20][4], int selfPattern[][20][4]) {
 	if (patternCountInNull[PATTERN_SLEEPY_FOUR] > 0 || patternCountInNull[PATTERN_ACTIVE_THREE] > 0)
 	{
-		int directThree[4];
-		int directFour[4];
-		points* ps = PointsFactory::createLevelProcessorTempPoints();
 		for (int i = 0; i < neighbors->count; i++) {
-			int directThreeCount = 0;
-			int directFourCount = 0;
+			int threeCount = 0;
+			int fourCount = 0;
+			//printf("==\n");
 			for (int k = 0; k < 4; k++) {
-				if (patter[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR
+				if (pattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR
 					) {
-					directFour[directFourCount++] = k;
+					fourCount++;
 				}
-				if (patter[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_THREE
+				if (pattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_THREE
 					) {
-					directThree[directThreeCount++] = k;
+					threeCount++;
+					//printf("k %d\n", k);
 				}
 			}
-			if (directFourCount + directThreeCount >= 2) {
-				ps->add(neighbors->list[i]);
 
-				//line three defence
-				for (int k = 0; k < directThreeCount; k++) {
-					int px = neighbors->list[i].x - directX[directThree[k]] * 4;
-					int py = neighbors->list[i].y - directY[directThree[k]] * 4;
-					for (int i = 0; i <= 8; i++) {
-						if (i != 4) {
-							if (reachable(px, py)) {
-								if (map[px][py] == NULL) {
+			if (fourCount + threeCount >= 2) {
+				//printf("p %d %d\n", neighbors->list[i].x, neighbors->list[i].y);
+				//printf("threeCount %d   fourCount %d\n", threeCount, fourCount);
+				//printMapWithStar(map, neighbors->list[i]);
+				points* ps = PointsFactory::createTempPoints();
+				for (int k = 0; k < 4; k++) {
+					int px = neighbors->list[i].x - directX[k] * 4;
+					int py = neighbors->list[i].y - directY[k] * 4;
+					for (int r = 0; r <= 8; r++) {
+						if (reachable(px, py)) {
+							if (map[px][py] == NULL) {
+								if (inNeighbor(px, py)) {
 									ps->add(point(px, py));
 								}
 							}
 						}
-						px += directX[directThree[k]];
-						py += directY[directThree[k]];
+						px += directX[k];
+						py += directY[k];
 					}
 				}
-
-				//line four defence
-				for (int k = 0; k < directFourCount; k++) {
-					int px = neighbors->list[i].x - directX[directFour[k]] * 4;
-					int py = neighbors->list[i].y - directY[directFour[k]] * 4;
-					for (int i = 0; i <= 8; i++) {
-						if (i != 4) {
-							if (inNeighbor(px, py)) {
-								if (reachable(px, py)) {
-									if (map[px][py] == NULL) {
-										ps->add(point(px, py));
-									}
-								}
-							}
-						}
-						px += directX[directFour[k]];
-						py += directY[directFour[k]];
-					}
-				}
-
-				// my four attack
-				if (MyPatternCountInNull[PATTERN_ACTIVE_FOUR] > 0 || MyPatternCountInNull[PATTERN_SLEEPY_FOUR] > 0) {
-					for (int t = 0; t < neighbors->count; t++)
-						for (int k = 0; k < 4; k++) {
-							if (MyPatter[neighbors->list[t].x][neighbors->list[t].y][k] == PATTERN_ACTIVE_FOUR ||
-								MyPatter[neighbors->list[t].x][neighbors->list[t].y][k] == PATTERN_SLEEPY_FOUR
-								) {
-								ps->add(neighbors->list[t]);
-							}
-						}
-				}
-
-				// my three attack
-				if (directFourCount == 0) {
-					if (MyPatternCountInNull[PATTERN_ACTIVE_THREE] || MyPatternCountInNull[PATTERN_SLEEPY_THREE] > 0) {
-						for (int t = 0; t < neighbors->count; t++)
-							for (int k = 0; k < 4; k++) {
-								if (MyPatter[neighbors->list[t].x][neighbors->list[t].y][k] == PATTERN_ACTIVE_THREE ||
-									MyPatter[neighbors->list[t].x][neighbors->list[t].y][k] == PATTERN_SLEEPY_THREE
-									) {
-									ps->add(neighbors->list[t]);
-								}
-							}
-					}
-				}
-
-		/*		if (MyPatter == whitePattern) {
-					if (ps->count > 0) {
-						map[ps->list[0].x][ps->list[0].y] = STAR;
-						for (int i = 0; i <= ps->count; i++) {
-							if (map[ps->list[i].x][ps->list[i].y] != NULL) {
-								printf("what!\n");
-								for (int i = 0; i <= ps->count; i++) {
-									printf("%d,%d ", ps->list[i].x,ps->list[i].y);
-								}
-								printf("\n");
-								printMap(map);
-								exit(0);
-							}
-							map[ps->list[i].x][ps->list[i].y] = FLAG;
-						}
-						if (map[ps->list[0].x][ps->list[0].y] != NULL) {
-						}
-						printMap(map);
-						for (int i = 0; i <= ps->count; i++) {
-							map[ps->list[i].x][ps->list[i].y] = NULL;
+				
+				for (int i = 0; i < neighbors->count; i++)
+					for (int k = 0; k < 4; k++) {
+						if (selfPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
+							selfPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR ||
+							selfPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_THREE ||
+							selfPattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_LINE_FIVE
+							) {
+							ps->add(neighbors->list[i]);
 						}
 					}
-				}*/
+
+				for (int i = 0; i < neighbors->count; i++)
+					for (int k = 0; k < 4; k++) {
+						if (pattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_FOUR ||
+							pattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_SLEEPY_FOUR ||
+							pattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_ACTIVE_THREE ||
+							pattern[neighbors->list[i].x][neighbors->list[i].y][k] == PATTERN_LINE_FIVE
+							) {
+							ps->add(neighbors->list[i]);
+						}
+					}
 
 				neighbors->clear();
-				for (int i = 0; i < ps->count; i++) {
-					neighbors->add(ps->list[i]);
-				}
+				neighbors->addMany(ps);
 				return true;
 			}
 		}
@@ -344,10 +301,10 @@ bool tryThreeOrFourAttack(Color color, points *neighbors) {
 
 bool tryDoubleComboDefence(Color color, points* neighbors) {
 	if (color == WHITE) {
-		return checkDoubleComboDefence(neighbors, blackPatternCountInNull, whitePatternCountInNull, blackPattern ,whitePattern);
+		return checkDoubleComboDefence(neighbors, blackPatternCountInNull, blackPattern, whitePattern);
 	}
 	if (color == BLACK) {
-		return checkDoubleComboDefence(neighbors, whitePatternCountInNull, blackPatternCountInNull, whitePattern, blackPattern);
+		return checkDoubleComboDefence(neighbors, whitePatternCountInNull, whitePattern, blackPattern);
 	}
 	return false;
 }
