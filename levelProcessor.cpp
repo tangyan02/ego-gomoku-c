@@ -132,12 +132,12 @@ void selectAndSortPoints(points *neighbors, Color color)
 		removeRepeat(neighbors);
 		return;
 	}
-	if (tryDoubleComboDefence(color, neighbors)) {
-		removeRepeat(neighbors);
-		sort(neighbors, color);
-		//printMapWithStars(getMap(), *neighbors);
-		return;
-	}
+	//if (tryDoubleComboDefence(color, neighbors)) {
+	//	removeRepeat(neighbors);
+	//	sort(neighbors, color);
+	//	//printMapWithStars(getMap(), *neighbors);
+	//	return;
+	//}
 	if (tryThreeDefence(color, neighbors)) {
 		removeRepeat(neighbors);
 		sort(neighbors, color);
