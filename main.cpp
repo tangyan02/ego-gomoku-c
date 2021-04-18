@@ -67,7 +67,7 @@ void caseTest() {
 
 int main()
 {
-	//piskvork();
+	piskvork();
 	//testCombo();
 	//testAllCombo();
 	//bugTest();

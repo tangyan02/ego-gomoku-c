@@ -7,13 +7,13 @@ class PointsFactory
 
 private:
 
-	static points neighborPoints[30][30];
+	static points neighborPoints[30][100];
 
 	static points levelProcessorTempPoints;
 
 	static points comboProcessorTempPoints;
 
-	static points dfsTempPoints[30];
+	static points dfsTempPoints[100];
 
 	static points comboNeighborPoints[2][100];
 

@@ -2,7 +2,7 @@
 #include "PointsFactory.h"
 
 
-points PointsFactory::neighborPoints[30][30];
+points PointsFactory::neighborPoints[30][100];
 
 points PointsFactory::levelProcessorTempPoints;
 
@@ -10,7 +10,7 @@ points PointsFactory::comboProcessorTempPoints;
 
 points PointsFactory::tempPoints;
 
-points PointsFactory::dfsTempPoints[30];
+points PointsFactory::dfsTempPoints[100];
 
 points PointsFactory::comboNeighborPoints[2][100];
 

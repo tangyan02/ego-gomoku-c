@@ -42,6 +42,10 @@ static int maxExtend;
 
 static int extendNodeCount;
 
+static int cacheHitCount;
+
+static int cacheCorretCount;
+
 static point currentPointResult;
 
 static pointHash loseSet;
@@ -136,6 +140,8 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 		currentLevel = level;
 		maxExtend = 0;
 		extendNodeCount = 0;
+		cacheHitCount = 0;
+		cacheCorretCount = 0;
 
 		cacheLast = cache;
 		cache.clear();
@@ -167,17 +173,21 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			gameResult->level = level;
 			gameResult->maxExtend = maxExtend;
 			gameResult->extendNode = extendNodeCount;
+			gameResult->cacheHit = cacheHitCount;
+			gameResult->cacheCorrect = cacheCorretCount;
 			if (piskvorkMessageEnable)
 			{
-				printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, node %d , max extend %d, extend node %d , cost %lld ms\n", 
-					level, 
-					value, 
-					gameResult->result.x, 
-					gameResult->result.y, 
+				printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, node %d , max extend %d, extend node %d , cache hit: %d/%d , cost %lld ms\n",
+					level,
+					value,
+					gameResult->result.x,
+					gameResult->result.y,
 					speed,
 					nodeCount,
 					maxExtend,
 					extendNodeCount,
+					cacheCorretCount,
+					cacheHitCount,
 					getSystemTime() - t);
 			}
 			if (debugEnable) {
@@ -185,6 +195,9 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			}
 			if (value >= MAX_VALUE/2)
 				break;
+			if (value <= MIN_VALUE / 2) {
+				break;
+			}
 		}
 		if (getSystemTime() - searchStartTime > timeOut / 4) {
 			timeOutEnable = true;
@@ -230,8 +243,9 @@ gameResult search(Color aiColor, Color** map)
 	return gameResult;
 }
 
-void moveHistoryBestToFirst(points * neighbors) {
+bool moveHistoryBestToFirst(points * neighbors) {
 	if (cacheLast.find(getMapHashCode()) != cacheLast.end()) {
+		cacheHitCount++;
 		point p = cacheLast[getMapHashCode()];
 		for (int i = 0; i < neighbors->count; i++)
 			if (neighbors->list[i].x == p.x && neighbors->list[i].y == p.y) {
@@ -241,7 +255,9 @@ void moveHistoryBestToFirst(points * neighbors) {
 				neighbors->list[0] = p;
 				break;
 			}
+		return true;
 	}
+	return false;
 }
 
 /* alpha beta serach
@@ -260,6 +276,8 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 
 	int value = getScoreValue(color, aiColor);
 
+	
+
 	if (level <= 1) 
 	{
 		// extend
@@ -270,6 +288,16 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 				maxExtend = extend;
 			}
 		}
+
+		//if (value < beta && value > alpha  && extend < currentLevel*2) {
+		//	if (countPattern(getOtherColor(color), PATTERN_LINE_FIVE)) {
+		//		level += 2;
+		//		extend += 2;
+		//		if (extend > maxExtend) {
+		//			maxExtend = extend;
+		//		}
+		//	}
+		//}
 
 		// leaf node get value
 		if (level == 0) {
@@ -291,7 +319,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	selectAndSortPoints(neighbors, color);
 
 	//user history best
-	moveHistoryBestToFirst(neighbors);
+	bool existHitory = moveHistoryBestToFirst(neighbors);
 
 	//move and dfs
 	int extreme = MIN_VALUE;
@@ -350,9 +378,15 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	}
 
 	if (extremePoints->count > 0) {
+		if (extremePoints->list[0].x == neighbors->list[0].x && extremePoints->list[0].y == neighbors->list[0].y && existHitory) {
+			cacheCorretCount++;
+		}
+
 		point extremePoint = extremePoints->list[rand() % extremePoints->count];
 		if (level == currentLevel && extend == 0) {
-			currentPointResult = point(extremePoint.x, extremePoint.y);
+			if (extreme > MIN_VALUE / 2 || currentLevel == 2) {
+				currentPointResult = point(extremePoint.x, extremePoint.y);
+			}
 		}
 		cache[getMapHashCode()] = extremePoint;
 	}

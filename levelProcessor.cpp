@@ -31,12 +31,12 @@ static int getScore(int x, int y, Color color)
 		if (color == BLACK)
 		{
 			value += patternScore[blackLineKey[x][y][k]];
-			//value += patternScore[whiteLineKey[x][y][k]] / 2;
+			//value += patternScore[whiteLineKey[x][y][k]];
 		}
 		if (color == WHITE)
 		{
 			value += patternScore[whiteLineKey[x][y][k]];
-			//value += patternScore[blackLineKey[x][y][k]] / 2;
+			//value += patternScore[blackLineKey[x][y][k]];
 		}
 	}
 	return value;
