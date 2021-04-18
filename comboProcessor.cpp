@@ -16,6 +16,8 @@ extern bool comboEnable;
 
 static comboResult processorResult;
 
+static int maxLevel = 50;
+
 static int currentLevel;
 
 static int deepLevel;
@@ -102,8 +104,8 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 		int tempDeepLevel = deepLevel;
 		int tempCurrentLevel = currentLevel;
 		deepLevel = level;
-		currentLevel = currentLevel * 2;
-		if (killDfs(currentLevel, color, color, point(), point(), COMBO_FOUR)) {
+		currentLevel = maxLevel;
+		if (killDfs(maxLevel, color, color, point(), point(), COMBO_FOUR)) {
 		/*	printf("hit\n");
 			printMap(map);
 			printMoveHistory();*/
@@ -217,16 +219,16 @@ comboResult kill(Color color, int level, long long targetTime)
 	processorResult.isDeep = false;
 
 	//my 4 attack
-	deepLevel = level;
-	currentLevel = level;
-	processorResult.isDeep = false;
-	processorResult.canWin = killDfs(level, color, color, point(), point(), COMBO_FOUR);
-	if (deepLevel == 0) {
-		processorResult.isDeep = true;
-	}
-	if (processorResult.canWin) {
-		return processorResult;
-	}
+	//deepLevel = level;
+	//currentLevel = level;
+	//processorResult.isDeep = false;
+	//processorResult.canWin = killDfs(level, color, color, point(), point(), COMBO_FOUR);
+	//if (deepLevel == 0) {
+	//	processorResult.isDeep = true;
+	//}
+	//if (processorResult.canWin) {
+	//	return processorResult;
+	//}
 
 	////my 3 attack
 	deepLevel = level;
