@@ -8,6 +8,8 @@ bool tryFiveAttack(Color color, points *neighbors);
 
 bool tryFourAttack(Color color, points *neighbors);
 
+bool tryThreeAttack(Color color, points* neighbors);
+
 bool tryActiveFourAttack(Color color, points* neighbors);
 
 bool tryThreeOrFourAttack(Color color, points *neighbors);

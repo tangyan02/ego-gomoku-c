@@ -10,3 +10,4 @@ comboResult killVCF(Color color, int level, long long targetTime);
 
 void testCombo();
 
+void testAllCombo();

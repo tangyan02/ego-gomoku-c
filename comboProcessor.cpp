@@ -35,6 +35,18 @@ void selectAttack(points* neighbor, Color color, int& comboType) {
 	tryFiveAttack(getOtherColor(color), neighbor);
 
 	if (comboType == COMBO_THREE) {
+		if (tryFourDefence(color, neighbor)) {
+			if (tryThreeOrFourAttack(color, neighbor)) {
+				return;
+			}
+		}
+
+		if (tryThreeDefence(color, neighbor)) {
+			if (tryThreeOrFourAttack(color, neighbor)) {
+				return;
+			}
+		}
+
 		if (tryThreeOrFourAttack(color, neighbor)) {
 			return;
 		}
@@ -55,13 +67,17 @@ void selectDefence(points* neighbor, Color color, int comboType) {
 		}
 	}
 	if (comboType == COMBO_THREE) {
-
 		if (tryFourDefence(color, neighbor)) {
 			return;
 		}
+		points* ps = PointsFactory::createTempPoints();
+		tryFourAttack(color, ps);
 		
-		if (tryThreeDefence(color, neighbor))
+		if (tryThreeDefence(color, neighbor)) {
+			neighbor->addMany(ps);
+			//printMapWithStars(map, *neighbor);
 			return;
+		}
 	}
 	neighbor->clear();
 }
@@ -83,40 +99,38 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 	//printMoveHistory();
 
 	if (comboType == COMBO_THREE) {
-		if (color == aiColor) {
-			if (countPattern(getOtherColor(color), PATTERN_SLEEPY_FOUR) > 0 ||
-				countPattern(getOtherColor(color), PATTERN_ACTIVE_FOUR) > 0) {
-				comboType = COMBO_FOUR;
+		int tempDeepLevel = deepLevel;
+		int tempCurrentLevel = currentLevel;
+		deepLevel = level;
+		currentLevel = currentLevel * 2;
+		if (killDfs(currentLevel, color, color, point(), point(), COMBO_FOUR)) {
+		/*	printf("hit\n");
+			printMap(map);
+			printMoveHistory();*/
+			deepLevel = tempDeepLevel;
+			currentLevel = tempCurrentLevel;
+			if (color == aiColor) {
+				return true;
 			}
-		}
-		//if (color != aiColor) {
-		//	int tempDeepLevel = deepLevel;
-		//	int tempCurrentLevel = currentLevel;
-		//	deepLevel = level;
-		//	currentLevel = currentLevel * 2;
-		//	if (killDfs(currentLevel, color, color, point(), point(), COMBO_FOUR)) {
-		//	/*	printf("hit\n");
-		//		printMap(map);
-		//		printMoveHistory();*/
-		//		deepLevel = tempDeepLevel;
-		//		currentLevel = tempCurrentLevel;
-		//		return false;
-		//	}
-		//	deepLevel = tempDeepLevel;
-		//	currentLevel = tempCurrentLevel;
-		//}
-	}
-
-	if (color == aiColor) {
-		if (!hasComboAttack(color, comboType)) {
 			return false;
 		}
+		deepLevel = tempDeepLevel;
+		currentLevel = tempCurrentLevel;
+	}
+
+	if (!hasComboAttack(aiColor, comboType)) {
+		return false;
 	}
 
 	points* ps = PointsFactory::createComboNeighborPoints(comboType, level);
 	if (level == currentLevel) {
 		fillNeighbor(ps);
 	}
+
+	//if (comboType == COMBO_THREE) {
+	//	fillNeighbor(ps);
+	//}
+
 	if (level == currentLevel - 1) {
 		fillPointLinesNeighbor(lastPoint.x, lastPoint.y, ps);
 	}
@@ -236,12 +250,11 @@ comboResult kill(Color color, int level, long long targetTime)
 extern int boardSize;
 extern int ** map;
 
-static void init() {
+static void init(char* path) {
 	initPattern();
 	boardSize = 20;
-	map = readMap("combo.txt");
+	map = readMap(path);
 	initGameMap(map);
-	printMap(map);
 }
 
 static void testSelectAttack() {
@@ -251,35 +264,74 @@ static void testSelectAttack() {
 	printMapWithStars(map, *ps);
 }
 
-void testKill() {
+static void testSelectDefen() {
+	points* ps = PointsFactory::createComboNeighborPoints(0, COMBO_THREE);
+	fillNeighbor(ps);
+	//selectAttack(ps, BLACK, COMBO_THREE);
+	printMapWithStars(map, *ps);
+}
+
+bool testKill(Color color, bool print) {
 	long long targerTime = getSystemTime() + 5000;
 	for (int i = 3; i <= 30; i += 2) {
-		printf("level %d\n", i);
+		if (print) {
+			printf("level %d\n", i);
+		}
 		if (getSystemTime() > targerTime) {
-			printf("TIME OUT\n");
+			if (print) {
+				printf("TIME OUT\n");
+			}
 			break;
 		}
-		comboResult result = kill(BLACK, i, targerTime);
+		comboResult result = kill(color, i, targerTime);
 		if (getSystemTime() > targerTime) {
-			printf("TIME OUT\n");
+			if (print) {
+				printf("TIME OUT\n");
+			}
 		}
 		if (result.canWin) {
-			printf("WIN\n");
-			printMapWithStar(map, result.p);
-			return;
+			if (print) {
+				printf("WIN\n");
+				printMapWithStar(map, result.p);
+			}
+			return true;
 		}
 		else
 		{
-			printf("NULL\n");
+			if (print) {
+				printf("NULL\n");
+			}
 		}
 		if (!result.isDeep) {
-			printf("not deep");
+			if (print) {
+				printf("not deep");
+			}
 			break;
 		}
 	}
+	return false;
 }
 
 void testCombo() {
-	init();
-	testKill();
+	init("combo.txt");
+	printMap(map);
+	testKill(BLACK, true);
+}
+
+void testAllCombo() {
+	const int count = 3;
+	char* paths[count] = {"combo8.txt", "combo9.txt", "combo10.txt"};
+	Color colors[count] = { WHITE, BLACK, BLACK };
+	bool expect[count] = { true , false, false};
+	for (int i = 0; i < count; i++) {
+		printf(" test: %s ", paths[i]);
+		init(paths[i]);
+		bool result = testKill(colors[i], false);
+		if (result == expect[i]) {
+			printf(" ok \n");
+		}
+		else {
+			printf("error \n");
+		}
+	}
 }

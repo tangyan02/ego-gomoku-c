@@ -49,24 +49,9 @@
     <Text Include="combo.txt">
       <Filter>资源文件</Filter>
     </Text>
-    <Text Include="combo2.txt">
-      <Filter>资源文件</Filter>
-    </Text>
-    <Text Include="failCombo.txt">
-      <Filter>资源文件</Filter>
-    </Text>
     <Text Include="README.md" />
     <Text Include="License" />
-    <Text Include="analyze2.txt">
-      <Filter>资源文件</Filter>
-    </Text>
-    <Text Include="analyze3.txt">
-      <Filter>资源文件</Filter>
-    </Text>
     <Text Include="patternRecorder.txt">
-      <Filter>资源文件</Filter>
-    </Text>
-    <Text Include="fourDefence.txt">
       <Filter>资源文件</Filter>
     </Text>
     <Text Include="input001.txt">
@@ -93,24 +78,6 @@
     <Text Include="input008.txt">
       <Filter>资源文件</Filter>
     </Text>
-    <Text Include="combo3.txt">
-      <Filter>资源文件</Filter>
-    </Text>
-    <Text Include="combo4.txt">
-      <Filter>资源文件</Filter>
-    </Text>
-    <Text Include="combo5.txt">
-      <Filter>资源文件</Filter>
-    </Text>
-    <Text Include="comboVCF.txt">
-      <Filter>资源文件</Filter>
-    </Text>
-    <Text Include="combo6.txt">
-      <Filter>资源文件</Filter>
-    </Text>
-    <Text Include="combo7.txt">
-      <Filter>资源文件</Filter>
-    </Text>
     <Text Include="openings.txt">
       <Filter>资源文件</Filter>
     </Text>
@@ -120,7 +87,10 @@
     <Text Include="combo8.txt">
       <Filter>资源文件</Filter>
     </Text>
-    <Text Include="analyze4.txt">
+    <Text Include="combo9.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="combo10.txt">
       <Filter>资源文件</Filter>
     </Text>
   </ItemGroup>

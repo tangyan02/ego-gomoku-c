@@ -284,6 +284,16 @@ bool tryFiveAttack(Color color, points *neighbors) {
 	return false;
 }
 
+bool tryThreeAttack(Color color, points* neighbors) {
+	if (color == WHITE) {
+		return checkOnePattern(neighbors, whitePatternCountInNull, whitePattern, PATTERN_ACTIVE_THREE);
+
+	}
+	if (color == BLACK) {
+		return checkOnePattern(neighbors, blackPatternCountInNull, blackPattern, PATTERN_ACTIVE_THREE);
+	}
+	return false;
+}
 bool tryActiveFourAttack(Color color, points* neighbors) {
 	if (color == WHITE) {
 		return checkOnePattern(neighbors, whitePatternCountInNull, whitePattern, PATTERN_ACTIVE_FOUR);

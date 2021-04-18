@@ -4,17 +4,22 @@
 
 point::point()
 {
-}
-
-int point::hash()
-{
-	return x * 100 + y;
+	x = -1;
+	y = -1;
 }
 
 point::point(int x, int y)
 {
 	this->x = x;
 	this->y = y;
+}
+
+bool point::isNull()
+{
+	if (x == -1 && y == -1) {
+		return true;
+	}
+	return false;
 }
 
 

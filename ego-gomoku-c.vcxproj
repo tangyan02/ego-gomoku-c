@@ -153,20 +153,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="analyze.txt" />
-    <Text Include="analyze2.txt" />
-    <Text Include="analyze3.txt" />
-    <Text Include="analyze4.txt" />
     <Text Include="combo.txt" />
-    <Text Include="combo2.txt" />
-    <Text Include="combo3.txt" />
-    <Text Include="combo4.txt" />
-    <Text Include="combo5.txt" />
-    <Text Include="combo6.txt" />
-    <Text Include="combo7.txt" />
+    <Text Include="combo10.txt" />
     <Text Include="combo8.txt" />
-    <Text Include="comboVCF.txt" />
-    <Text Include="failCombo.txt" />
-    <Text Include="fourDefence.txt" />
+    <Text Include="combo9.txt" />
     <Text Include="input.txt" />
     <Text Include="input001.txt" />
     <Text Include="input002.txt" />
