@@ -155,6 +155,8 @@
     <Text Include="analyze.txt" />
     <Text Include="combo.txt" />
     <Text Include="combo10.txt" />
+    <Text Include="combo11.txt" />
+    <Text Include="combo12.txt" />
     <Text Include="combo8.txt" />
     <Text Include="combo9.txt" />
     <Text Include="input.txt" />

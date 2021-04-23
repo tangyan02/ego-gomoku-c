@@ -5,7 +5,6 @@
 #include <time.h>  
 #include "patternRecorder.h"
 #include "PointsFactory.h"
-//#include "levelProcessor.h"
 
 int **map;
 
@@ -13,22 +12,30 @@ points moveHistory;
 
 extern int boardSize;
 
-//extern int blackPattern[20][20][4];
-//extern int whitePattern[20][20][4];
 
 static int directX[] = { 0, 1, 1, 1, 0, -1, -1, -1 };
 static int directY[] = { 1, 1, 0, -1, -1, -1, 0, 1 };
+static int directXR[] = { 1, 2, 1, 2, -1, -2, -1, -2 };
+static int directYR[] = { 2, 1, -2, -1, 2, 1, -2, -1 };
 
 static long long weightBlack[20][20];
 static long long weightWhite[20][20];
 
 static long long hashCode = 0;
 static int neighborCount[20][20];
+static int longNeighborCount[20][20];
 
 static int left, right, top, bottom;
 
 Color ** getMap() {
 	return map;
+}
+
+void addLongNeighborCount(int x, int y, bool isAdd) {
+	if (isAdd)
+		longNeighborCount[x][y]++;
+	else
+		longNeighborCount[x][y]--;
 }
 
 void addNeighborCount(int x, int y, bool isAdd) {
@@ -62,30 +69,28 @@ void updateNeighbor(int i, int j, bool isAdd, Color pointColor) {
 	//		}
 	// 
 	// 
-	//if (countPattern(pointColor, PATTERN_ACTIVE_TWO == 0)) {
-	//	for (int k = 0; k < 8; k++) {
-	//		int x = i + directX[k];
-	//		int y = j + directY[k];
-	//		if (reachable(x, y)) {
-	//			Color color = map[x][y];
-	//			if (color == NULL) {
-	//				addNeighborCount(x, y, isAdd);
-	//			}
-	//		}
-	//		int x2 = x;
-	//		int y2 = y;
-	//		for (int r = 0; r < 4; r++) {
-	//			x2 += directX[k];
-	//			y2 += directY[k];
-	//			if (reachable(x2, y2)) {
-	//				Color color = map[x2][y2];
-	//				if (color == NULL) {
-	//					addNeighborCount(x2, y2, isAdd);
-	//				}
-	//			}
+	for (int k = 0; k < 8; k++) {
+		int x = i + directX[k]*2;
+		int y = j + directY[k]*2;
+		if (reachable(x, y)) {
+			Color color = map[x][y];
+			if (color == NULL) {
+				addLongNeighborCount(x, y, isAdd);
+			}
+		}
+	}
+
+	//for (int k = 0; k < 8; k++) {
+	//	int x = i + directXR[k] * 2;
+	//	int y = j + directYR[k] * 2;
+	//	if (reachable(x, y)) {
+	//		Color color = map[x][y];
+	//		if (color == NULL) {
+	//			addLongNeighborCount(x, y, isAdd);
 	//		}
 	//	}
-	//} else {
+	//}
+
 	for (int k = 0; k < 8; k++) {
 		int x = i + directX[k];
 		int y = j + directY[k];
@@ -135,10 +140,10 @@ void initGameMap(Color** value) {
 			}
 		}
 
-
 	for (int i = 0; i < boardSize; i++)
 		for (int j = 0; j < boardSize; j++) {
 			neighborCount[i][j] = 0;
+			longNeighborCount[i][j] = 0;
 		}
 
 	for (int i = 0; i < boardSize; i++)
@@ -205,7 +210,7 @@ void fillPointLinesNeighbor(int px, int py, points* ps) {
 void fillNeighbor(points* ps) {
 	for (int i = top; i <= bottom; i++)
 		for (int j = left; j <= right; j++)
-			if (neighborCount[i][j] > 0 && map[i][j] == NULL)
+			if ((neighborCount[i][j] > 0 || longNeighborCount[i][j]> 1 ) && map[i][j] == NULL)
 				ps->add(point(i, j));
 }
 
@@ -233,7 +238,7 @@ void updateHashCode(int x, int y, Color color)
 	}
 }
 
-bool inNeighbor(int x, int y)
-{
-	return neighborCount[x][y] > 0;
-}
+//bool inNeighbor(int x, int y)
+//{
+//	return neighborCount[x][y] > 0;
+//}

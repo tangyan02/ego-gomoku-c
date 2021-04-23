@@ -25,4 +25,4 @@ long long getMapHashCode();
 
 void updateHashCode(int x, int y, Color color);
 
-bool inNeighbor(int x, int y);
+//bool inNeighbor(int x, int y);

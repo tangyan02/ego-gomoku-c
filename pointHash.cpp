@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "pointHash.h"
+#include "PointsFactory.h"
 
 extern int boardSize;
 
@@ -29,6 +30,37 @@ bool pointHash::contains(int x, int y)
 bool pointHash::contains(point& p)
 {
 	return signal[p.x][p.y];
+}
+
+void pointHash::removeRepeat(points* ps)
+{
+	//pHash.reset();
+	bool repeat = false;
+	for (int i = 0; i < ps->count; i++) {
+		if (contains(ps->list[i])) {
+			repeat = true;
+		}
+		add(ps->list[i]);
+	}
+	if (repeat) {
+		points* temp = PointsFactory::createTempPoints();
+		for (int i = 0; i < ps->count; i++) {
+			if (contains(ps->list[i])) {
+				temp->add(ps->list[i]);
+				remove(ps->list[i]);
+			}
+		}
+		/*printf("ps\n");
+		printPoints(*ps);
+		printf("temp\n");
+		printPoints(*temp);
+		ps->clear();
+		ps->addMany(temp);*/
+		return;
+	}
+	for (int i = 0; i < ps->count; i++) {
+		remove(ps->list[i]);
+	}
 }
 
 pointHash::pointHash()

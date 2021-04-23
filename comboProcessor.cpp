@@ -5,6 +5,7 @@
 #include "analyzer.h"
 #include "comboProcessor.h"
 #include "PointsFactory.h"
+#include "pointHash.h"
 
 extern int blackPattern[20][20][4];
 extern int whitePattern[20][20][4];
@@ -26,6 +27,8 @@ static long long currentTargetTime;
 
 extern int ** map;
 
+static pointHash phash;
+
 bool returnWinValue(int level, point p) {
 	if (level == currentLevel) {
 		processorResult.p = p;
@@ -33,33 +36,40 @@ bool returnWinValue(int level, point p) {
 	return true;
 }
 
-void selectAttack(points* neighbor, Color color, int& comboType) {
+bool selectAttack(points* neighbor, Color color, int& comboType) {
 	tryFiveAttack(getOtherColor(color), neighbor);
 
 	if (comboType == COMBO_THREE) {
 		if (tryFourDefence(color, neighbor)) {
 			if (tryThreeOrFourAttack(color, neighbor)) {
-				return;
+				return true;
 			}
-		}
+		}	
+		
+		//if (tryFourDefence(color, neighbor)) {
+		//	if (tryThreeOrFourAttack(color, neighbor)) {
+		//		return true;
+		//	}
+		//}
 
 		if (tryThreeDefence(color, neighbor)) {
 			if (tryThreeOrFourAttack(color, neighbor)) {
-				return;
+				return true;
 			}
 		}
 
 		if (tryThreeOrFourAttack(color, neighbor)) {
-			return;
+			return true;
 		}
 	}
 	if (comboType == COMBO_FOUR) {
 		if (tryFourAttack(color, neighbor)) {
-			return;
+			return true;
 		}
 	}
 
 	neighbor->clear();
+	return false;
 }
 
 void selectDefence(points* neighbor, Color color, int comboType) {
@@ -84,7 +94,7 @@ void selectDefence(points* neighbor, Color color, int comboType) {
 	neighbor->clear();
 }
 
-static bool killDfs(int level, Color color, Color aiColor, point lastPoint, point lastLastPoint, int comboType) {
+static bool killDfs(int level, Color color, Color aiColor, point lastPoint, point lastLastPoint, point attackPoint, int comboType) {
 	if (!comboEnable) {
 		return false;
 	}
@@ -105,7 +115,7 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 		int tempCurrentLevel = currentLevel;
 		deepLevel = level;
 		currentLevel = maxLevel;
-		if (killDfs(maxLevel, color, color, point(), point(), COMBO_FOUR)) {
+		if (killDfs(maxLevel, color, color, point(), point(),point(), COMBO_FOUR)) {
 		/*	printf("hit\n");
 			printMap(map);
 			printMoveHistory();*/
@@ -129,24 +139,38 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 		fillNeighbor(ps);
 	}
 
-	//if (comboType == COMBO_THREE) {
-	//	fillNeighbor(ps);
-	//}
-
 	if (level == currentLevel - 1) {
-		fillPointLinesNeighbor(lastPoint.x, lastPoint.y, ps);
+		//fillPointLinesNeighbor(lastPoint.x, lastPoint.y, ps);
+		if (color == aiColor) {
+			fillPointLinesNeighbor(lastPoint.x, lastPoint.y, ps);
+			fillPointLinesNeighbor(attackPoint.x, attackPoint.y, ps);
+			phash.removeRepeat(ps);
+		}
+		else {
+			fillNeighbor(ps);
+		}
 	}
 	if (level < currentLevel - 1) {
-		fillPointLinesNeighbor(lastPoint.x, lastPoint.y, ps);
-		fillPointLinesNeighbor(lastLastPoint.x, lastLastPoint.y, ps);
+		//fillPointLinesNeighbor(lastPoint.x, lastPoint.y, ps);
+		//fillPointLinesNeighbor(lastLastPoint.x, lastLastPoint.y, ps);
+		if (color == aiColor) {
+			fillPointLinesNeighbor(lastPoint.x, lastPoint.y, ps);
+			fillPointLinesNeighbor(lastLastPoint.x, lastLastPoint.y, ps);
+			fillPointLinesNeighbor(attackPoint.x, attackPoint.y, ps);
+			phash.removeRepeat(ps);
+		}
+		else {
+			fillNeighbor(ps);
+		}
 	}
 
 	if (level == 0) {
 		return false;
 	}
 
+	bool isAttack = false;
 	if (color == aiColor)
-		selectAttack(ps, color, comboType);
+		isAttack = selectAttack(ps, color, comboType);
 	else
 		selectDefence(ps, color, comboType);
 
@@ -171,7 +195,8 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 		int x = ps->list[i].x;
 		int y = ps->list[i].y;
 		move(x, y, color);
-		bool value = killDfs(level - 1, getOtherColor(color), aiColor, point(x, y), lastPoint, comboType);
+
+		bool value = killDfs(level - 1, getOtherColor(color), aiColor, point(x, y), lastPoint, isAttack ? point(x,y) :attackPoint,  comboType);
 		undoMove(x, y, color);
 
 		if (color == aiColor) {
@@ -204,7 +229,7 @@ comboResult killVCF(Color color, int level, long long targetTime)
 		deepLevel = level;
 		currentLevel = level;
 		processorResult.isDeep = false;
-		processorResult.canWin = killDfs(i, color, color, point(), point(), COMBO_FOUR);
+		processorResult.canWin = killDfs(i, color, color, point(), point(), point(), COMBO_FOUR);
 		if (deepLevel == 0) {
 			processorResult.isDeep = true;
 		}
@@ -218,23 +243,11 @@ comboResult kill(Color color, int level, long long targetTime)
 	processorResult.canWin = false;
 	processorResult.isDeep = false;
 
-	//my 4 attack
-	//deepLevel = level;
-	//currentLevel = level;
-	//processorResult.isDeep = false;
-	//processorResult.canWin = killDfs(level, color, color, point(), point(), COMBO_FOUR);
-	//if (deepLevel == 0) {
-	//	processorResult.isDeep = true;
-	//}
-	//if (processorResult.canWin) {
-	//	return processorResult;
-	//}
-
 	////my 3 attack
 	deepLevel = level;
 	currentLevel = level;
 	processorResult.isDeep = false;
-	processorResult.canWin = killDfs(level, color, color, point(), point(), COMBO_THREE);
+	processorResult.canWin = killDfs(level, color, color, point(), point(), point(), COMBO_THREE);
 	if (deepLevel == 0) {
 		processorResult.isDeep = true;
 	}
@@ -321,10 +334,10 @@ void testCombo() {
 }
 
 void testAllCombo() {
-	const int count = 3;
-	char* paths[count] = {"combo8.txt", "combo9.txt", "combo10.txt"};
-	Color colors[count] = { WHITE, BLACK, BLACK };
-	bool expect[count] = { true , false, false};
+	const int count = 5;
+	char* paths[count] = {"combo8.txt", "combo9.txt", "combo10.txt", "combo11.txt" , "combo12.txt" };
+	Color colors[count] = { WHITE, BLACK, BLACK, BLACK, BLACK };
+	bool expect[count] = { true , false, false, false, false };
 	for (int i = 0; i < count; i++) {
 		printf(" test: %s ", paths[i]);
 		init(paths[i]);

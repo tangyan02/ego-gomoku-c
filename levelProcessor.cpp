@@ -6,6 +6,7 @@
 #include "patternRecorder.h"
 #include "pattern.h"
 #include "pointHash.h"
+#include "score.h"
 
 int singleScore[3][20][20];
 
@@ -26,6 +27,9 @@ static pointHash pHash;
 static int getScore(int x, int y, Color color)
 {
 	int value = 0;
+	//move(x, y, color);
+	//getScoreValue(color, color);
+	//undoMove(x, y, color);
 	for (int k = 0; k < 4; k++)
 	{
 		if (color == BLACK)
@@ -74,36 +78,6 @@ void qsort(point *list, int score[], int l, int r)
 		qsort(list, score, l, y);
 }
 
-void removeRepeat(points* ps) {
-	//pHash.reset();
-	bool repeat = false;
-	for (int i = 0; i < ps->count; i++) {
-		if (pHash.contains(ps->list[i])) {
-			repeat = true;
-		}
-		pHash.add(ps->list[i]);
-	}
-	if (repeat) {
-		points* temp =PointsFactory::createTempPoints();
-		for (int i = 0; i < ps->count; i++) {
-			if (pHash.contains(ps->list[i])) {
-				temp->add(ps->list[i]);
-				pHash.remove(ps->list[i]);
-			}
-		}
-		/*printf("ps\n");
-		printPoints(*ps);
-		printf("temp\n");
-		printPoints(*temp);
-		ps->clear();
-		ps->addMany(temp);*/
-		return;
-	}
-	for (int i = 0; i < ps->count; i++) {
-		pHash.remove(ps->list[i]);
-	}
-}
-
 void sort(points* neighbors, Color color) {
 	point* list = neighbors->list;
 
@@ -117,29 +91,23 @@ void sort(points* neighbors, Color color) {
 void selectAndSortPoints(points *neighbors, Color color)
 {
 	if (tryFiveAttack(color, neighbors)) {
-		removeRepeat(neighbors);
+		pHash.removeRepeat(neighbors);
 		return;
 	}
 	if (tryFourDefence(color, neighbors)) {
-		removeRepeat(neighbors);
+		pHash.removeRepeat(neighbors);
 		return;
 	}
 	if (tryActiveFourAttack(color, neighbors)) {
-		removeRepeat(neighbors);
+		pHash.removeRepeat(neighbors);
 		return;
 	}
 	if (tryDoubleFourAttack(color, neighbors)) {
-		removeRepeat(neighbors);
+		pHash.removeRepeat(neighbors);
 		return;
 	}
-	//if (tryDoubleComboDefence(color, neighbors)) {
-	//	removeRepeat(neighbors);
-	//	sort(neighbors, color);
-	//	//printMapWithStars(getMap(), *neighbors);
-	//	return;
-	//}
 	if (tryThreeDefence(color, neighbors)) {
-		removeRepeat(neighbors);
+		pHash.removeRepeat(neighbors);
 		sort(neighbors, color);
 		return;
 	}
