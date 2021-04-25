@@ -19,10 +19,42 @@ extern int neighborCount[20][20];
 extern int blackLineKey[20][20][4];
 extern int whiteLineKey[20][20][4];
 extern int patternScore[PATTERN_SIZE];
+extern int blackPattern[20][20][4];
+extern int whitePattern[20][20][4];
+extern int baseScore[10];
 
 extern points moveHistory;
 
+extern int** map;
+
 static pointHash pHash;
+
+static int directX[] = { 0, 1, 1, 1, 0, -1, -1, -1 };
+static int directY[] = { 1, 1, 0, -1, -1, -1, 0, 1 };
+
+static int activeTwoAroundScore(int x, int y, Color color) {
+	int result = 0;
+	for (int k = 0; k < 8; k++) {
+		int px = x + directX[k];
+		int py = y + directY[k];
+		if (reachable(px, py)) {
+			if (map[px][py] == getOtherColor(color)) {
+				if (map[px][py] == BLACK) {
+					if (whitePattern[px][py][k] == PATTERN_ACTIVE_TWO) {
+						result += patternScore[whiteLineKey[px][py][k]] - baseScore[PATTERN_SLEEPY_TWO];
+					}
+				}
+				if (map[px][py] == WHITE) {
+					if (blackPattern[px][py][k] == PATTERN_ACTIVE_TWO) {
+						result += patternScore[blackLineKey[px][py][k]] - baseScore[PATTERN_SLEEPY_TWO];
+					}
+				}
+			}
+		}
+	}
+	return result;
+}
+
 
 static int getScore(int x, int y, Color color)
 {
@@ -40,6 +72,8 @@ static int getScore(int x, int y, Color color)
 			//value += patternScore[blackLineKey[x][y][k]];
 		}
 	}
+	value += activeTwoAroundScore(x, y, color);
+	//printf("activeTwoAroundScore %d\n", activeTwoAroundScore(x, y, color));
 	return value;
 }
 

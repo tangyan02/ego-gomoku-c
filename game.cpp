@@ -165,22 +165,24 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 	timeOutEnable = false;
 	searchStartTime = getSystemTime();
 
-	points historyPoints = findHistoryPath(aiColor);
+	//points historyPoints = findHistoryPath(aiColor);
 
 	cacheLast.clear();
 	cache.clear();
 
-	initHistoryPathCache(historyPoints, aiColor);
+	//initHistoryPathCache(historyPoints, aiColor);
 
 	int startLevel = 2;
-	if (historyPoints.count > 0) {
-		if (piskvorkMessageEnable) {
-			printf("MESSAGE find history path. point (%d, %d), path lenth: %d, last level:%d ,\n", historyPoints.list[0].x, historyPoints.list[0].y, historyPoints.count, lastResult.level - 2);
-		}
-		gameResult->result = historyPoints.list[0];
-		gameResult->level = min(lastResult.level - 2, historyPoints.count);
-		startLevel = min(lastResult.level, historyPoints.count + 2);
-	}
+	//if (historyPoints.count > 0) {
+	//	if (piskvorkMessageEnable) {
+	//		printf("MESSAGE find history path. point (%d, %d), path lenth: %d, last level:%d ,\n", historyPoints.list[0].x, historyPoints.list[0].y, historyPoints.count, lastResult.level - 2);
+	//	}
+	//	if (!loseSet.contains(historyPoints.list[0])) {
+	//		gameResult->result = historyPoints.list[0];
+	//		gameResult->level = min(lastResult.level - 2, historyPoints.count);
+	//		startLevel = min(lastResult.level, historyPoints.count + 2);
+	//	}
+	//}
 
 	for (int level = startLevel; level <= searchLevel; level += 2 )
 	{
