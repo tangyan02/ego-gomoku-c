@@ -48,6 +48,8 @@ static int cacheCorretCount;
 
 static point currentPointResult;
 
+static gameResult lastResult;
+
 static pointHash loseSet;
 
 static unordered_map<long long, point> cache;
@@ -121,6 +123,36 @@ bool tryComboSearchIteration(points * neighbors, Color aiColor, gameResult *game
 	return false;
 }
 
+static points findHistoryPath(Color color) {
+	points result;
+	while (true) {
+		if (cacheLast.find(getMapHashCode()) == cacheLast.end()) {
+			break;
+		}
+		point p = cacheLast[getMapHashCode()];
+		result.add(p);
+		move(p.x, p.y, color);
+		color = getOtherColor(color);
+	}
+	for (int i = result.count; i > 0; i--) {
+		color = getOtherColor(color);
+		undoMove(result.list[i-1].x, result.list[i-1].y, color);
+	}
+	return result;
+}
+
+static void initHistoryPathCache(points ps, Color color) {
+	for (int i = 0; i < ps.count; i++) {
+		cache[getMapHashCode()] = ps.list[i];
+		move(ps.list[i].x, ps.list[i].y, color);
+		color = getOtherColor(color);
+	}
+	for (int i = ps.count; i > 0; i--) {
+		color = getOtherColor(color);
+		undoMove(ps.list[i-1].x, ps.list[i-1].y, color);
+	}
+}
+
 bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *gameResult) {
 	//if all lose points , normal search
 	bool loseFlag = false;
@@ -128,12 +160,29 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 		loseSet.reset();
 		loseFlag = true;
 	}
+
 	//normal search
 	timeOutEnable = false;
 	searchStartTime = getSystemTime();
+
+	points historyPoints = findHistoryPath(aiColor);
+
 	cacheLast.clear();
 	cache.clear();
-	for (int level = 2; level <= searchLevel; level += 2 )
+
+	initHistoryPathCache(historyPoints, aiColor);
+
+	int startLevel = 2;
+	if (historyPoints.count > 0) {
+		if (piskvorkMessageEnable) {
+			printf("MESSAGE find history path. point (%d, %d), path lenth: %d, last level:%d ,\n", historyPoints.list[0].x, historyPoints.list[0].y, historyPoints.count, lastResult.level - 2);
+		}
+		gameResult->result = historyPoints.list[0];
+		gameResult->level = min(lastResult.level - 2, historyPoints.count);
+		startLevel = min(lastResult.level, historyPoints.count + 2);
+	}
+
+	for (int level = startLevel; level <= searchLevel; level += 2 )
 	{
 		long long t = getSystemTime();
 		nodeCount = 0;
@@ -205,6 +254,8 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 	}
 	if (loseFlag)
 		gameResult->value = MIN_VALUE;
+
+	lastResult = *gameResult;
 	return true;
 }
 
@@ -272,12 +323,9 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	nodeCount++;
 	if (extend > 0) {
 		extendNodeCount++;
-	}
+	}	
 
 	int value = getScoreValue(color, aiColor);
-
-	
-
 	if (level <= 1) 
 	{
 		// extend
@@ -307,7 +355,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 
 	if (canWinCheck(color)) {
 		//printMap(getMap());
-		return value + MAX_VALUE;
+		return MAX_VALUE + value;
 		//return MAX_VALUE;
 	}
 
@@ -369,6 +417,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 
 			if (value >= MAX_VALUE/2) {
 				currentPointResult = p;
+				cache[getMapHashCode()] = p;
 				return value;
 			}
 			if (value <= MIN_VALUE/2) {

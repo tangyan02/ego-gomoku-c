@@ -15,7 +15,9 @@ extern int whitePatternTotalScore;
 
 extern Color** map;
 
-int score[10] = { 0, 100000, 10000, 80, 90, 40, 50, 20, 25, 10 };
+//int score[10] = { 0, 100000, 10000, 80, 90, 40, 50, 20, 25, 10 };
+
+//extern int baseScore[10];
 
 int getScoreValue(Color color, Color aiColor) {
 	int result = 0;
@@ -35,14 +37,14 @@ int getScoreValue(Color color, Color aiColor) {
 //	int result = 0;
 //	if (color == WHITE) {
 //		for (int i = 1; i < 10; i++) {
-//			result += score[i] * whitePatternCount[i];
-//			result -= score[i] * blackPatternCount[i];
+//			result += baseScore[i] * whitePatternCount[i];
+//			result -= baseScore[i] * blackPatternCount[i];
 //		}
 //	}
 //	if (color == BLACK) {
 //		for (int i = 1; i < 10; i++) {
-//			result -= score[i] * whitePatternCount[i];
-//			result += score[i] * blackPatternCount[i];
+//			result -= baseScore[i] * whitePatternCount[i];
+//			result += baseScore[i] * blackPatternCount[i];
 //		}
 //	}
 //	if (color != aiColor) {
@@ -53,32 +55,32 @@ int getScoreValue(Color color, Color aiColor) {
 
 /***************************²âÊÔ´úÂë·Ö¸ô***********************************/
 
-int getValueByPattern(Color color) {
-	int result = 0;
-	if (color == WHITE) {
-		for (int i = 0; i < boardSize; i++)
-			for (int j = 0; j < boardSize; j++) {
-				for (int k = 0; k < 4; k++) {
-					if (map[i][j] == WHITE) {
-						result += score[whitePattern[i][j][k]];
-					}
-					if (map[i][j] == BLACK) {
-						result -= score[blackPattern[i][j][k]];
-					}
-				}
-			}
-	}
-	if (color == BLACK) {
-		for (int i = 0; i < boardSize; i++)
-			for (int j = 0; j < boardSize; j++)
-				for (int k = 0; k < 4; k++) {
-					if (map[i][j] == WHITE) {
-						result -= score[whitePattern[i][j][k]];
-					}
-					if (map[i][j] == BLACK) {
-						result += score[blackPattern[i][j][k]];
-					}
-				}
-	}
-	return result;
-}
+//int getValueByPattern(Color color) {
+//	int result = 0;
+//	if (color == WHITE) {
+//		for (int i = 0; i < boardSize; i++)
+//			for (int j = 0; j < boardSize; j++) {
+//				for (int k = 0; k < 4; k++) {
+//					if (map[i][j] == WHITE) {
+//						result += baseScore[whitePattern[i][j][k]];
+//					}
+//					if (map[i][j] == BLACK) {
+//						result -= baseScore[blackPattern[i][j][k]];
+//					}
+//				}
+//			}
+//	}
+//	if (color == BLACK) {
+//		for (int i = 0; i < boardSize; i++)
+//			for (int j = 0; j < boardSize; j++)
+//				for (int k = 0; k < 4; k++) {
+//					if (map[i][j] == WHITE) {
+//						result -= baseScore[whitePattern[i][j][k]];
+//					}
+//					if (map[i][j] == BLACK) {
+//						result += baseScore[blackPattern[i][j][k]];
+//					}
+//				}
+//	}
+//	return result;
+//}

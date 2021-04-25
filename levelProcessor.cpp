@@ -27,9 +27,6 @@ static pointHash pHash;
 static int getScore(int x, int y, Color color)
 {
 	int value = 0;
-	//move(x, y, color);
-	//getScoreValue(color, color);
-	//undoMove(x, y, color);
 	for (int k = 0; k < 4; k++)
 	{
 		if (color == BLACK)
@@ -46,37 +43,83 @@ static int getScore(int x, int y, Color color)
 	return value;
 }
 
-void qsort(point *list, int score[], int l, int r)
+void swap(point* list, int* score, int x, int y) {
+	int t = score[x];
+	score[x] = score[y];
+	score[y] = t;
+	t = list[x].x;
+	list[x].x = list[y].x;
+	list[y].x = t;
+	t = list[x].y;
+	list[x].y = list[y].y;
+	list[y].y = t;
+}
+
+void qsort(point* list, int* score, int l, int r)
 {
 	int x = l;
 	int y = r;
-	int mid = score[(x + y) / 2];
+	int mid = (x + y)/2;
+
+	if (score[x] > score[mid])
+		swap(list, score, x, mid);
+	if (score[x] > score[y])
+		swap(list, score, x, y);
+	if (score[y] < score[mid])
+		swap(list, score, y, mid);
+
 	while (x < y)
 	{
-		while (score[x] > mid)
+		while (score[x] > score[mid])
 			x++;
-		while (score[y] < mid)
+		while (score[y] < score[mid])
 			y--;
 		if (x <= y)
 		{
-			int t = score[x];
-			score[x] = score[y];
-			score[y] = t;
-			t = list[x].x;
-			list[x].x = list[y].x;
-			list[y].x = t;
-			t = list[x].y;
-			list[x].y = list[y].y;
-			list[y].y = t;
+			swap(list, score, x, y);
 			x++;
 			y--;
 		}
 	}
-	if (x < r)
+	if (x < r) {
 		qsort(list, score, x, r);
+	}
 	if (l < y)
 		qsort(list, score, l, y);
 }
+
+//void qsort(point *list, int* score, int l, int r)
+//{
+//	int x = l;
+//	int y = r;
+//	int mid = score[(x + y) / 2];
+//	while (x < y)
+//	{
+//		while (score[x] > mid)
+//			x++;
+//		while (score[y] < mid)
+//			y--;
+//		if (x <= y)
+//		{
+//			swap(x, y);
+//			int t = score[x];
+//			score[x] = score[y];
+//			score[y] = t;
+//			t = list[x].x;
+//			list[x].x = list[y].x;
+//			list[y].x = t;
+//			t = list[x].y;
+//			list[x].y = list[y].y;
+//			list[y].y = t;
+//			x++;
+//			y--;
+//		}
+//	}
+//	if (x < r)
+//		qsort(list, score, x, r);
+//	if (l < y)
+//		qsort(list, score, l, y);
+//}
 
 void sort(points* neighbors, Color color) {
 	point* list = neighbors->list;

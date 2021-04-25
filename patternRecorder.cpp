@@ -87,11 +87,11 @@ static void addPointDirectPatternCount(int x, int y, int direct) {
 	if (map[x][y] == BLACK) {
 		blackPatternCount[blackPattern[x][y][direct]]++;
 		blackPatternTotalScore += patternScore[blackLineKey[x][y][direct]];
-	}
+	} 
 	if (map[x][y] == WHITE) {
 		whitePatternCount[whitePattern[x][y][direct]]++;
 		whitePatternTotalScore += patternScore[whiteLineKey[x][y][direct]];
-	}
+	} 
 	if (map[x][y] == NULL) {
 		blackPatternCountInNull[blackPattern[x][y][direct]]++;
 		whitePatternCountInNull[whitePattern[x][y][direct]]++;
@@ -198,19 +198,7 @@ void updateLinePatternCount(int x, int y) {
 		int py = y - directY[direct] * 4;
 		for (int p = 0; p <= 8; p++) {
 			if (reachable(px, py)) {
-				//addPointDirectPatternCount(px, py, direct);
-				if (map[px][py] == BLACK) {
-					blackPatternCount[blackPattern[px][py][direct]]++;
-					blackPatternTotalScore += patternScore[blackLineKey[px][py][direct]];
-				}
-				if (map[px][py] == WHITE) {
-					whitePatternCount[whitePattern[px][py][direct]]++;
-					whitePatternTotalScore += patternScore[whiteLineKey[px][py][direct]];
-				}
-				if (map[px][py] == NULL) {
-					blackPatternCountInNull[blackPattern[px][py][direct]]++;
-					whitePatternCountInNull[whitePattern[px][py][direct]]++;
-				}
+				addPointDirectPatternCount(px, py, direct);
 			}
 			px += directX[direct];
 			py += directY[direct];

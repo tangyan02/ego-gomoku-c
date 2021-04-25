@@ -22,6 +22,7 @@ static bool record = false;
 
 void brain_init()
 {
+	setbuf(stdout, NULL);
 	if (width < 5 || height < 5) {
 		pipeOut("ERROR size of the board");
 		return;
@@ -104,28 +105,16 @@ void brain_turn()
 	comboEnable = true;
 	int thisTimeOut = info_time_left / 10;
 	thisTimeOut = min(info_timeout_turn, thisTimeOut);
-	int pointCount = 0;
-	for (int i = 0; i < boardSize; i++)
-	{
-		for (int j = 0; j < boardSize; j++)
-		{
-			if (map[i][j] != NULL) {
-				pointCount++;
-			}
-		}
-	}
+
 	pipeOut("MESSAGE time limit %d", thisTimeOut);
-	timeOut = thisTimeOut;
-	//comboTimeOut = 0;
-	//comboEnable = false;
 	timeOut = thisTimeOut / 5 * 4;
 	comboTimeOut = thisTimeOut - timeOut;
 	gameResult result = search(BLACK, map);
 	point p = result.result;
-	if (result.value == MAX_VALUE) {
+	if (result.value > MAX_VALUE/2) {
 		pipeOut("MESSAGE ¡ï¡ï¡ï");
 	}
-	if (result.value == MIN_VALUE) {
+	if (result.value < MIN_VALUE/2) {
 		pipeOut("MESSAGE ¡ø¡ø¡ø");
 	}
 	pipeOut("MESSAGE :level %d(%d) value %d (%d,%d) speed %d k (%d) ", result.level, result.combo, result.value, p.x, p.y, result.speed, result.node);

@@ -67,7 +67,7 @@ void caseTest() {
 
 int main()
 {
-	//piskvork();
+	piskvork();
 	//testCombo();
 	//testAllCombo();
 	//bugTest();
@@ -75,7 +75,7 @@ int main()
 	//testPlay();
 	//testPattern();
 	//testPatternRecorder();
-	selfLearn();
+	//selfLearn();
 	//testAnalyzer();
 	return 0;
 }

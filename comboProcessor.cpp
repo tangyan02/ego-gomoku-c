@@ -41,9 +41,9 @@ bool selectAttack(points* neighbor, Color color, int& comboType) {
 
 	if (comboType == COMBO_THREE) {
 		if (tryFourDefence(color, neighbor)) {
-			if (tryThreeOrFourAttack(color, neighbor)) {
+			//if (tryThreeOrFourAttack(color, neighbor)) {
 				return true;
-			}
+			//}
 		}	
 		
 		//if (tryFourDefence(color, neighbor)) {
@@ -187,7 +187,7 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 	}
 
 	if (ps->count == 0) {
-		if (color == aiColor)
+		//if (color == aiColor)
 			return false;
 	}
 
@@ -334,10 +334,10 @@ void testCombo() {
 }
 
 void testAllCombo() {
-	const int count = 5;
-	char* paths[count] = {"combo8.txt", "combo9.txt", "combo10.txt", "combo11.txt" , "combo12.txt" };
-	Color colors[count] = { WHITE, BLACK, BLACK, BLACK, BLACK };
-	bool expect[count] = { true , false, false, false, false };
+	const int count = 6;
+	char* paths[count] = {"combo8.txt", "combo9.txt", "combo10.txt", "combo11.txt" , "combo12.txt" , "combo13.txt"};
+	Color colors[count] = { WHITE, BLACK, BLACK, BLACK, BLACK, WHITE };
+	bool expect[count] = { true , false, false, false, true, true };
 	for (int i = 0; i < count; i++) {
 		printf(" test: %s ", paths[i]);
 		init(paths[i]);

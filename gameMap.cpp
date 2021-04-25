@@ -12,7 +12,6 @@ points moveHistory;
 
 extern int boardSize;
 
-
 static int directX[] = { 0, 1, 1, 1, 0, -1, -1, -1 };
 static int directY[] = { 1, 1, 0, -1, -1, -1, 0, 1 };
 static int directXR[] = { 1, 2, 1, 2, -1, -2, -1, -2 };
@@ -20,6 +19,7 @@ static int directYR[] = { 2, 1, -2, -1, 2, 1, -2, -1 };
 
 static long long weightBlack[20][20];
 static long long weightWhite[20][20];
+static bool weightInited = false;
 
 static long long hashCode = 0;
 static int neighborCount[20][20];
@@ -132,13 +132,16 @@ void initGameMap(Color** value) {
 
 	srand((unsigned)time(NULL));
 
-	for (int i = 0; i < boardSize; i++)
-		for (int j = 0; j < boardSize; j++) {
-			for (int k = 0; k < 4; k++) {
-				weightBlack[i][j] = weightBlack[i][j] << 15 | rand();
-				weightWhite[i][j] = weightWhite[i][j] << 15 | rand();
+	if (!weightInited) {
+		for (int i = 0; i < boardSize; i++)
+			for (int j = 0; j < boardSize; j++) {
+				for (int k = 0; k < 4; k++) {
+					weightBlack[i][j] = weightBlack[i][j] << 15 | rand();
+					weightWhite[i][j] = weightWhite[i][j] << 15 | rand();
+				}
 			}
-		}
+		weightInited = true;
+	}
 
 	for (int i = 0; i < boardSize; i++)
 		for (int j = 0; j < boardSize; j++) {
@@ -146,11 +149,19 @@ void initGameMap(Color** value) {
 			longNeighborCount[i][j] = 0;
 		}
 
+	hashCode = 0;
 	for (int i = 0; i < boardSize; i++)
 		for (int j = 0; j < boardSize; j++) {
 			Color color = map[i][j];
 			if (color != NULL) {
 				updateHashCode(i, j, color);
+			}
+		}
+
+	for (int i = 0; i < boardSize; i++)
+		for (int j = 0; j < boardSize; j++) {
+			Color color = map[i][j];
+			if (color != NULL) {
 				bool isAdd = color == NULL ? false : true;
 				updateNeighbor(i, j, true, color);
 			}
