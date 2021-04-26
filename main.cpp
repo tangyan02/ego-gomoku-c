@@ -57,7 +57,7 @@ void caseTest() {
 	piskvorkMessageEnable = true;
 	boardSize = 20;
 	debugEnable = true;
-	comboTimeOut = 3000;
+	comboTimeOut = 2000;
 	searchLevel = 12;
 	timeOut = 10 * 1000;
 	Color **map = readMap("input.txt");
@@ -67,7 +67,7 @@ void caseTest() {
 
 int main()
 {
-	//piskvork();
+	piskvork();
 	//testCombo();
 	//testAllCombo();
 	//bugTest();
@@ -75,7 +75,7 @@ int main()
 	//testPlay();
 	//testPattern();
 	//testPatternRecorder();
-	selfLearn();
+	//selfLearn();
 	//testAnalyzer();
 	return 0;
 }

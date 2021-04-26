@@ -249,7 +249,7 @@ void updateHashCode(int x, int y, Color color)
 	}
 }
 
-//bool inNeighbor(int x, int y)
-//{
-//	return neighborCount[x][y] > 0;
-//}
+bool inNeighbor(int x, int y)
+{
+	return neighborCount[x][y] > 0;
+}

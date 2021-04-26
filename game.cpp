@@ -141,18 +141,6 @@ static points findHistoryPath(Color color) {
 	return result;
 }
 
-static void initHistoryPathCache(points ps, Color color) {
-	for (int i = 0; i < ps.count; i++) {
-		cache[getMapHashCode()] = ps.list[i];
-		move(ps.list[i].x, ps.list[i].y, color);
-		color = getOtherColor(color);
-	}
-	for (int i = ps.count; i > 0; i--) {
-		color = getOtherColor(color);
-		undoMove(ps.list[i-1].x, ps.list[i-1].y, color);
-	}
-}
-
 bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *gameResult) {
 	//if all lose points , normal search
 	bool loseFlag = false;
@@ -165,24 +153,27 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 	timeOutEnable = false;
 	searchStartTime = getSystemTime();
 
-	//points historyPoints = findHistoryPath(aiColor);
-
-	cacheLast.clear();
-	cache.clear();
-
-	//initHistoryPathCache(historyPoints, aiColor);
+	points historyPoints = findHistoryPath(aiColor);
 
 	int startLevel = 2;
-	//if (historyPoints.count > 0) {
-	//	if (piskvorkMessageEnable) {
-	//		printf("MESSAGE find history path. point (%d, %d), path lenth: %d, last level:%d ,\n", historyPoints.list[0].x, historyPoints.list[0].y, historyPoints.count, lastResult.level - 2);
-	//	}
-	//	if (!loseSet.contains(historyPoints.list[0])) {
-	//		gameResult->result = historyPoints.list[0];
-	//		gameResult->level = min(lastResult.level - 2, historyPoints.count);
-	//		startLevel = min(lastResult.level, historyPoints.count + 2);
-	//	}
-	//}
+	if (historyPoints.count > 0) {
+		if (piskvorkMessageEnable) {
+			printf("MESSAGE find history path. point (%d, %d), path lenth: %d, last level:%d ,\n", historyPoints.list[0].x, historyPoints.list[0].y, historyPoints.count, lastResult.level - 2);
+		}
+		if (!loseSet.contains(historyPoints.list[0])) {
+			gameResult->result = historyPoints.list[0];
+			gameResult->level = min(lastResult.level - 2, historyPoints.count);
+			startLevel = min(lastResult.level, historyPoints.count + 2);
+			if (startLevel % 2 == 1) {
+				startLevel--;
+			}
+			cache = cacheLast;
+		}
+		else {
+			cacheLast.clear();
+			cache.clear();
+		}
+	}
 
 	for (int level = startLevel; level <= searchLevel; level += 2 )
 	{
@@ -246,7 +237,7 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			}
 			if (value >= MAX_VALUE/2)
 				break;
-			if (value <= MIN_VALUE / 2) {
+			if (value <= MIN_VALUE/2) {
 				break;
 			}
 		}
@@ -327,11 +318,11 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		extendNodeCount++;
 	}	
 
-	int value = getScoreValue(color, aiColor);
+	int scoreValue = getScoreValue(color, aiColor);
 	if (level <= 1) 
 	{
 		// extend
-		if (value < beta && value > alpha && extend < currentLevel) {
+		if (scoreValue < beta && scoreValue > alpha && extend < currentLevel) {
 			level += 2;
 			extend += 2;
 			if (extend > maxExtend) {
@@ -351,13 +342,13 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 
 		// leaf node get value
 		if (level == 0) {
-			return value;
+			return scoreValue;
 		}
 	}
 
 	if (canWinCheck(color)) {
 		//printMap(getMap());
-		return MAX_VALUE + value;
+		return MAX_VALUE + scoreValue;
 		//return MAX_VALUE;
 	}
 
@@ -367,14 +358,12 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 
 	//sort
 	selectAndSortPoints(neighbors, color);
-	//printMapWithStars(getMap(), *neighbors);
 
 	//user history best
 	bool existHitory = moveHistoryBestToFirst(neighbors);
 
 	//move and dfs
-	int extreme = MIN_VALUE;
-	points* extremePoints = PointsFactory::createDfsTempPoints(level);
+	point finalPoint = neighbors->list[0];
 	for (int i = 0; i < neighbors->count; i++) {
 		point p = point(neighbors->list[i].x, neighbors->list[i].y);
 
@@ -382,7 +371,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		int value;
 		//zero window search
 		if (level == currentLevel && extend == 0 && loseSet.contains(p)) {
-			value = MIN_VALUE + value;
+			value = MIN_VALUE + scoreValue;
 		}
 		else {
 			if (i == 0) {
@@ -397,19 +386,15 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 			}
 		}
 		undoMove(p.x, p.y, color);
-		if (value >= extreme) {
-			if (value > extreme) {
-				extremePoints->clear();
-			}
-			extreme = value;
-			extremePoints->add(p);
+		if (value > alpha) {
+			finalPoint = p;
+		}
 
-			if (value > alpha) {
-				alpha = value;
-				if (value > beta) {
-					cache[getMapHashCode()] = p;
-					return value;
-				}
+		if (value > alpha) {
+			alpha = value;
+			if (value >= beta) {
+				cache[getMapHashCode()] = p;
+				return beta;
 			}
 		}
 
@@ -429,25 +414,17 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		}
 	}
 
-	if (extremePoints->count > 0) {
-		if (extremePoints->list[0].x == neighbors->list[0].x && extremePoints->list[0].y == neighbors->list[0].y && existHitory) {
-			cacheCorretCount++;
-		}
-
-		point extremePoint = extremePoints->list[rand() % extremePoints->count];
-		if (level == currentLevel && extend == 0) {
-			if (extreme > MIN_VALUE / 2 || currentLevel == 2) {
-				currentPointResult = point(extremePoint.x, extremePoint.y);
-			}
-		}
-		cache[getMapHashCode()] = extremePoint;
+	if (finalPoint.x == neighbors->list[0].x && finalPoint.y == neighbors->list[0].y && existHitory) {
+		cacheCorretCount++;
 	}
-	else {
-		point extremePoint = neighbors->list[0];
-		if (level == currentLevel && extend == 0) {
-			currentPointResult = point(extremePoint.x, extremePoint.y);
+
+	if (level == currentLevel && extend == 0) {
+		if (alpha > MIN_VALUE / 2 || currentLevel == 2) {
+			currentPointResult = point(finalPoint.x, finalPoint.y);
 		}
 	}
 
-	return extreme;
+	cache[getMapHashCode()] = finalPoint;
+	
+	return alpha;
 }

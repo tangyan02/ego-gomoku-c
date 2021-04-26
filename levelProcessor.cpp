@@ -122,39 +122,6 @@ void qsort(point* list, int* score, int l, int r)
 		qsort(list, score, l, y);
 }
 
-//void qsort(point *list, int* score, int l, int r)
-//{
-//	int x = l;
-//	int y = r;
-//	int mid = score[(x + y) / 2];
-//	while (x < y)
-//	{
-//		while (score[x] > mid)
-//			x++;
-//		while (score[y] < mid)
-//			y--;
-//		if (x <= y)
-//		{
-//			swap(x, y);
-//			int t = score[x];
-//			score[x] = score[y];
-//			score[y] = t;
-//			t = list[x].x;
-//			list[x].x = list[y].x;
-//			list[y].x = t;
-//			t = list[x].y;
-//			list[x].y = list[y].y;
-//			list[y].y = t;
-//			x++;
-//			y--;
-//		}
-//	}
-//	if (x < r)
-//		qsort(list, score, x, r);
-//	if (l < y)
-//		qsort(list, score, l, y);
-//}
-
 void sort(points* neighbors, Color color) {
 	point* list = neighbors->list;
 
@@ -186,6 +153,13 @@ void selectAndSortPoints(points *neighbors, Color color)
 	if (tryThreeDefence(color, neighbors)) {
 		pHash.removeRepeat(neighbors);
 		sort(neighbors, color);
+		return;
+	}
+	if (tryDoubleComboDefence(color, neighbors)) {
+		pHash.removeRepeat(neighbors);
+		sort(neighbors, color);
+		//printf("tryDoubleComboDefence!\n");
+		//printMapWithStars(getMap(),*neighbors);
 		return;
 	}
 
