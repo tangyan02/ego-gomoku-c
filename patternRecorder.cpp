@@ -198,7 +198,20 @@ void updateLinePatternCount(int x, int y) {
 		int py = y - directY[direct] * 4;
 		for (int p = 0; p <= 8; p++) {
 			if (reachable(px, py)) {
-				addPointDirectPatternCount(px, py, direct);
+				// instead to debug
+				//removePointDirectPatternCount(px, py, direct);
+				if (map[px][py] == BLACK) {
+					blackPatternCount[blackPattern[px][py][direct]]++;
+					blackPatternTotalScore += patternScore[blackLineKey[px][py][direct]];
+				}
+				if (map[px][py] == WHITE) {
+					whitePatternCount[whitePattern[px][py][direct]]++;
+					whitePatternTotalScore += patternScore[whiteLineKey[px][py][direct]];
+				}
+				if (map[px][py] == NULL) {
+					blackPatternCountInNull[blackPattern[px][py][direct]]++;
+					whitePatternCountInNull[whitePattern[px][py][direct]]++;
+				}
 			}
 			px += directX[direct];
 			py += directY[direct];

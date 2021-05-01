@@ -9,7 +9,7 @@ public:
 	void remove(point& p);
 	bool contains(int x, int y);
 	bool contains(point& p);
-	void removeRepeat(points* ps);
+	void removeRepeat(points& ps);
 	pointHash();
 	~pointHash();
 	void reset();

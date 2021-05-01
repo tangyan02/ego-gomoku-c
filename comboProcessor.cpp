@@ -36,7 +36,7 @@ bool returnWinValue(int level, point p) {
 	return true;
 }
 
-bool selectAttack(points* neighbor, Color color, int& comboType) {
+bool selectAttack(points&neighbor, Color color, int& comboType) {
 	tryFiveAttack(getOtherColor(color), neighbor);
 
 	if (comboType == COMBO_THREE) {
@@ -63,11 +63,11 @@ bool selectAttack(points* neighbor, Color color, int& comboType) {
 		}
 	}
 
-	neighbor->clear();
+	neighbor.clear();
 	return false;
 }
 
-void selectDefence(points* neighbor, Color color, int comboType) {
+void selectDefence(points&neighbor, Color color, int comboType) {
 	if (comboType == COMBO_FOUR) {
 		if (tryFourDefence(color, neighbor)) {
 			return;
@@ -78,14 +78,14 @@ void selectDefence(points* neighbor, Color color, int comboType) {
 			return;
 		}
 		points* ps = PointsFactory::createTempPoints();
-		tryFourAttack(color, ps);
+		tryFourAttack(color, *ps);
 		
 		if (tryThreeDefence(color, neighbor)) {
-			neighbor->addMany(ps);
+			neighbor.addMany(ps);
 			return;
 		}
 	}
-	neighbor->clear();
+	neighbor.clear();
 }
 
 static bool killDfs(int level, Color color, Color aiColor, point lastPoint, point lastLastPoint, point attackPoint, int comboType) {
@@ -142,9 +142,9 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 	if (level == currentLevel - 1) {
 		//fillPointLinesNeighbor(lastPoint.x, lastPoint.y, ps);
 		if (color == aiColor) {
-			fillPointLinesNeighbor(lastPoint.x, lastPoint.y, ps);
-			fillPointLinesNeighbor(attackPoint.x, attackPoint.y, ps);
-			phash.removeRepeat(ps);
+			fillPointLinesNeighbor(lastPoint.x, lastPoint.y, *ps);
+			fillPointLinesNeighbor(attackPoint.x, attackPoint.y, *ps);
+			phash.removeRepeat(*ps);
 		}
 		else {
 			fillNeighbor(ps);
@@ -154,10 +154,10 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 		//fillPointLinesNeighbor(lastPoint.x, lastPoint.y, ps);
 		//fillPointLinesNeighbor(lastLastPoint.x, lastLastPoint.y, ps);
 		if (color == aiColor) {
-			fillPointLinesNeighbor(lastPoint.x, lastPoint.y, ps);
-			fillPointLinesNeighbor(lastLastPoint.x, lastLastPoint.y, ps);
-			fillPointLinesNeighbor(attackPoint.x, attackPoint.y, ps);
-			phash.removeRepeat(ps);
+			fillPointLinesNeighbor(lastPoint.x, lastPoint.y, *ps);
+			fillPointLinesNeighbor(lastLastPoint.x, lastLastPoint.y, *ps);
+			fillPointLinesNeighbor(attackPoint.x, attackPoint.y, *ps);
+			phash.removeRepeat(*ps);
 		}
 		else {
 			fillNeighbor(ps);
@@ -173,11 +173,11 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 
 	bool isAttack = false;
 	if (color == aiColor)
-		isAttack = selectAttack(ps, color, comboType);
+		isAttack = selectAttack(*ps, color, comboType);
 	else
-		selectDefence(ps, color, comboType);
+		selectDefence(*ps, color, comboType);
 
-	phash.removeRepeat(ps);
+	phash.removeRepeat(*ps);
 	//printf("after select ,is atk %d\n", isAttack);
 	//printPoints(*ps);
 	//printMapWithStars(map, *ps);
@@ -187,7 +187,7 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 			//printf("win\n");
 			//printMap(map);
 			//printMoveHistory();
-			return returnWinValue(level, getFiveAttack(ps, color));
+			return returnWinValue(level, getFiveAttack(*ps, color));
 		}
 		else {
 			return false;

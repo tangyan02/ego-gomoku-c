@@ -2,4 +2,4 @@
 #include "points.h"
 #include "config.h"
 
-void selectAndSortPoints(points *neighbors, Color color);
+void selectAndSortPoints(points& neighbors, Color color);

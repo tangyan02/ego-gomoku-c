@@ -122,17 +122,17 @@ void qsort(point* list, int* score, int l, int r)
 		qsort(list, score, l, y);
 }
 
-void sort(points* neighbors, Color color) {
-	point* list = neighbors->list;
+void sort(points& neighbors, Color color) {
+	point* list = neighbors.list;
 
-	for (int i = 0; i < neighbors->count; i++)
+	for (int i = 0; i < neighbors.count; i++)
 	{
 		scoreList[i] = getScore(list[i].x, list[i].y, color);
 	}
-	qsort(list, scoreList, 0, neighbors->count - 1);
+	qsort(list, scoreList, 0, neighbors.count - 1);
 }
 
-void selectAndSortPoints(points *neighbors, Color color)
+void selectAndSortPoints(points &neighbors, Color color)
 {
 	if (tryFiveAttack(color, neighbors)) {
 		pHash.removeRepeat(neighbors);

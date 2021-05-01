@@ -32,28 +32,28 @@ bool pointHash::contains(point& p)
 	return signal[p.x][p.y];
 }
 
-void pointHash::removeRepeat(points* ps)
+void pointHash::removeRepeat(points& ps)
 {
 	//pHash.reset();
 	bool repeat = false;
-	for (int i = 0; i < ps->count; i++) {
-		if (contains(ps->list[i])) {
+	for (int i = 0; i < ps.count; i++) {
+		if (contains(ps.list[i])) {
 			repeat = true;
 		}
-		add(ps->list[i]);
+		add(ps.list[i]);
 	}
 	if (repeat) {
 		points* temp = PointsFactory::createTempPoints();
-		for (int i = 0; i < ps->count; i++) {
-			if (contains(ps->list[i])) {
-				temp->add(ps->list[i]);
-				remove(ps->list[i]);
+		for (int i = 0; i < ps.count; i++) {
+			if (contains(ps.list[i])) {
+				temp->add(ps.list[i]);
+				remove(ps.list[i]);
 			}
 		}
 		return;
 	}
-	for (int i = 0; i < ps->count; i++) {
-		remove(ps->list[i]);
+	for (int i = 0; i < ps.count; i++) {
+		remove(ps.list[i]);
 	}
 }
 

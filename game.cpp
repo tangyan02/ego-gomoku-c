@@ -299,7 +299,7 @@ gameResult search(Color aiColor, Color** map)
 	//init neighbors
 	points* neighbors = PointsFactory::createPointNeighborPoints(0, 0);
 	fillNeighbor(neighbors);
-	selectAndSortPoints(neighbors, aiColor);
+	selectAndSortPoints(*neighbors, aiColor);
 
 	if (neighbors->count == 0) {
 		gameResult.result = point(boardSize / 2, boardSize / 2);
@@ -395,7 +395,7 @@ static int dfs(int level, Color color, Color aiColor, int alpha, int beta, int e
 	fillNeighbor(neighbors);
 
 	//sort
-	selectAndSortPoints(neighbors, color);
+	selectAndSortPoints(*neighbors, color);
 
 	//user history best
 	bool existHitory = moveHistoryBestToFirst(neighbors);
@@ -451,7 +451,6 @@ static int dfs(int level, Color color, Color aiColor, int alpha, int beta, int e
 
 			if (value >= MAX_VALUE/2) {
 				currentPointResult = p;
-				//cache[getMapHashCode()] = p;
 				return value;
 			}
 			if (value <= MIN_VALUE/2) {
