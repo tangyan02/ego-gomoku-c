@@ -42,6 +42,10 @@ static int maxExtend;
 
 static int extendNodeCount;
 
+static int innerComboNodeCount;
+
+static int innerComboSucNodeCount;
+
 static int cacheHitCount;
 
 static int cacheCorretCount;
@@ -69,11 +73,16 @@ bool tryComboSearchIteration(points * neighbors, Color aiColor, gameResult *game
 	bool selfSearch = true;
 	bool otherSearch[256];
 	int loseCount = 0;
+	int selfComboLevel = 0;
+	int otherComboLevel = 0;
 	for (int i = 0; i < neighbors->count; i++) {
 		otherSearch[i] = true;
 	}
 	for (int level = 3; level <= comboLevel; level += 2) {
 		if (getSystemTime() > targerTime) {
+			if (piskvorkMessageEnable) {
+				printf("MESSAGE combo time out \n");
+			}
 			break;
 		}
 		if (selfSearch) {
@@ -90,6 +99,7 @@ bool tryComboSearchIteration(points * neighbors, Color aiColor, gameResult *game
 
 			if (!result.isDeep) {
 				selfSearch = false;;
+				selfComboLevel = max(level, selfComboLevel);
 			}
 		}
 
@@ -113,18 +123,21 @@ bool tryComboSearchIteration(points * neighbors, Color aiColor, gameResult *game
 				}
 				if (!result.isDeep) {
 					otherSearch[i] = false;
+					otherComboLevel = max(level, otherComboLevel);
 				}
 			}
 		}
 	}
 	if (piskvorkMessageEnable) {
+		printf("MESSAGE combo level. self %d , other %d \n", selfComboLevel, otherComboLevel);
 		printf("MESSAGE lose point count %d\n", loseCount);
 	}
 	return false;
 }
 
-static points findHistoryPath(Color color) {
+static points findHistoryPath(Color selfColor) {
 	points result;
+	Color color = selfColor;
 	while (true) {
 		if (cacheLast.find(getMapHashCode()) == cacheLast.end()) {
 			break;
@@ -137,6 +150,10 @@ static points findHistoryPath(Color color) {
 	for (int i = result.count; i > 0; i--) {
 		color = getOtherColor(color);
 		undoMove(result.list[i-1].x, result.list[i-1].y, color);
+	}
+	if (piskvorkMessageEnable) {
+		printf("MESSAGE hitory: ");
+		printPoints(result);
 	}
 	return result;
 }
@@ -184,6 +201,8 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 		extendNodeCount = 0;
 		cacheHitCount = 0;
 		cacheCorretCount = 0;
+		innerComboNodeCount = 0;
+		innerComboSucNodeCount = 0;
 
 		cacheLast = cache;
 		cache.clear();
@@ -217,6 +236,8 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			gameResult->extendNode = extendNodeCount;
 			gameResult->cacheHit = cacheHitCount;
 			gameResult->cacheCorrect = cacheCorretCount;
+			gameResult->innerComboNode = innerComboNodeCount;
+			gameResult->innerComboSucNode = innerComboSucNodeCount;
 			if (piskvorkMessageEnable)
 			{
 				printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, node %d , max extend %d, extend node %d , cache hit: %d/%d , cost %lld ms\n",
@@ -231,6 +252,20 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 					cacheCorretCount,
 					cacheHitCount,
 					getSystemTime() - t);
+					//printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, node %d , max extend %d, extend node %d , cache hit: %d/%d ,inner combo rate %d/%d ,cost %lld ms\n",
+					//level,
+					//value,
+					//gameResult->result.x,
+					//gameResult->result.y,
+					//speed,
+					//nodeCount,
+					//maxExtend,
+					//extendNodeCount,
+					//cacheCorretCount,
+					//cacheHitCount,
+					//innerComboSucNodeCount,
+					//innerComboNodeCount,
+					//getSystemTime() - t);
 			}
 			if (debugEnable) {
 				printMapWithStar(getMap(), currentPointResult);
@@ -306,7 +341,7 @@ bool moveHistoryBestToFirst(points * neighbors) {
 
 /* alpha beta serach
 */
-int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) {
+static int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) {
 	if (getSystemTime() - searchStartTime > timeOut) {
 		timeOutEnable = true;
 	}
@@ -319,6 +354,9 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	}	
 
 	int scoreValue = getScoreValue(color, aiColor);
+
+
+
 	if (level <= 1) 
 	{
 		// extend
@@ -330,15 +368,17 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 			}
 		}
 
-		//if (value < beta && value > alpha  && extend < currentLevel*2) {
-		//	if (countPattern(getOtherColor(color), PATTERN_LINE_FIVE)) {
-		//		level += 2;
-		//		extend += 2;
-		//		if (extend > maxExtend) {
-		//			maxExtend = extend;
-		//		}
+
+		//if (scoreValue < beta && scoreValue > alpha) {
+		//	innerComboNodeCount++;
+		//	comboResult ret = killVCF(color, 100 + getSystemTime());
+		//	if (ret.canWin == true) {
+		//		innerComboSucNodeCount++;
+		//		return MIN_VALUE + scoreValue;
 		//	}
 		//}
+
+		
 
 		// leaf node get value
 		if (level == 0) {
@@ -363,7 +403,8 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 	bool existHitory = moveHistoryBestToFirst(neighbors);
 
 	//move and dfs
-	point finalPoint = neighbors->list[0];
+	point finalPoint;
+    int extrem = MIN_VALUE;
 	for (int i = 0; i < neighbors->count; i++) {
 		point p = point(neighbors->list[i].x, neighbors->list[i].y);
 
@@ -386,16 +427,24 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 			}
 		}
 		undoMove(p.x, p.y, color);
-		if (value > alpha) {
+		if (i == 0) {
 			finalPoint = p;
+		}
+
+		if (value > extrem) {
+			extrem = value;
 		}
 
 		if (value > alpha) {
 			alpha = value;
-			if (value >= beta) {
+			finalPoint = p;
+			if (value > beta) {
 				cache[getMapHashCode()] = p;
-				return beta;
+
 			}
+		    if (value >= beta) {
+				return beta;
+		    }
 		}
 
 		if (level == currentLevel && extend == 0) {
@@ -404,7 +453,7 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 
 			if (value >= MAX_VALUE/2) {
 				currentPointResult = p;
-				cache[getMapHashCode()] = p;
+				//cache[getMapHashCode()] = p;
 				return value;
 			}
 			if (value <= MIN_VALUE/2) {
@@ -418,13 +467,11 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		cacheCorretCount++;
 	}
 
-	if (level == currentLevel && extend == 0) {
-		if (alpha > MIN_VALUE / 2 || currentLevel == 2) {
-			currentPointResult = point(finalPoint.x, finalPoint.y);
+	if (neighbors->count > 0) {
+		if (level == currentLevel && extend == 0) {
+			 currentPointResult = point(finalPoint.x, finalPoint.y);
 		}
+		cache[getMapHashCode()] = finalPoint;
 	}
-
-	cache[getMapHashCode()] = finalPoint;
-	
 	return alpha;
 }

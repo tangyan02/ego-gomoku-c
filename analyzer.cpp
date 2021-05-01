@@ -234,6 +234,9 @@ bool checkActiveThreeDefence(points *neighbors, int *otherPatternCountInNull, in
 					}
 				}
 			}
+		if (ps->count == 0) {
+			return false;
+		}
 		neighbors->clear();
 		for (int i = 0; i < ps->count; i++) {
 			neighbors->add(ps->list[i]);
@@ -298,15 +301,9 @@ bool tryDoubleFourAttack(Color color, points* neighbors) {
 
 bool tryThreeOrFourAttack(Color color, points *neighbors) {
 	if (color == WHITE) {
-		if (blackPatternCountInNull[PATTERN_ACTIVE_FOUR] > 0) {
-			return checkFourAttack(neighbors, whitePatternCountInNull, whitePattern);
-		}
 		return checkThreeOrFourAttack(neighbors, whitePatternCountInNull, whitePattern);
 	}
 	if (color == BLACK) {
-		if (whitePatternCountInNull[PATTERN_ACTIVE_FOUR] > 0) {
-			return checkFourAttack(neighbors, blackPatternCountInNull, blackPattern);
-		}
 		return checkThreeOrFourAttack(neighbors, blackPatternCountInNull, blackPattern);
 	}
 	return false;
@@ -384,7 +381,7 @@ bool hasComboAttack(Color color, int comboType) {
 				whitePatternCountInNull[PATTERN_ACTIVE_THREE] > 0
 				)
 				return true;
-		}
+		}	
 	}
 	if (comboType == COMBO_FOUR) {
 		if (color == BLACK) {

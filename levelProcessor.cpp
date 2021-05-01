@@ -158,8 +158,8 @@ void selectAndSortPoints(points *neighbors, Color color)
 	if (tryDoubleComboDefence(color, neighbors)) {
 		pHash.removeRepeat(neighbors);
 		sort(neighbors, color);
-		//printf("tryDoubleComboDefence!\n");
-		//printMapWithStars(getMap(),*neighbors);
+		/*printf("MESSAGE tryDoubleComboDefence!\n");
+		printMapWithStars(getMap(),*neighbors);*/
 		return;
 	}
 

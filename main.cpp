@@ -57,7 +57,7 @@ void caseTest() {
 	piskvorkMessageEnable = true;
 	boardSize = 20;
 	debugEnable = true;
-	comboTimeOut = 2000;
+	comboTimeOut = 10000;
 	searchLevel = 12;
 	timeOut = 10 * 1000;
 	Color **map = readMap("input.txt");
@@ -65,9 +65,21 @@ void caseTest() {
 	printMapWithStar(map, result.result);
 }
 
+void scoreTest() {
+	piskvorkMessageEnable = true;
+	boardSize = 20;
+	debugEnable = true;
+	Color** map = readMap("input.txt");	
+	initPattern();
+	clearPatternRecord();
+	initGameMap(map);
+	printf("score %d\n", getScoreValue(BLACK, BLACK));
+}
+
 int main()
 {
 	piskvork();
+	//scoreTest();
 	//testCombo();
 	//testAllCombo();
 	//bugTest();

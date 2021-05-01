@@ -105,6 +105,12 @@
     <Text Include="combo13.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="combo14.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="combo15.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

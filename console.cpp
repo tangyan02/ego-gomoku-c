@@ -97,9 +97,10 @@ void printMapWithStars(Color ** map, pointHash hash)
 
 void printMapWithStar(Color ** map, point p)
 {
+	Color t = map[p.x][p.y];
 	map[p.x][p.y] = STAR;
 	printMap(map);
-	map[p.x][p.y] = NULL;
+	map[p.x][p.y] = t;
 }
 
 void printPlayers(vector<player>& players)

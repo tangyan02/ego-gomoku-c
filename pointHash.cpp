@@ -50,12 +50,6 @@ void pointHash::removeRepeat(points* ps)
 				remove(ps->list[i]);
 			}
 		}
-		/*printf("ps\n");
-		printPoints(*ps);
-		printf("temp\n");
-		printPoints(*temp);
-		ps->clear();
-		ps->addMany(temp);*/
 		return;
 	}
 	for (int i = 0; i < ps->count; i++) {

@@ -8,16 +8,28 @@ static int directY[] = { 1, 1, 0, -1 };
 int patternLib[PATTERN_SIZE] = { PATTERN_NULL };
 int patternScore[PATTERN_SIZE] = { PATTERN_NULL };
 
-int baseScore[10] = { 0, 100000, 10000, 54, 56 ,24, 24 ,11 ,16, 6 };
+int baseScore[10] = { 0, 100000, 10000,79 ,89 ,38, 34, 18, 17 ,13 };
 static int sigma = 1;
-
-//static int baseScore[10] = { 0, 100000, 10000, 57, 59, 29 ,25 ,11, 9, 3 };
-//static int sigma = 0;
 // 
-//static int baseScore[10] = { 0, 100000, 10000, 54, 56 ,24, 24 ,11 ,16, 6 };
+//int baseScore[10] = { 0, 100000, 10000,68 ,60 ,31, 24 ,16 ,12, 10  };
 //static int sigma = 1;
 
-//static int baseScore[10] = { 0, 100000, 10000, 80, 90, 40 ,50 ,20 ,25 ,10 };
+//int baseScore[10] = { 0, 100000, 10000,132, 137 ,58 ,57, 33 ,11, 9 };
+//static int sigma = 1;
+// 
+//int baseScore[10] = { 0, 100000, 10000, 68, 64 ,31, 24, 16, 7 ,10 };
+//static int sigma = 1;
+// 
+//int baseScore[10] = { 0, 100000, 10000,71, 95, 29 ,32 ,14 ,13, 8 };
+// int sigma = 1;
+// 
+//int baseScore[10] = { 0, 100000, 10000, 54, 56 ,24, 24 ,11 ,16, 6 };
+// int sigma = 1;
+ 
+//int baseScore[10] = { 0, 100000, 10000, 80, 95, 40 ,50 ,20 ,30 ,15 };
+//static int sigma = 0;
+
+//int baseScore[10] = { 0, 100000, 10000, 80, 100, 40 ,50 ,20 ,24 ,12 };
 //static int sigma = 0;
 
 static bool inited = false;

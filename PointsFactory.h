@@ -7,7 +7,7 @@ class PointsFactory
 
 private:
 
-	static points neighborPoints[30][100];
+	static points neighborPoints[30][60];
 
 	static points levelProcessorTempPoints;
 

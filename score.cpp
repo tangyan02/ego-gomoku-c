@@ -20,6 +20,7 @@ extern Color** map;
 //extern int baseScore[10];
 
 int getScoreValue(Color color, Color aiColor) {
+	//printf("black %d white %d\n", whitePatternTotalScore, blackPatternTotalScore);
 	int result = 0;
 	if (color == WHITE) {
 		return whitePatternTotalScore - blackPatternTotalScore;
