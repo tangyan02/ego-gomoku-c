@@ -240,7 +240,19 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			gameResult->innerComboSucNode = innerComboSucNodeCount;
 			if (piskvorkMessageEnable)
 			{
-				printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, node %d , max extend %d, extend node %d , cache hit: %d/%d , cost %lld ms\n",
+				//printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, node %d , max extend %d, extend node %d , cache hit: %d/%d , cost %lld ms\n",
+				//	level,
+				//	value,
+				//	gameResult->result.x,
+				//	gameResult->result.y,
+				//	speed,
+				//	nodeCount,
+				//	maxExtend,
+				//	extendNodeCount,
+				//	cacheCorretCount,
+				//	cacheHitCount,
+				//	getSystemTime() - t);
+					printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, node %d , max extend %d, extend node %d , cache hit: %d/%d ,inner combo rate %d/%d ,cost %lld ms\n",
 					level,
 					value,
 					gameResult->result.x,
@@ -251,21 +263,9 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 					extendNodeCount,
 					cacheCorretCount,
 					cacheHitCount,
+					innerComboSucNodeCount,
+					innerComboNodeCount,
 					getSystemTime() - t);
-					//printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, node %d , max extend %d, extend node %d , cache hit: %d/%d ,inner combo rate %d/%d ,cost %lld ms\n",
-					//level,
-					//value,
-					//gameResult->result.x,
-					//gameResult->result.y,
-					//speed,
-					//nodeCount,
-					//maxExtend,
-					//extendNodeCount,
-					//cacheCorretCount,
-					//cacheHitCount,
-					//innerComboSucNodeCount,
-					//innerComboNodeCount,
-					//getSystemTime() - t);
 			}
 			if (debugEnable) {
 				printMapWithStar(getMap(), currentPointResult);
@@ -359,6 +359,16 @@ static int dfs(int level, Color color, Color aiColor, int alpha, int beta, int e
 
 	if (level <= 1) 
 	{
+
+		if (scoreValue < beta && scoreValue > alpha) {
+			innerComboNodeCount++;
+			comboResult ret = killVCF(color, 100 + getSystemTime());
+			if (ret.canWin == true) {
+				innerComboSucNodeCount++;
+				return MAX_VALUE + scoreValue;
+			}
+		}
+
 		// extend
 		if (scoreValue < beta && scoreValue > alpha && extend < currentLevel) {
 			level += 2;
@@ -367,18 +377,6 @@ static int dfs(int level, Color color, Color aiColor, int alpha, int beta, int e
 				maxExtend = extend;
 			}
 		}
-
-
-		//if (scoreValue < beta && scoreValue > alpha) {
-		//	innerComboNodeCount++;
-		//	comboResult ret = killVCF(color, 100 + getSystemTime());
-		//	if (ret.canWin == true) {
-		//		innerComboSucNodeCount++;
-		//		return MIN_VALUE + scoreValue;
-		//	}
-		//}
-
-		
 
 		// leaf node get value
 		if (level == 0) {
