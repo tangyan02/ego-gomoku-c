@@ -109,25 +109,25 @@ static bool killDfs(int level, Color color, Color aiColor, point lastPoint, poin
 	//printMap(map);
 	//printMoveHistory();
 
-	//if (comboType == COMBO_THREE) {
-	//	int tempDeepLevel = deepLevel;
-	//	int tempCurrentLevel = currentLevel;
-	//	deepLevel = level;
-	//	currentLevel = maxLevel;
-	//	if (killDfs(maxLevel, color, color, point(), point(),point(), COMBO_FOUR)) {
-	//	/*	printf("hit\n");
-	//		printMap(map);
-	//		printMoveHistory();*/
-	//		deepLevel = tempDeepLevel;
-	//		currentLevel = tempCurrentLevel;
-	//		if (color == aiColor) {
-	//			return true;
-	//		}
-	//		return false;
-	//	}
-	//	deepLevel = tempDeepLevel;
-	//	currentLevel = tempCurrentLevel;
-	//}
+	if (comboType == COMBO_THREE) {
+		int tempDeepLevel = deepLevel;
+		int tempCurrentLevel = currentLevel;
+		deepLevel = level;
+		currentLevel = maxLevel;
+		if (killDfs(maxLevel, color, color, point(), point(),point(), COMBO_FOUR)) {
+		/*	printf("hit\n");
+			printMap(map);
+			printMoveHistory();*/
+			deepLevel = tempDeepLevel;
+			currentLevel = tempCurrentLevel;
+			if (color == aiColor) {
+				return true;
+			}
+			return false;
+		}
+		deepLevel = tempDeepLevel;
+		currentLevel = tempCurrentLevel;
+	}
 
 	if (!hasComboAttack(aiColor, comboType)) {
 		//printMap(map);
