@@ -10,7 +10,10 @@ int patternScore[PATTERN_SIZE] = { PATTERN_NULL };
 
 int baseScore[10] = { 0, 100000, 10000, 79 ,89 ,38 ,34 ,18 ,17 ,13 };
 static int sigma = 1;
- 
+
+//int baseScore[10] = { 0, 100000, 10000, 79 ,89 ,38 ,34 ,18 ,17 ,13 };
+//static int sigma = 1;
+
 //int baseScore[10] = { 0, 100000, 10000, 80, 95, 40 ,50 ,20 ,30 ,15 };
 //static int sigma = 0;
 

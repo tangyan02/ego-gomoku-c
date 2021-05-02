@@ -78,16 +78,16 @@ void scoreTest() {
 
 int main()
 {
-	piskvork();
+	//piskvork();
 	//scoreTest();
 	//testCombo();
 	//testAllCombo();
 	//bugTest();
-	caseTest();
+	//caseTest();
 	//testPlay();
 	//testPattern();
 	//testPatternRecorder();
-	//selfLearn();
+	selfLearn();
 	//testAnalyzer();
 	return 0;
 }
