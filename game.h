@@ -5,6 +5,4 @@
 
 long long getSystemTime();
 
-int dfs(int level, Color color, Color aiColor, int parentMax, int parentMin, int extend);
-
 gameResult search(Color aiColor, Color** map);
