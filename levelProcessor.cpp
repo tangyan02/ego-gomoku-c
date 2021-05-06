@@ -155,13 +155,13 @@ void selectAndSortPoints(points &neighbors, Color color)
 		sort(neighbors, color);
 		return;
 	}
-	if (tryDoubleComboDefence(color, neighbors)) {
-		pHash.removeRepeat(neighbors);
-		sort(neighbors, color);
-		/*printf("MESSAGE tryDoubleComboDefence!\n");
-		printMapWithStars(getMap(),*neighbors);*/
-		return;
-	}
+	//if (tryDoubleComboDefence(color, neighbors)) {
+	//	pHash.removeRepeat(neighbors);
+	//	sort(neighbors, color);
+	//	/*printf("MESSAGE tryDoubleComboDefence!\n");
+	//	printMapWithStars(getMap(),*neighbors);*/
+	//	return;
+	//}
 
 	sort(neighbors, color);
 }
