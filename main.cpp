@@ -85,6 +85,6 @@ int main()
     //testPlay();
     //testPattern();
     //testPatternRecorder();
-    getchar();
+    // getchar();
     return 0;
 }
