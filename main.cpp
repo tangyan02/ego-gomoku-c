@@ -1,6 +1,6 @@
 #include "console.h"
 #include "game.h"
-#include "gamemap.h"
+#include "gameMap.h"
 #include "io.h"
 #include "levelProcessor.h"
 #include "score.h"
