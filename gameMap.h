@@ -5,21 +5,25 @@
 #define OTHER_COLOR 2
 #define INVALID_COLOR 3
 
+#include "config.h"
+#include "point.h"
+#include "points.h"
+
 Color getColor(int x, int y);
 
 void move(int x, int y, Color color);
 
 void undoMove(int x, int y, Color color);
 
-void fillNeighbor(points* ps);
+void fillNeighbor(points *ps);
 
-void fillPointLinesNeighbor(int px, int py, points* ps);
+void fillPointLinesNeighbor(int px, int py, points *ps);
 
 bool reachable(int x, int y);
 
-void initGameMap(Color** value);
+void initGameMap(Color **value);
 
-Color ** getMap();
+Color **getMap();
 
 long long getMapHashCode();
 
