@@ -1,5 +1,7 @@
 #include "score.h"
+#include "config.h"
 #include "gameMap.h"
+#include "point.h"
 #include "stdafx.h"
 
 extern int blackPatternCount[10];
