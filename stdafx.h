@@ -8,18 +8,16 @@
 #include "targetver.h"
 
 #include <stdio.h>
-#include <tchar.h>
-
-
+// #include <tchar.h>
 
 // TODO: 在此处引用程序需要的其他头文件
 
+#include "config.h"
 #include "console.h"
 #include "game.h"
-#include "config.h"
-#include "point.h"
-#include "points.h"
-#include "pointHash.h"
 #include "gameResult.h"
-#include "patternRecorder.h"
 #include "pattern.h"
+#include "patternRecorder.h"
+#include "point.h"
+#include "pointHash.h"
+#include "points.h"

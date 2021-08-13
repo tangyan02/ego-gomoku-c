@@ -1,16 +1,16 @@
-#include "stdafx.h"
 #include "game.h"
-#include "score.h"
-#include "gameMap.h"
-#include "winChecker.h"
-#include "levelProcessor.h"
-#include "console.h"
-#include <sys/timeb.h>
-#include "unordered_map"
 #include "PointsFactory.h"
 #include "analyzer.h"
-#include "comboResult.h"
 #include "comboProcessor.h"
+#include "comboResult.h"
+#include "console.h"
+#include "gameMap.h"
+#include "levelProcessor.h"
+#include "score.h"
+#include "stdafx.h"
+#include "unordered_map"
+#include "winChecker.h"
+#include <sys/timeb.h>
 
 extern int boardSize;
 
@@ -24,9 +24,9 @@ extern int comboTimeOut;
 
 extern bool debugEnable;
 
-static int directX[] = { 0, 1, 1, 1 };
+static int directX[] = {0, 1, 1, 1};
 
-static int directY[] = { 1, 1, 0, -1 };
+static int directY[] = {1, 1, 0, -1};
 
 static int nodeCount;
 
@@ -44,198 +44,231 @@ static unordered_map<long long, point> cache;
 
 static unordered_map<long long, point> cacheLast;
 
-long long getSystemTime() {
-	struct timeb t;
-	ftime(&t);
-	return 1000 * t.time + t.millitm;
-}
-
-bool tryComboSearchIteration(points * neighbors, Color aiColor, gameResult *gameResult) {
-
-	gameResult->combo = 0;
-	long long targerTime = getSystemTime() + comboTimeOut;
-	bool selfSearch = true;
-	bool otherSearch[256];
-	int loseCount = 0;
-	for (int i = 0; i < neighbors->count; i++) {
-		otherSearch[i] = true;
-	}
-	for (int level = 3; level <= comboLevel; level += 2) {
-		if (getSystemTime() > targerTime) {
-			break;
-		}
-		if (selfSearch) {
-			comboResult result = kill(aiColor, level, targerTime);
-			if (debugEnable) {
-				printf("level %d value %d comboLevel %d\n", level, result.canWin, comboLevel);
-			}
-			gameResult->combo = level;
-			if (result.canWin) {
-				gameResult->value = MAX_VALUE;
-				gameResult->result = point(result.p.x, result.p.y);
-				return true;
-			}
-
-			if (!result.isDeep) {
-				selfSearch = false;;
-			}
-		}
-
-		//±éÀúÀ©Õ¹½Úµã
-		for (int i = 0; i < neighbors->count; i++) {
-			if (otherSearch[i]) {
-				point p = point(neighbors->list[i].x, neighbors->list[i].y);
-				//ÏÈ²é±Ø°Ü±í
-				if (loseSet.contains(p)) {
-					continue;
-				}
-				move(p.x, p.y, aiColor);
-				comboResult result = kill(getOtherColor(aiColor), level, targerTime);
-				gameResult->combo = level;
-				undoMove(p.x, p.y, aiColor);
-				if (result.canWin) {
-					if (!loseSet.contains(p.x, p.y)) {
-						loseCount++;
-					}
-					loseSet.add(point(p.x, p.y));
-				}
-				if (!result.isDeep) {
-					otherSearch[i] = false;
-				}
-			}
-		}
-	}
-	printf("MESSAGE lose point count %d\n", loseCount);
-	return false;
-}
-
-bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *gameResult) {
-	//Èç¹û±Ø°Ü£¬ÔòÆÓËØËÑË÷
-	bool loseFlag = false;
-	if (neighbors->count == loseSet.count) {
-		loseSet.reset();
-		loseFlag = true;
-	}
-	//µÃ·ÖËÑË÷
-	timeOutEnable = false;
-	searchStartTime = getSystemTime();
-	cacheLast.clear();
-	cache.clear();
-	for (int level = 2; level <= searchLevel; level += 2)
-	{
-		long long t = getSystemTime();
-		nodeCount = 0;
-		currentLevel = level;
-
-		cacheLast = cache;
-		cache.clear();
-
-		Color color = aiColor;
-		int alpha = MIN_VALUE;
-		int beta = MAX_VALUE;
-
-		int value = dfs(level, color, aiColor, alpha, beta, 0);
-
-		if (timeOutEnable) {
-			if (debugEnable)
-				printf("time out\n");
-			break;
-		}
-
-		if (!timeOutEnable) {
-			if (level > 2 && loseSet.count == neighbors->count) {
-				gameResult->value = value;
-				return true;
-			}
-			gameResult->result = point(currentPointResult.x, currentPointResult.y);
-			int speed = 0;
-			if ((getSystemTime() - t) > 0)
-				speed = (int)(nodeCount / ((getSystemTime() - t) / 1000.00) / 1000);
-			gameResult->speed = speed;
-			gameResult->node = nodeCount;
-			gameResult->value = value;
-			gameResult->level = level;
-			printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, cost %lld ms\n", level, value, gameResult->result.x, gameResult->result.y, speed, getSystemTime() - t);
-			if (debugEnable) {
-				printMapWithStar(getMap(), currentPointResult);
-			}
-			if (value == MAX_VALUE)
-				break;
-		}
-		if (getSystemTime() - searchStartTime > timeOut / 4) {
-			timeOutEnable = true;
-		}
-	}
-	if (loseFlag)
-		gameResult->value = MIN_VALUE;
-	return true;
-}
-
-gameResult search(Color aiColor, Color** map)
+long long getSystemTime()
 {
-	gameResult gameResult;
-	//³õÊ¼»¯
-	initPattern();
-	clearPatternRecord();
-	initGameMap(map);
-	loseSet.reset();
-
-	//³õÊ¼·ÖÎö
-	points* neighbors = PointsFactory::createPointNeighborPoints(0, 0);
-	fillNeighbor(neighbors);
-	selectAndSortPoints(neighbors, aiColor);
-
-	if (neighbors->count == 0) {
-		gameResult.result = point(boardSize / 2, boardSize / 2);
-		return gameResult;
-	}
-
-	if (neighbors->count == 1) {
-		gameResult.result = neighbors->list[0];
-		return gameResult;
-	}
-
-	//ËãÉ±
-	if (tryComboSearchIteration(neighbors, aiColor, &gameResult)) {
-		return gameResult;
-	}
-
-	//µÃ·Öµü´úËÑË÷
-	tryScoreSearchIteration(neighbors, aiColor, &gameResult);
-
-	return gameResult;
+    struct timeb t;
+    ftime(&t);
+    return 1000 * t.time + t.millitm;
 }
 
-void moveHistoryBestToFirst(points * neighbors) {
-	if (cacheLast.find(getMapHashCode()) != cacheLast.end()) {
-		point p = cacheLast[getMapHashCode()];
-		for (int i = 0; i < neighbors->count; i++)
-			if (neighbors->list[i].x == p.x && neighbors->list[i].y == p.y) {
-				for (int j = i; j > 0; j--) {
-					neighbors->list[j] = neighbors->list[j - 1];
-				}
-				neighbors->list[0] = p;
-				break;
-			}
-	}
+bool tryComboSearchIteration(points *neighbors, Color aiColor, gameResult *gameResult)
+{
+
+    gameResult->combo = 0;
+    long long targerTime = getSystemTime() + comboTimeOut;
+    bool selfSearch = true;
+    bool otherSearch[256];
+    int loseCount = 0;
+    for (int i = 0; i < neighbors->count; i++)
+    {
+        otherSearch[i] = true;
+    }
+    for (int level = 3; level <= comboLevel; level += 2)
+    {
+        if (getSystemTime() > targerTime)
+        {
+            break;
+        }
+        if (selfSearch)
+        {
+            comboResult result = kill(aiColor, level, targerTime);
+            if (debugEnable)
+            {
+                printf("level %d value %d comboLevel %d\n", level, result.canWin, comboLevel);
+            }
+            gameResult->combo = level;
+            if (result.canWin)
+            {
+                gameResult->value = MAX_VALUE;
+                gameResult->result = point(result.p.x, result.p.y);
+                return true;
+            }
+
+            if (!result.isDeep)
+            {
+                selfSearch = false;
+                ;
+            }
+        }
+
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¹ï¿½Úµï¿½
+        for (int i = 0; i < neighbors->count; i++)
+        {
+            if (otherSearch[i])
+            {
+                point p = point(neighbors->list[i].x, neighbors->list[i].y);
+                //ï¿½È²ï¿½Ø°Ü±ï¿½
+                if (loseSet.contains(p))
+                {
+                    continue;
+                }
+                move(p.x, p.y, aiColor);
+                comboResult result = kill(getOtherColor(aiColor), level, targerTime);
+                gameResult->combo = level;
+                undoMove(p.x, p.y, aiColor);
+                if (result.canWin)
+                {
+                    if (!loseSet.contains(p.x, p.y))
+                    {
+                        loseCount++;
+                    }
+                    loseSet.add(point(p.x, p.y));
+                }
+                if (!result.isDeep)
+                {
+                    otherSearch[i] = false;
+                }
+            }
+        }
+    }
+    // printf("MESSAGE lose point count %d\n", loseCount);
+    return false;
 }
 
-/* Áã´°¿Ú²âÊÔ·¨
+bool tryScoreSearchIteration(points *neighbors, Color aiColor, gameResult *gameResult)
+{
+    //ï¿½ï¿½ï¿½ï¿½Ø°Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    bool loseFlag = false;
+    if (neighbors->count == loseSet.count)
+    {
+        loseSet.reset();
+        loseFlag = true;
+    }
+    //ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½
+    timeOutEnable = false;
+    searchStartTime = getSystemTime();
+    cacheLast.clear();
+    cache.clear();
+    for (int level = 2; level <= searchLevel; level += 2)
+    {
+        long long t = getSystemTime();
+        nodeCount = 0;
+        currentLevel = level;
+
+        cacheLast = cache;
+        cache.clear();
+
+        Color color = aiColor;
+        int alpha = MIN_VALUE;
+        int beta = MAX_VALUE;
+
+        int value = dfs(level, color, aiColor, alpha, beta, 0);
+
+        if (timeOutEnable)
+        {
+            if (debugEnable)
+                printf("time out\n");
+            break;
+        }
+
+        if (!timeOutEnable)
+        {
+            if (level > 2 && loseSet.count == neighbors->count)
+            {
+                gameResult->value = value;
+                return true;
+            }
+            gameResult->result = point(currentPointResult.x, currentPointResult.y);
+            int speed = 0;
+            if ((getSystemTime() - t) > 0)
+                speed = (int)(nodeCount / ((getSystemTime() - t) / 1000.00) / 1000);
+            gameResult->speed = speed;
+            gameResult->node = nodeCount;
+            gameResult->value = value;
+            gameResult->level = level;
+            // printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, cost %lld ms\n", level, value, gameResult->result.x, gameResult->result.y, speed, getSystemTime() - t);
+            if (debugEnable)
+            {
+                printMapWithStar(getMap(), currentPointResult);
+            }
+            if (value == MAX_VALUE)
+                break;
+        }
+        if (getSystemTime() - searchStartTime > timeOut / 4)
+        {
+            timeOutEnable = true;
+        }
+    }
+    if (loseFlag)
+        gameResult->value = MIN_VALUE;
+    return true;
+}
+
+gameResult search(Color aiColor, Color **map)
+{
+    gameResult gameResult;
+    //ï¿½ï¿½Ê¼ï¿½ï¿½
+    initPattern();
+    clearPatternRecord();
+    initGameMap(map);
+    loseSet.reset();
+
+    //ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
+    points *neighbors = PointsFactory::createPointNeighborPoints(0, 0);
+    fillNeighbor(neighbors);
+    selectAndSortPoints(neighbors, aiColor);
+
+    if (neighbors->count == 0)
+    {
+        gameResult.result = point(boardSize / 2, boardSize / 2);
+        return gameResult;
+    }
+
+    if (neighbors->count == 1)
+    {
+        gameResult.result = neighbors->list[0];
+        return gameResult;
+    }
+
+    //ï¿½ï¿½É±
+    if (tryComboSearchIteration(neighbors, aiColor, &gameResult))
+    {
+        return gameResult;
+    }
+
+    //ï¿½Ã·Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    tryScoreSearchIteration(neighbors, aiColor, &gameResult);
+
+    return gameResult;
+}
+
+void moveHistoryBestToFirst(points *neighbors)
+{
+    if (cacheLast.find(getMapHashCode()) != cacheLast.end())
+    {
+        point p = cacheLast[getMapHashCode()];
+        for (int i = 0; i < neighbors->count; i++)
+            if (neighbors->list[i].x == p.x && neighbors->list[i].y == p.y)
+            {
+                for (int j = i; j > 0; j--)
+                {
+                    neighbors->list[j] = neighbors->list[j - 1];
+                }
+                neighbors->list[0] = p;
+                break;
+            }
+    }
+}
+
+/* ï¿½ã´°ï¿½Ú²ï¿½ï¿½Ô·ï¿½
 */
-int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) {
-	if (getSystemTime() - searchStartTime > timeOut) {
-		timeOutEnable = true;
-	}
-	if (timeOutEnable) {
-		return 0;
-	}
-	nodeCount++;
+int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend)
+{
+    if (getSystemTime() - searchStartTime > timeOut)
+    {
+        timeOutEnable = true;
+    }
+    if (timeOutEnable)
+    {
+        return 0;
+    }
+    nodeCount++;
 
-	if (level <= 1) 
-	{
-		int value = getScoreValue(color, aiColor);
-		
-		/*
+    if (level <= 1)
+    {
+        int value = getScoreValue(color, aiColor);
+
+        /*
 		if (value > alpha && value < beta) {
 			comboResult result = kill(color, currentLevel + 1, getSystemTime() + 1000);
 			if (result.canWin) {
@@ -244,97 +277,112 @@ int dfs(int level, Color color, Color aiColor, int alpha, int beta, int extend) 
 		}
 		*/
 
-		//ÑÓÉì
-		
-		if (value < beta && value > alpha && extend < currentLevel) {
-			level += 2;
-			extend += 2;
-		}
-		
+        //ï¿½ï¿½ï¿½ï¿½
 
-		//Ò¶×Ó·ÖÊý¼ÆËã
-		if (level == 0) {
-			//int value = getScoreValue(color, aiColor);
-			return value;
-		}
-	}
+        if (value < beta && value > alpha && extend < currentLevel)
+        {
+            level += 2;
+            extend += 2;
+        }
 
-	if (canWinCheck(color)) {
-		return MAX_VALUE;
-	}
+        //Ò¶ï¿½Ó·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        if (level == 0)
+        {
+            //int value = getScoreValue(color, aiColor);
+            return value;
+        }
+    }
 
-	//»ñÈ¡À©Õ¹½Úµã
-	points* neighbors = PointsFactory::createPointNeighborPoints(level, extend);
-	fillNeighbor(neighbors);
+    if (canWinCheck(color))
+    {
+        return MAX_VALUE;
+    }
 
+    //ï¿½ï¿½È¡ï¿½ï¿½Õ¹ï¿½Úµï¿½
+    points *neighbors = PointsFactory::createPointNeighborPoints(level, extend);
+    fillNeighbor(neighbors);
 
-	//ÅÅÐò
-	selectAndSortPoints(neighbors, color);
+    //ï¿½ï¿½ï¿½ï¿½
+    selectAndSortPoints(neighbors, color);
 
-	//µ÷Õû×îÓÅ½ÚµãË³Ðò
-	moveHistoryBestToFirst(neighbors);
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å½Úµï¿½Ë³ï¿½ï¿½
+    moveHistoryBestToFirst(neighbors);
 
-	//±éÀúÀ©Õ¹½Úµã
-	int extreme = MIN_VALUE;
-	points* extremePoints = PointsFactory::createDfsTempPoints(level);
-	for (int i = 0; i < neighbors->count; i++) {
-		point p = point(neighbors->list[i].x, neighbors->list[i].y);
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¹ï¿½Úµï¿½
+    int extreme = MIN_VALUE;
+    points *extremePoints = PointsFactory::createDfsTempPoints(level);
+    for (int i = 0; i < neighbors->count; i++)
+    {
+        point p = point(neighbors->list[i].x, neighbors->list[i].y);
 
-		move(p.x, p.y, color);
-		int value;
-		//ÏÈ²é±Ø°Ü±í
-		if (level == currentLevel && extend == 0 && loseSet.contains(p)) {
-			value = MIN_VALUE;
-		}
-		else {
-			if (i == 0) {
-				value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha, extend);
-			}
-			else {
-				//Áã´°¿Ú²âÊÔ
-				value = -dfs(level - 1, getOtherColor(color), aiColor, -alpha - 1, -alpha, extend);
-				if (value > alpha && value < beta) {
-					value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha, extend);
-				}
-			}
-		}
-		undoMove(p.x, p.y, color);
-		if (value >= extreme) {
-			if (value > extreme) {
-				extremePoints->clear();
-			}
-			extreme = value;
-			extremePoints->add(p);
+        move(p.x, p.y, color);
+        int value;
+        //ï¿½È²ï¿½Ø°Ü±ï¿½
+        if (level == currentLevel && extend == 0 && loseSet.contains(p))
+        {
+            value = MIN_VALUE;
+        }
+        else
+        {
+            if (i == 0)
+            {
+                value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha, extend);
+            }
+            else
+            {
+                //ï¿½ã´°ï¿½Ú²ï¿½ï¿½ï¿½
+                value = -dfs(level - 1, getOtherColor(color), aiColor, -alpha - 1, -alpha, extend);
+                if (value > alpha && value < beta)
+                {
+                    value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha, extend);
+                }
+            }
+        }
+        undoMove(p.x, p.y, color);
+        if (value >= extreme)
+        {
+            if (value > extreme)
+            {
+                extremePoints->clear();
+            }
+            extreme = value;
+            extremePoints->add(p);
 
-			if (value > alpha) {
-				alpha = value;
-				if (value > beta) {
-					cache[getMapHashCode()] = p;
-					return value;
-				}
-			}
-		}
+            if (value > alpha)
+            {
+                alpha = value;
+                if (value > beta)
+                {
+                    cache[getMapHashCode()] = p;
+                    return value;
+                }
+            }
+        }
 
-		if (level == currentLevel && extend == 0) {
-			if (debugEnable)
-				printf("(%d, %d) value: %d nodes: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - searchStartTime);
+        if (level == currentLevel && extend == 0)
+        {
+            if (debugEnable)
+                printf("(%d, %d) value: %d nodes: %d time: %lld ms \n", p.x, p.y, value, nodeCount, getSystemTime() - searchStartTime);
 
-			if (value == MAX_VALUE) {
-				currentPointResult = p;
-				return value;
-			}
-			if (value == MIN_VALUE) {
-				if (!loseSet.contains(p))
-					loseSet.add(p);
-			}
-		}
-	}
+            if (value == MAX_VALUE)
+            {
+                currentPointResult = p;
+                return value;
+            }
+            if (value == MIN_VALUE)
+            {
+                if (!loseSet.contains(p))
+                    loseSet.add(p);
+            }
+        }
+    }
 
-	point extremePoint = extremePoints->list[rand() % extremePoints->count];
-	if (level == currentLevel && extend == 0) {
-		currentPointResult = point(extremePoint.x, extremePoint.y);
-	}
+    point extremePoint = extremePoints->list[rand() % extremePoints->count];
+    if (level == currentLevel && extend == 0)
+    {
+        currentPointResult = point(extremePoint.x, extremePoint.y);
+    }
 
-	cache[getMapHashCode()] = extremePoint;
-	return extreme;
+    cache[getMapHashCode()] = extremePoint;
+    return extreme;
 }
