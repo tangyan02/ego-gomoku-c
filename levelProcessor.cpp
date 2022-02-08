@@ -32,30 +32,6 @@ static pointHash pHash;
 static int directX[] = { 0, 1, 1, 1, 0, -1, -1, -1 };
 static int directY[] = { 1, 1, 0, -1, -1, -1, 0, 1 };
 
-static int activeTwoAroundScore(int x, int y, Color color) {
-	int result = 0;
-	for (int k = 0; k < 8; k++) {
-		int px = x + directX[k];
-		int py = y + directY[k];
-		if (reachable(px, py)) {
-			if (map[px][py] == getOtherColor(color)) {
-				if (map[px][py] == BLACK) {
-					if (whitePattern[px][py][k] == PATTERN_ACTIVE_TWO) {
-						result += patternScore[whiteLineKey[px][py][k]] - baseScore[PATTERN_SLEEPY_TWO];
-					}
-				}
-				if (map[px][py] == WHITE) {
-					if (blackPattern[px][py][k] == PATTERN_ACTIVE_TWO) {
-						result += patternScore[blackLineKey[px][py][k]] - baseScore[PATTERN_SLEEPY_TWO];
-					}
-				}
-			}
-		}
-	}
-	return result;
-}
-
-
 static int getScore(int x, int y, Color color)
 {
 	int value = 0;
@@ -64,16 +40,14 @@ static int getScore(int x, int y, Color color)
 		if (color == BLACK)
 		{
 			value += patternScore[blackLineKey[x][y][k]];
-			//value += patternScore[whiteLineKey[x][y][k]];
+			value += patternScore[whiteLineKey[x][y][k]] / 2;
 		}
 		if (color == WHITE)
 		{
 			value += patternScore[whiteLineKey[x][y][k]];
-			//value += patternScore[blackLineKey[x][y][k]];
+			value += patternScore[blackLineKey[x][y][k]] / 2;
 		}
 	}
-	value += activeTwoAroundScore(x, y, color);
-	//printf("activeTwoAroundScore %d\n", activeTwoAroundScore(x, y, color));
 	return value;
 }
 
@@ -93,7 +67,7 @@ void qsort(point* list, int* score, int l, int r)
 {
 	int x = l;
 	int y = r;
-	int mid = (x + y)/2;
+	int mid = (x + y) / 2;
 
 	if (score[x] > score[mid])
 		swap(list, score, x, mid);
@@ -129,10 +103,21 @@ void sort(points& neighbors, Color color) {
 	{
 		scoreList[i] = getScore(list[i].x, list[i].y, color);
 	}
+
 	qsort(list, scoreList, 0, neighbors.count - 1);
 }
 
-void selectAndSortPoints(points &neighbors, Color color)
+void filterForNullPattern(points& neighbors, counter& currentCounter) {
+	for (int i = 1; i < neighbors.count; i++) {
+		if (scoreList[i] == 0) {
+			currentCounter.nullPaternCutCount += neighbors.count - i;
+			neighbors.count = i;
+			break;
+		}
+	}
+}
+
+void selectAndSortPoints(points& neighbors, Color color, counter& currentCounter)
 {
 	if (tryFiveAttack(color, neighbors)) {
 		pHash.removeRepeat(neighbors);
@@ -155,13 +140,32 @@ void selectAndSortPoints(points &neighbors, Color color)
 		sort(neighbors, color);
 		return;
 	}
-	//if (tryDoubleComboDefence(color, neighbors)) {
-	//	pHash.removeRepeat(neighbors);
-	//	sort(neighbors, color);
-	//	/*printf("MESSAGE tryDoubleComboDefence!\n");
-	//	printMapWithStars(getMap(),*neighbors);*/
-	//	return;
-	//}
 
 	sort(neighbors, color);
+
+	filterForNullPattern(neighbors, currentCounter);
+}
+
+//===================================²âÊÔ´úÂë======================
+
+#include"io.h"
+#include "gameMap.h"
+#include "console.h"
+
+void testNullPartton() {
+	boardSize = 20;
+	initPattern();
+	map = readMap("levelfilter01.txt");
+	initGameMap(map);
+
+	points* ps =  PointsFactory::createTempPoints();
+	fillNeighbor(ps);
+	counter ct;
+
+	selectAndSortPoints(*ps, BLACK, ct);
+
+	printMapWithStars(map, *ps);
+
+	printPointPatternsInMessage(18,18);
+	
 }

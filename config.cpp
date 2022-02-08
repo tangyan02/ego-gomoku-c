@@ -25,7 +25,8 @@ bool comboEnable = true;
 
 Color getOtherColor(Color color)
 {
-	if (color == 1 || color == 2)
-		return 3 - color;
-	return NULL;
+	return 3 - color;
+	//if (color == 1 || color == 2)
+	//	return 3 - color;
+	//return NULL;
 }

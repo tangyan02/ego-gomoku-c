@@ -11,6 +11,7 @@
 #include "analyzer.h"
 #include "comboResult.h"
 #include "comboProcessor.h"
+#include "counter.h"
 
 extern int boardSize;
 
@@ -40,15 +41,7 @@ static int currentLevel;
 
 static int maxExtend;
 
-static int extendNodeCount;
-
-static int innerComboNodeCount;
-
-static int innerComboSucNodeCount;
-
-static int cacheHitCount;
-
-static int cacheCorretCount;
+counter cuurentCounter;
 
 static point currentPointResult;
 
@@ -68,7 +61,7 @@ long long getSystemTime() {
 
 bool moveHistoryBestToFirst(points* neighbors) {
 	if (cacheLast.find(getMapHashCode()) != cacheLast.end()) {
-		cacheHitCount++;
+		cuurentCounter.cacheHitCount++;
 		point p = cacheLast[getMapHashCode()];
 		for (int i = 0; i < neighbors->count; i++)
 			if (neighbors->list[i].x == p.x && neighbors->list[i].y == p.y) {
@@ -95,22 +88,19 @@ static int dfs(int level, Color color, Color aiColor, int alpha, int beta, int e
 	}
 	nodeCount++;
 	if (extend > 0) {
-		extendNodeCount++;
+		cuurentCounter.extendNodeCount++;
 	}
 
 	int scoreValue = getScoreValue(color, aiColor);
 
-
-
 	if (level <= 1)
 	{
-
 		if (scoreValue < beta && scoreValue > alpha) {
-			innerComboNodeCount++;
+			cuurentCounter.innerComboNodeCount++;
 			comboResult ret = killVCF(color, 100 + getSystemTime());
 			if (ret.canWin == true) {
-				innerComboSucNodeCount++;
-				return MAX_VALUE + scoreValue;
+				cuurentCounter.innerComboSucNodeCount++;
+				return MAX_VALUE / 2 + scoreValue;
 			}
 		}
 
@@ -131,7 +121,7 @@ static int dfs(int level, Color color, Color aiColor, int alpha, int beta, int e
 
 	if (canWinCheck(color)) {
 		//printMap(getMap());
-		return MAX_VALUE + scoreValue;
+		return MAX_VALUE / 2 + scoreValue;
 		//return MAX_VALUE;
 	}
 
@@ -140,7 +130,7 @@ static int dfs(int level, Color color, Color aiColor, int alpha, int beta, int e
 	fillNeighbor(neighbors);
 
 	//sort
-	selectAndSortPoints(*neighbors, color);
+	selectAndSortPoints(*neighbors, color, cuurentCounter);
 
 	//user history best
 	bool existHitory = moveHistoryBestToFirst(neighbors);
@@ -155,7 +145,7 @@ static int dfs(int level, Color color, Color aiColor, int alpha, int beta, int e
 		int value;
 		//zero window search
 		if (level == currentLevel && extend == 0 && loseSet.contains(p)) {
-			value = MIN_VALUE + scoreValue;
+			value = MIN_VALUE / 2 + scoreValue;
 		}
 		else {
 			if (i == 0) {
@@ -163,9 +153,13 @@ static int dfs(int level, Color color, Color aiColor, int alpha, int beta, int e
 			}
 			else {
 				//try zero window
+				cuurentCounter.zeroWindowCount++;
 				value = -dfs(level - 1, getOtherColor(color), aiColor, -alpha - 1, -alpha, extend);
 				if (value > alpha && value < beta) {
 					value = -dfs(level - 1, getOtherColor(color), aiColor, -beta, -alpha, extend);
+				}
+				else {
+					cuurentCounter.zeroWindowSucCount++;
 				}
 			}
 		}
@@ -206,7 +200,7 @@ static int dfs(int level, Color color, Color aiColor, int alpha, int beta, int e
 	}
 
 	if (finalPoint.x == neighbors->list[0].x && finalPoint.y == neighbors->list[0].y && existHitory) {
-		cacheCorretCount++;
+		cuurentCounter.cacheCorrectCount++;
 	}
 
 	if (neighbors->count > 0) {
@@ -218,7 +212,7 @@ static int dfs(int level, Color color, Color aiColor, int alpha, int beta, int e
 	return alpha;
 }
 
-bool tryComboSearchIteration(points * neighbors, Color aiColor, gameResult *gameResult) {
+bool tryComboSearchIteration(points* neighbors, Color aiColor, gameResult* gameResult) {
 
 	gameResult->combo = 0;
 	long long targerTime = getSystemTime() + comboTimeOut;
@@ -255,7 +249,7 @@ bool tryComboSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			}
 		}
 
-		
+
 		for (int i = 0; i < neighbors->count; i++) {
 			if (otherSearch[i]) {
 				point p = point(neighbors->list[i].x, neighbors->list[i].y);
@@ -301,7 +295,7 @@ static points findHistoryPath(Color selfColor) {
 	}
 	for (int i = result.count; i > 0; i--) {
 		color = getOtherColor(color);
-		undoMove(result.list[i-1].x, result.list[i-1].y, color);
+		undoMove(result.list[i - 1].x, result.list[i - 1].y, color);
 	}
 	if (piskvorkMessageEnable) {
 		printf("MESSAGE hitory: ");
@@ -310,7 +304,7 @@ static points findHistoryPath(Color selfColor) {
 	return result;
 }
 
-bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *gameResult) {
+bool tryScoreSearchIteration(points* neighbors, Color aiColor, gameResult* gameResult) {
 	//if all lose points , normal search
 	bool loseFlag = false;
 	if (neighbors->count == loseSet.count) {
@@ -322,39 +316,35 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 	timeOutEnable = false;
 	searchStartTime = getSystemTime();
 
-	points historyPoints = findHistoryPath(aiColor);
+	//points historyPoints = findHistoryPath(aiColor);
 
 	int startLevel = 2;
-	if (historyPoints.count > 0) {
-		if (piskvorkMessageEnable) {
-			printf("MESSAGE find history path. point (%d, %d), path lenth: %d, last level:%d ,\n", historyPoints.list[0].x, historyPoints.list[0].y, historyPoints.count, lastResult.level - 2);
-		}
-		if (!loseSet.contains(historyPoints.list[0])) {
-			gameResult->result = historyPoints.list[0];
-			gameResult->level = min(lastResult.level - 2, historyPoints.count);
-			startLevel = min(lastResult.level, historyPoints.count + 2);
-			if (startLevel % 2 == 1) {
-				startLevel--;
-			}
-			cache = cacheLast;
-		}
-		else {
-			cacheLast.clear();
-			cache.clear();
-		}
-	}
+	//if (historyPoints.count > 0) {
+	//	if (piskvorkMessageEnable) {
+	//		printf("MESSAGE find history path. point (%d, %d), path lenth: %d, last level:%d ,\n", historyPoints.list[0].x, historyPoints.list[0].y, historyPoints.count, lastResult.level - 2);
+	//	}
+	//	if (!loseSet.contains(historyPoints.list[0])) {
+	//		gameResult->result = historyPoints.list[0];
+	//		gameResult->level = min(lastResult.level - 2, historyPoints.count);
+	//		startLevel = min(lastResult.level, historyPoints.count + 2);
+	//		if (startLevel % 2 == 1) {
+	//			startLevel--;
+	//		}
+	//		cache = cacheLast;
+	//	}
+	//	else {
+	//		cacheLast.clear();
+	//		cache.clear();
+	//	}
+	//}
 
-	for (int level = startLevel; level <= searchLevel; level += 2 )
+	for (int level = startLevel; level <= searchLevel; level += 2)
 	{
 		long long t = getSystemTime();
 		nodeCount = 0;
 		currentLevel = level;
 		maxExtend = 0;
-		extendNodeCount = 0;
-		cacheHitCount = 0;
-		cacheCorretCount = 0;
-		innerComboNodeCount = 0;
-		innerComboSucNodeCount = 0;
+		cuurentCounter.reset();
 
 		cacheLast = cache;
 		cache.clear();
@@ -385,46 +375,33 @@ bool tryScoreSearchIteration(points * neighbors, Color aiColor, gameResult *game
 			gameResult->value = value;
 			gameResult->level = level;
 			gameResult->maxExtend = maxExtend;
-			gameResult->extendNode = extendNodeCount;
-			gameResult->cacheHit = cacheHitCount;
-			gameResult->cacheCorrect = cacheCorretCount;
-			gameResult->innerComboNode = innerComboNodeCount;
-			gameResult->innerComboSucNode = innerComboSucNodeCount;
+
 			if (piskvorkMessageEnable)
 			{
-				//printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, node %d , max extend %d, extend node %d , cache hit: %d/%d , cost %lld ms\n",
-				//	level,
-				//	value,
-				//	gameResult->result.x,
-				//	gameResult->result.y,
-				//	speed,
-				//	nodeCount,
-				//	maxExtend,
-				//	extendNodeCount,
-				//	cacheCorretCount,
-				//	cacheHitCount,
-				//	getSystemTime() - t);
-					printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, node %d , max extend %d, extend node %d , cache hit: %d/%d ,inner combo rate %d/%d ,cost %lld ms\n",
+				printf("MESSAGE level %d, value %d, (%d ,%d), speed %d k, node %d , max extend %d, extend node %d , cache hit: %d/%d ,inner combo rate %d/%d , null pattern cut %d, zero window %d/%d cost %lld ms\n",
 					level,
 					value,
-					gameResult->result.x,
-					gameResult->result.y,
+					currentPointResult.x,
+					currentPointResult.y,
 					speed,
 					nodeCount,
 					maxExtend,
-					extendNodeCount,
-					cacheCorretCount,
-					cacheHitCount,
-					innerComboSucNodeCount,
-					innerComboNodeCount,
+					cuurentCounter.extendNodeCount,
+					cuurentCounter.cacheCorrectCount,
+					cuurentCounter.cacheHitCount,
+					cuurentCounter.innerComboSucNodeCount,
+					cuurentCounter.innerComboNodeCount,
+					cuurentCounter.nullPaternCutCount,
+					cuurentCounter.zeroWindowSucCount,
+					cuurentCounter.zeroWindowCount,
 					getSystemTime() - t);
 			}
 			if (debugEnable) {
 				printMapWithStar(getMap(), currentPointResult);
 			}
-			if (value >= MAX_VALUE/2)
+			if (value >= MAX_VALUE / 2)
 				break;
-			if (value <= MIN_VALUE/2) {
+			if (value <= MIN_VALUE / 2) {
 				break;
 			}
 		}
@@ -451,7 +428,7 @@ gameResult search(Color aiColor, Color** map)
 	//init neighbors
 	points* neighbors = PointsFactory::createPointNeighborPoints(0, 0);
 	fillNeighbor(neighbors);
-	selectAndSortPoints(*neighbors, aiColor);
+	selectAndSortPoints(*neighbors, aiColor, cuurentCounter);
 
 	if (neighbors->count == 0) {
 		gameResult.result = point(boardSize / 2, boardSize / 2);

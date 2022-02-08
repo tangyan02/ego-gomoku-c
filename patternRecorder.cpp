@@ -259,7 +259,9 @@ int countPattern(Color color, int patternCode)
 	return false;
 }
 
+
 /***************************** 测试代码分隔 ***************************************/
+
 
 static void printKey(int key) {
 	for (int i = 0; i < 8; i++) {
@@ -310,6 +312,26 @@ void printPatternAnalyzeInMessage() {
 	for (int i = 0; i < 10; i++) {
 		printf("MESSAGE blackPatternCountInNull[%d]=%d\n", i, blackPatternCountInNull[i]);
 		printf("MESSAGE whitePatternCountInNull[%d]=%d\n", i, whitePatternCountInNull[i]);
+	}
+}
+
+void printPointPatternsInMessage(int x, int y) {
+	int line[8];
+	//输出查看
+	char* patternName[] = { "长5", "活4", " 眠4", "活3",
+		"眠3", "活2", "眠2", "活1", "眠1" };
+	int patternCodes[] = { PATTERN_LINE_FIVE,PATTERN_ACTIVE_FOUR, PATTERN_SLEEPY_FOUR, PATTERN_ACTIVE_THREE,
+		PATTERN_SLEEPY_THREE, PATTERN_ACTIVE_TWO, PATTERN_SLEEPY_TWO, PATTERN_ACTIVE_ONE, PATTERN_SLEEPY_ONE };
+
+	for (int i = 0; i < 9; i++) {
+		for (int k = 0; k < 4; k++) {
+			if (blackPattern[x][y][k] == patternCodes[i]) {
+				printf("MESSAGE blank pattern: %s\n", patternName[i]);
+			}
+			if (whitePattern[x][y][k] == patternCodes[i]) {
+				printf("MESSAGE white pattern: %s\n", patternName[i]);
+			}
+		}
 	}
 }
 

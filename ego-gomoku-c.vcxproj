@@ -173,6 +173,7 @@
     <Text Include="input007.txt" />
     <Text Include="input008.txt" />
     <Text Include="input009.txt" />
+    <Text Include="levelfilter01.txt" />
     <Text Include="License" />
     <Text Include="openings.txt" />
     <Text Include="patternRecorder.txt" />
@@ -186,6 +187,7 @@
     <ClInclude Include="comboResult.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="console.h" />
+    <ClInclude Include="counter.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gameMap.h" />
     <ClInclude Include="io.h" />

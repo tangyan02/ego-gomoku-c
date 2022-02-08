@@ -111,6 +111,9 @@
     <Text Include="combo15.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="levelfilter01.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -180,6 +183,9 @@
       <Filter>头文件\entity</Filter>
     </ClInclude>
     <ClInclude Include="learn.h">
+      <Filter>头文件\core</Filter>
+    </ClInclude>
+    <ClInclude Include="counter.h">
       <Filter>头文件\core</Filter>
     </ClInclude>
   </ItemGroup>

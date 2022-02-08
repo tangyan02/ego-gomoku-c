@@ -9,11 +9,6 @@ public:
 	int level = 0;
 	int combo = 0;
 	int maxExtend = 0;
-    int innerComboNode = 0;
-    int innerComboSucNode = 0;
-	int extendNode = 0;
-	int cacheHit = 0;
-	int cacheCorrect = 0;
 	gameResult();
 	~gameResult();
 };

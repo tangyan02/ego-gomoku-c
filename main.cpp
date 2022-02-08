@@ -89,5 +89,6 @@ int main()
 	//testPatternRecorder();
 	//selfLearn();
 	//testAnalyzer();
+	//testNullPartton();
 	return 0;
 }

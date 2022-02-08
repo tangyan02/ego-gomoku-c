@@ -107,7 +107,7 @@ void brain_turn()
 	thisTimeOut = min(info_timeout_turn, thisTimeOut);
 
 	pipeOut("MESSAGE time limit %d", thisTimeOut);
-	timeOut = thisTimeOut / 5 * 4;
+	timeOut = thisTimeOut / 4 * 3;
 	comboTimeOut = thisTimeOut - timeOut;
 	if (thisTimeOut == 0) {
 		timeOut = 5;

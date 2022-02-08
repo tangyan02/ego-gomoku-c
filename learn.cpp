@@ -40,7 +40,7 @@ static int openings;
 
 
 static int oneTurn(player player, Color** map) {
-	setBaseScore(player.score, player.sigma);
+	setBaseScore(player.score);
 	gameResult result = search(player.color, map);
 	point p = result.result;
 	map[p.x][p.y] = player.color;
